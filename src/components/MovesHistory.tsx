@@ -1,8 +1,7 @@
 import "./MovesHistory.css";
 import MoveHistoryNode, { MoveHistoryNodeProps } from "./MoveHistoryNode";
 import { Fragment } from "react/jsx-runtime";
-import { useEffect, useState } from "react";
-import { useUpdateEffect } from "ahooks";
+import { useState } from "react";
 
 const sanConversions = {
   white: {
@@ -37,13 +36,14 @@ function MovesHistory() {
   function addMove(
     moveSan: string,
     isWhiteMove: boolean,
-    fenAfterMove: string
+    fenAfterMove: string,
+    clickCallback: (fen: string) => void
   ) {
     const moveCaption = convertSanToFan(moveSan, isWhiteMove);
     const newMove = {
       fan: moveCaption,
       fen: fenAfterMove,
-      clickCallback: (fen: string) => console.log(`Got fen ${fen}.`),
+      clickCallback: clickCallback,
     };
 
     setMoves((oldMoves) => [...oldMoves, newMove]);
