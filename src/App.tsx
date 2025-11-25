@@ -1,5 +1,6 @@
 import { ChessGame } from "@react-chess-tools/react-chess-game";
 import "./App.css";
+import MovesHistory from "./components/MovesHistory";
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
           <ChessGame.Board />
         </ChessGame.Root>
       </div>
+      <MovesHistory />
     </main>
   );
 }
