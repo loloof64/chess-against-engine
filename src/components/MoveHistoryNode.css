@@ -1,7 +1,14 @@
+@font-face {
+  font-family: "Free Serif";
+  src: url("../assets/fonts/FreeSerif.ttf");
+}
+
 button {
   border: none;
   width: fit-content;
   height: fit-content;
   margin: 5px;
   background-color: transparent;
+  font-family: "Free Serif", serif;
+  font-size: x-large;
 }

@@ -1,7 +1,9 @@
-# Tauri + React + Typescript
+# Chess against engine
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Play chess against your device
 
-## Recommended IDE Setup
+## Credits
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+### Fonts
+
+Font Free Serif downloaded from https://fonts2u.com/download/free-serif.font.

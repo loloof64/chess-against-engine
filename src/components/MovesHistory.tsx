@@ -9,7 +9,7 @@ function MovesHistory() {
 
   function addSampleMove() {
     const newMove = {
-      fan: "♖f6",
+      fan: "♝f6",
       fen: "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
       clickCallback: (fen: string) => console.log(`Got fen ${fen}.`),
     };
