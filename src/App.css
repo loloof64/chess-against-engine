@@ -42,12 +42,6 @@ div#root {
   align-items: center;
 }
 
-.board {
-  display: flex;
-  width: 75vmin;
-  height: 75vmin;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;

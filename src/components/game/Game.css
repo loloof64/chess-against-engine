@@ -1,0 +1,5 @@
+.board {
+  display: flex;
+  width: 75vmin;
+  height: 75vmin;
+}
