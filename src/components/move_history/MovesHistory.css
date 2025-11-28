@@ -8,4 +8,5 @@
   flex-wrap: wrap;
   align-content: flex-start;
   overflow-y: scroll;
+  row-gap: 1px;
 }

@@ -7,7 +7,8 @@ button {
   border: none;
   width: fit-content;
   height: fit-content;
-  margin: 5px;
+  margin: 0 5px;
+  padding: 0;
   background-color: transparent;
   font-family: "Free Serif", serif;
   font-size: x-large;
