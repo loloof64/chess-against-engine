@@ -30,36 +30,36 @@ function Game() {
     setMoves((oldMoves) => [...oldMoves, newMove]);
   }
 
+  function handlePieceDrop({
+    sourceSquare,
+    targetSquare,
+  }: PieceDropHandlerArgs) {
+    const chessLogic = new Chess(gameCtx.currentFen);
+    const move = chessLogic.move({
+      from: sourceSquare,
+      to: targetSquare ?? sourceSquare,
+    });
+    if (move) {
+      const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
+      const moveNumber = Math.floor(gameCtx.info.moveNumber / 2) + 1;
+      if (isWhiteTurnBeforeMove) {
+        addMove(`${moveNumber}.`, isWhiteTurnBeforeMove, "", () => {});
+      }
+      gameCtx.methods.makeMove(move);
+      addMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
+        console.log(fen)
+      );
+      return true;
+    }
+    return false;
+  }
+
   return (
     <>
       <div className="board">
         <ChessGame.Board
           options={{
-            onPieceDrop({ sourceSquare, targetSquare }: PieceDropHandlerArgs) {
-              const chessLogic = new Chess(gameCtx.currentFen);
-              const move = chessLogic.move({
-                from: sourceSquare,
-                to: targetSquare ?? sourceSquare,
-              });
-              if (move) {
-                const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
-                const moveNumber = Math.floor(gameCtx.info.moveNumber / 2) + 1;
-                if (isWhiteTurnBeforeMove) {
-                  addMove(
-                    `${moveNumber}.`,
-                    isWhiteTurnBeforeMove,
-                    "",
-                    () => {}
-                  );
-                }
-                gameCtx.methods.makeMove(move);
-                addMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
-                  console.log(fen)
-                );
-                return true;
-              }
-              return false;
-            },
+            onPieceDrop: handlePieceDrop,
           }}
         />
       </div>
