@@ -1,5 +1,6 @@
 import { Color } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
+import generateKey from "../../utils/KeyGenerator";
 
 export enum GameActionType {
   startNewDefaultGame,
@@ -12,6 +13,7 @@ interface GameAction {
 }
 
 interface Game {
+  boardKey: string;
   positionFen: string;
   boardOrientation: Color;
 }
@@ -26,6 +28,7 @@ export const DEFAULT_POSITION =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const initialGame: Game = {
+  boardKey: generateKey(),
   positionFen: EMPTY_POSITION,
   boardOrientation: "w",
 };
@@ -54,6 +57,7 @@ function gameReducer(_game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewDefaultGame:
       return {
+        boardKey: generateKey(),
         positionFen: DEFAULT_POSITION,
         boardOrientation: "w",
       };
@@ -61,6 +65,7 @@ function gameReducer(_game: Game, action: GameAction): Game {
       const newPosition = action.value;
       const newOrientation = newPosition.split(" ")[1] === "b" ? "b" : "w";
       return {
+        boardKey: generateKey(),
         positionFen: newPosition,
         boardOrientation: newOrientation,
       };

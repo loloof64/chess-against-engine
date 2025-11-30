@@ -8,7 +8,7 @@ import { MoveHistoryNodeProps } from "../move_history/MoveHistoryNode";
 import { useGame } from "../../stores/game/GameContext";
 
 function Game() {
-  const { positionFen, boardOrientation } = useGame();
+  const { positionFen, boardOrientation, boardKey } = useGame();
   const [moves, setMoves] = useState<Array<MoveHistoryNodeProps>>([]);
 
   function appendMove(newMove: MoveHistoryNodeProps) {
@@ -18,7 +18,11 @@ function Game() {
   return (
     <div className="game">
       <div className="board">
-        <ChessGame.Root fen={positionFen} orientation={boardOrientation}>
+        <ChessGame.Root
+          key={boardKey}
+          fen={positionFen}
+          orientation={boardOrientation}
+        >
           <Board appendMove={appendMove} />
         </ChessGame.Root>
       </div>
