@@ -5,15 +5,15 @@ import {
 import { PieceDropHandlerArgs } from "react-chessboard";
 import convertSanToFan from "../core/sanConversion";
 import { Chess } from "chess.js";
-import { MoveHistoryNodeProps } from "./move_history/MoveHistoryNode";
-import { useGame } from "../stores/game/GameContext";
+import {
+  GameActionType,
+  useGame,
+  useGameDispatch,
+} from "../stores/game/GameContext";
 
-interface BoardParams {
-  appendMove: (newMove: MoveHistoryNodeProps) => void;
-}
-
-function Board({ appendMove }: BoardParams) {
+function Board() {
   const { historyMoves } = useGame();
+  const dispatch = useGameDispatch();
   const gameCtx = useChessGameContext();
 
   function addMove(
@@ -29,7 +29,10 @@ function Board({ appendMove }: BoardParams) {
       clickCallback: clickCallback,
     };
 
-    appendMove(newMove);
+    dispatch({
+      type: GameActionType.appendHistoryMove,
+      value: newMove,
+    });
   }
 
   function handlePieceDrop({
