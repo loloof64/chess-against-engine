@@ -1,7 +1,7 @@
 import MovesHistory from "../move_history/MovesHistory";
 import "./Game.css";
 
-import Board from "../Board";
+import Board from "../board/Board";
 import { ChessGame } from "@react-chess-tools/react-chess-game";
 import { useGame } from "../../stores/game/GameContext";
 
