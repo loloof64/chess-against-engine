@@ -1,10 +1,12 @@
 import { Color } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
+import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
 
 export enum GameActionType {
   startNewDefaultGame,
   startNewGame,
+  appendHistoryMove,
 }
 
 interface GameAction {
@@ -16,6 +18,7 @@ interface Game {
   boardKey: string;
   positionFen: string;
   boardOrientation: Color;
+  historyMoves: Array<MoveHistoryNodeProps>;
 }
 
 const GameContext = createContext<Game>(null as any);
@@ -31,6 +34,7 @@ const initialGame: Game = {
   boardKey: generateKey(),
   positionFen: EMPTY_POSITION,
   boardOrientation: "w",
+  historyMoves: [],
 };
 
 export function useGame() {
@@ -53,13 +57,14 @@ export default function GameProvider({ children }: any) {
   );
 }
 
-function gameReducer(_game: Game, action: GameAction): Game {
+function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewDefaultGame:
       return {
         boardKey: generateKey(),
         positionFen: DEFAULT_POSITION,
         boardOrientation: "w",
+        historyMoves: [],
       };
     case GameActionType.startNewGame:
       const newPosition = action.value;
@@ -68,6 +73,13 @@ function gameReducer(_game: Game, action: GameAction): Game {
         boardKey: generateKey(),
         positionFen: newPosition,
         boardOrientation: newOrientation,
+        historyMoves: [],
+      };
+    case GameActionType.appendHistoryMove:
+      const move = action.value;
+      return {
+        ...game,
+        historyMoves: [...game.historyMoves, move],
       };
     default:
       throw Error("Unknown action: " + action.type);
