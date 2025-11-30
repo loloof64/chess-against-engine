@@ -43,7 +43,7 @@ function Board({ appendMove }: BoardParams) {
     });
     if (move) {
       const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
-      const moveNumber = Math.floor(gameCtx.info.moveNumber / 2) + 1;
+      const moveNumber = parseInt(gameCtx.currentFen.split(" ")[5]);
       const weShouldAddMoveNumber =
         isWhiteTurnBeforeMove || historyMoves.length === 0;
       if (weShouldAddMoveNumber) {
