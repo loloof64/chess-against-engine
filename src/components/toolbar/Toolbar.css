@@ -1,0 +1,25 @@
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 10vh;
+  background-color: bisque;
+}
+
+.toolbar ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.toolbar ul li {
+  list-style-type: none;
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid black;
+  padding: 4px;
+  border-radius: 6px;
+}

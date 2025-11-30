@@ -1,70 +1,29 @@
-import {
-  ChessGame,
-  useChessGameContext,
-} from "@react-chess-tools/react-chess-game";
-import { PieceDropHandlerArgs } from "react-chessboard";
 import MovesHistory from "../move_history/MovesHistory";
-import { MoveHistoryNodeProps } from "../move_history/MoveHistoryNode";
-import convertSanToFan from "../../core/sanConversion";
 import "./Game.css";
-import { Chess } from "chess.js";
+
+import Board from "../Board";
 import { useState } from "react";
+import { ChessGame } from "@react-chess-tools/react-chess-game";
+import { MoveHistoryNodeProps } from "../move_history/MoveHistoryNode";
+import { useGame } from "../../stores/game/GameContext";
 
 function Game() {
+  const { positionFen, boardOrientation } = useGame();
   const [moves, setMoves] = useState<Array<MoveHistoryNodeProps>>([]);
-  const gameCtx = useChessGameContext();
 
-  function addMove(
-    moveSan: string,
-    isWhiteMove: boolean,
-    fenAfterMove: string,
-    clickCallback: (fen: string) => void
-  ) {
-    const moveCaption = convertSanToFan(moveSan, isWhiteMove);
-    const newMove = {
-      fan: moveCaption,
-      fen: fenAfterMove,
-      clickCallback: clickCallback,
-    };
-
+  function appendMove(newMove: MoveHistoryNodeProps) {
     setMoves((oldMoves) => [...oldMoves, newMove]);
   }
 
-  function handlePieceDrop({
-    sourceSquare,
-    targetSquare,
-  }: PieceDropHandlerArgs) {
-    const chessLogic = new Chess(gameCtx.currentFen);
-    const move = chessLogic.move({
-      from: sourceSquare,
-      to: targetSquare ?? sourceSquare,
-    });
-    if (move) {
-      const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
-      const moveNumber = Math.floor(gameCtx.info.moveNumber / 2) + 1;
-      if (isWhiteTurnBeforeMove) {
-        addMove(`${moveNumber}.`, isWhiteTurnBeforeMove, "", () => {});
-      }
-      gameCtx.methods.makeMove(move);
-      addMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
-        console.log(fen)
-      );
-      return true;
-    }
-    return false;
-  }
-
   return (
-    <>
+    <div className="game">
       <div className="board">
-        <ChessGame.Board
-          options={{
-            onPieceDrop: handlePieceDrop,
-          }}
-        />
+        <ChessGame.Root fen={positionFen} orientation={boardOrientation}>
+          <Board appendMove={appendMove} />
+        </ChessGame.Root>
       </div>
       <MovesHistory moves={moves} />
-    </>
+    </div>
   );
 }
 
