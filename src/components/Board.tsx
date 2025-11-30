@@ -6,12 +6,14 @@ import { PieceDropHandlerArgs } from "react-chessboard";
 import convertSanToFan from "../core/sanConversion";
 import { Chess } from "chess.js";
 import { MoveHistoryNodeProps } from "./move_history/MoveHistoryNode";
+import { useGame } from "../stores/game/GameContext";
 
 interface BoardParams {
   appendMove: (newMove: MoveHistoryNodeProps) => void;
 }
 
 function Board({ appendMove }: BoardParams) {
+  const { historyMoves } = useGame();
   const gameCtx = useChessGameContext();
 
   function addMove(
@@ -42,8 +44,15 @@ function Board({ appendMove }: BoardParams) {
     if (move) {
       const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
       const moveNumber = Math.floor(gameCtx.info.moveNumber / 2) + 1;
-      if (isWhiteTurnBeforeMove) {
-        addMove(`${moveNumber}.`, isWhiteTurnBeforeMove, "", () => {});
+      const weShouldAddMoveNumber =
+        isWhiteTurnBeforeMove || historyMoves.length === 0;
+      if (weShouldAddMoveNumber) {
+        addMove(
+          `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+          isWhiteTurnBeforeMove,
+          "",
+          () => {}
+        );
       }
       gameCtx.methods.makeMove(move);
       addMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
