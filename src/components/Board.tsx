@@ -70,9 +70,7 @@ function Board({ appendMove }: BoardParams) {
           onPieceDrop: handlePieceDrop,
         }}
       />
-      {/*
-          <ChessGame.Sounds />
-          */}
+      <ChessGame.Sounds />
     </>
   );
 }
