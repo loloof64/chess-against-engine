@@ -7,6 +7,7 @@ export enum GameActionType {
   startNewDefaultGame,
   startNewGame,
   appendHistoryMove,
+  stopGame,
 }
 
 interface GameAction {
@@ -19,6 +20,7 @@ interface Game {
   positionFen: string;
   boardOrientation: Color;
   historyMoves: Array<MoveHistoryNodeProps>;
+  inProgress: boolean;
 }
 
 const GameContext = createContext<Game>(null as any);
@@ -35,6 +37,7 @@ const initialGame: Game = {
   positionFen: EMPTY_POSITION,
   boardOrientation: "w",
   historyMoves: [],
+  inProgress: false,
 };
 
 export function useGame() {
@@ -65,6 +68,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         positionFen: DEFAULT_POSITION,
         boardOrientation: "w",
         historyMoves: [],
+        inProgress: true,
       };
     case GameActionType.startNewGame:
       const newPosition = action.value;
@@ -74,12 +78,18 @@ function gameReducer(game: Game, action: GameAction): Game {
         positionFen: newPosition,
         boardOrientation: newOrientation,
         historyMoves: [],
+        inProgress: true,
       };
     case GameActionType.appendHistoryMove:
       const move = action.value;
       return {
         ...game,
         historyMoves: [...game.historyMoves, move],
+      };
+    case GameActionType.stopGame:
+      return {
+        ...game,
+        inProgress: false,
       };
     default:
       throw Error("Unknown action: " + action.type);

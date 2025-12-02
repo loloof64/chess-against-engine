@@ -8,12 +8,14 @@ import { PieceDropHandlerArgs } from "react-chessboard";
 import convertSanToFan from "../../core/sanConversion";
 import { Chess, Move } from "chess.js";
 import {
+  EMPTY_POSITION,
   GameActionType,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "./PromotionDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import MessageDialog from "./MessageDialog";
 
 function Board() {
   const { historyMoves } = useGame();
@@ -25,6 +27,42 @@ function Board() {
   const [pendingPromotionMove, setPendingPromotionMove] = useState<
     Move | undefined
   >();
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+  const [messageDialogCaption, setMessageDialogCaption] = useState("");
+
+  useEffect(() => {
+    const isNotEmptyPosition = gameCtx.currentFen !== EMPTY_POSITION;
+    if (isNotEmptyPosition) checkGameOverAndEventualyNotify();
+  }, [gameCtx.currentFen, gameCtx.info.isGameOver]);
+
+  function showGameOverNotification() {
+    let message: string;
+    if (gameCtx.info.isCheckmate) {
+      const whiteWon = gameCtx.info.turn !== "w";
+      const winnerLabel = whiteWon ? "White" : "Black";
+      message = `${winnerLabel} has won by checkmate.`;
+    } else if (gameCtx.info.isStalemate) {
+      message = `Draw by stalemate.`;
+    } else if (gameCtx.info.isInsufficientMaterial) {
+      message = `Draw by insufficient material.`;
+    } else if (gameCtx.info.isThreefoldRepetition) {
+      message = `Draw by three-fold repetition`;
+    } else {
+      message = `Draw by the fifty moves rule.`;
+    }
+    setMessageDialogCaption(message);
+    setIsMessageDialogOpen(true);
+  }
+
+  function checkGameOverAndEventualyNotify() {
+    const isGameOver = gameCtx.info.isGameOver;
+    if (isGameOver) {
+      dispatch({
+        type: GameActionType.stopGame,
+      });
+      showGameOverNotification();
+    }
+  }
 
   function commitPromotion(piece: string) {
     setIsPromotionDialogOpen(false);
@@ -46,6 +84,10 @@ function Board() {
 
   function handlePromotionDialogStatusChange(newState: boolean) {
     setIsPromotionDialogOpen(newState);
+  }
+
+  function handleMessageDialogStatusChange(newState: boolean) {
+    setIsMessageDialogOpen(newState);
   }
 
   function addHistoryMove(
@@ -118,6 +160,11 @@ function Board() {
         isOpen={isPromotionDialogOpen}
         onOpenChange={handlePromotionDialogStatusChange}
         onSelection={commitPromotion}
+      />
+      <MessageDialog
+        isOpen={isMessageDialogOpen}
+        onOpenChange={handleMessageDialogStatusChange}
+        message={messageDialogCaption}
       />
     </>
   );
