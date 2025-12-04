@@ -12,3 +12,12 @@
   width: 75vmin;
   height: 75vmin;
 }
+
+.board-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.board-wrapper.locked {
+  pointer-events: none;
+}

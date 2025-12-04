@@ -13,7 +13,16 @@ function Toolbar() {
   function startNewCustomGame() {
     dispatch({
       type: GameActionType.startNewGame,
-      value: "8/8/8/8/8/1k1bb3/8/K7 b - - 0 45",
+      value: "r7/1P6/8/7K/k7/8/8/1Q6 w - - 0 1",
+    });
+  }
+
+  function stopGame() {
+    ////////////
+    console.log("game stopped");
+    /////////////
+    dispatch({
+      type: GameActionType.stopGame,
     });
   }
 
@@ -22,6 +31,7 @@ function Toolbar() {
       <ul>
         <li onClick={startNewDefaultGame}>New game</li>
         <li onClick={startNewCustomGame}>New custom game</li>
+        <li onClick={stopGame}>Stop game</li>
       </ul>
     </div>
   );
