@@ -1,0 +1,27 @@
+{
+  "translation": {
+    "board": {
+      "component": {
+        "playerSide": {
+          "white": "White",
+          "black": "Black"
+        },
+        "gameEnd": {
+          "checkmate": "{{side}} has won by checkmate.",
+          "stalemate": "Draw by stalemate.",
+          "insufficientMaterial": "Draw by insufficient material.",
+          "threeFoldRepetition": "Draw by three-fold repetition.",
+          "fiftyMovesRule": "Draw by the fifty moves rule."
+        }
+      },
+      "messageDialog": {
+        "title": "Simple message dialog.",
+        "description": "A simple message dialog."
+      },
+      "promotionDialog": {
+        "title": "Promotion choice.",
+        "description": "Choose your promotion piece."
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ import {
 import PromotionDialog from "./PromotionDialog";
 import { useState } from "react";
 import MessageDialog from "./MessageDialog";
+import { useTranslation } from "react-i18next";
 
 function Board() {
   const {
@@ -27,6 +28,7 @@ function Board() {
     lastMoveArrow,
   } = useGame();
   const dispatch = useGameDispatch();
+  const { t } = useTranslation();
 
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
@@ -41,16 +43,18 @@ function Board() {
     let message: string;
     if (gameLogic.isCheckmate()) {
       const whiteWon = gameLogic.turn() !== "w";
-      const winnerLabel = whiteWon ? "White" : "Black";
-      message = `${winnerLabel} has won by checkmate.`;
+      const winnerLabel = whiteWon
+        ? t("board.component.playerSide.white")
+        : t("board.component.playerSide.black");
+      message = t("board.component.gameEnd.checkmate", { side: winnerLabel });
     } else if (gameLogic.isStalemate()) {
-      message = `Draw by stalemate.`;
+      message = t("board.component.gameEnd.stalemate");
     } else if (gameLogic.isInsufficientMaterial()) {
-      message = `Draw by insufficient material.`;
+      message = t("board.component.gameEnd.insufficientMaterial");
     } else if (gameLogic.isThreefoldRepetition()) {
-      message = `Draw by three-fold repetition`;
+      message = t("board.component.gameEnd.threeFoldRepetition");
     } else {
-      message = `Draw by the fifty moves rule.`;
+      message = t("board.component.gameEnd.fiftyMovesRule");
     }
     setMessageDialogCaption(message);
     setIsMessageDialogOpen(true);

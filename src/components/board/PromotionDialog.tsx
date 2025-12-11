@@ -1,6 +1,7 @@
 import "./PromotionDialog.css";
 import { Dialog, VisuallyHidden } from "radix-ui";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { useTranslation } from "react-i18next";
 
 interface PromotionDialogParams {
   whiteTurn: boolean;
@@ -15,17 +16,18 @@ function PromotionDialog({
   onOpenChange,
   onSelection,
 }: PromotionDialogParams) {
+  const { t } = useTranslation();
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
           <VisuallyHidden.Root asChild>
-            <Dialog.Title>Promotion choice</Dialog.Title>
+            <Dialog.Title>{t("board.promotionDialog.title")}</Dialog.Title>
           </VisuallyHidden.Root>
           <VisuallyHidden.Root asChild>
             <Dialog.Description>
-              Choose your promotion piece.
+              {t("board.promotionDialog.description")}
             </Dialog.Description>
           </VisuallyHidden.Root>
           <fieldset className="Fieldset">

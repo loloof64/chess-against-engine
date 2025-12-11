@@ -1,0 +1,27 @@
+{
+  "translation": {
+    "board": {
+      "component": {
+        "playerSide": {
+          "white": "Los Blancos",
+          "black": "Los Negros"
+        },
+        "gameEnd": {
+          "checkmate": "{{side}} ganaron por jaque mate.",
+          "stalemate": "Empate por ahogado.",
+          "insufficientMaterial": "Empate por material insuficiente.",
+          "threeFoldRepetition": "Empate por triple repetición.",
+          "fiftyMovesRule": "Empate por la regla de los cincuenta movimientos."
+        }
+      },
+      "messageDialog": {
+        "title": "Diálogo de mensaje simple.",
+        "description": "Un diálogo de mensaje simple."
+      },
+      "promotionDialog": {
+        "title": "Elección de promoción.",
+        "description": "Elige tu pieza de promoción."
+      }
+    }
+  }
+}
