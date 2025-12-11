@@ -10,7 +10,6 @@ import convertSanToFan from "../../core/sanConversion";
 import { Chess, Move } from "chess.js";
 import {
   GameActionType,
-  HistoryUpdateProps,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
@@ -86,10 +85,10 @@ function Board() {
         endSquare: moveToCommit.to,
         color: "green",
       },
-      ({ newFen, moveArrow }: HistoryUpdateProps) => {
+      (historyIndex) => {
         dispatch({
           type: GameActionType.gotoPosition,
-          value: { newFen, moveArrow },
+          value: historyIndex,
         });
       }
     );
@@ -109,7 +108,7 @@ function Board() {
     isWhiteMove: boolean,
     fenAfterMove: string,
     moveArrow: Arrow,
-    clickCallback: ({ newFen, moveArrow }: HistoryUpdateProps) => void
+    clickCallback: (historyIndex: number) => void
   ) {
     const moveCaption = convertSanToFan(moveSan, isWhiteMove);
     const newMove = {
@@ -180,10 +179,10 @@ function Board() {
             endSquare: move.to,
             color: "green",
           },
-          ({ newFen, moveArrow }: HistoryUpdateProps) => {
+          (historyIndex: number) => {
             dispatch({
               type: GameActionType.gotoPosition,
-              value: { newFen, moveArrow },
+              value: historyIndex,
             });
           }
         );

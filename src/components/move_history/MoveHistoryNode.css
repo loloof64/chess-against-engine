@@ -3,7 +3,7 @@
   src: url("../../assets/fonts/FreeSerif.ttf");
 }
 
-.history button {
+.history button.move {
   border: none;
   width: fit-content;
   height: fit-content;
@@ -12,4 +12,8 @@
   background-color: transparent;
   font-family: "Free Serif", serif;
   font-size: x-large;
+}
+
+.history button.move.selected {
+  background-color: aquamarine;
 }

@@ -1,22 +1,22 @@
 import { Arrow } from "react-chessboard";
 import "./MoveHistoryNode.css";
-import { HistoryUpdateProps } from "../../stores/game/GameContext";
-
 export interface MoveHistoryNodeProps {
   fan: string; // figurine algebraic notation
   fen: string; // Forsyth-Edwards notation
   moveArrow: Arrow;
-  clickCallback: ({ newFen, moveArrow }: HistoryUpdateProps) => void;
+  className: string;
+  historyIndex: number;
+  clickCallback: (historyIndex: number) => void;
 }
 
 function MoveHistoryNode({
   fan,
-  fen,
-  moveArrow,
+  className,
+  historyIndex,
   clickCallback,
 }: MoveHistoryNodeProps) {
   return (
-    <button onClick={() => clickCallback({ newFen: fen, moveArrow })}>
+    <button onClick={() => clickCallback(historyIndex)} className={className}>
       {fan}
     </button>
   );

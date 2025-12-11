@@ -11,6 +11,7 @@ export enum GameActionType {
   appendHistoryMove,
   stopGame,
   gotoPosition,
+  setHistoryIndex,
 }
 
 interface GameAction {
@@ -25,11 +26,8 @@ interface Game {
   historyMoves: Array<MoveHistoryNodeProps>;
   inProgress: boolean;
   lastMoveArrow?: Arrow;
-}
-
-export interface HistoryUpdateProps {
-  newFen: string;
-  moveArrow: Arrow;
+  firstPosition: string;
+  historyIndex: number | undefined;
 }
 
 const GameContext = createContext<Game>(null as any);
@@ -44,10 +42,12 @@ export const DEFAULT_POSITION =
 const initialGame: Game = {
   boardKey: generateKey(),
   positionFen: EMPTY_POSITION,
+  firstPosition: EMPTY_POSITION,
   boardOrientation: "w",
   historyMoves: [],
   inProgress: false,
   lastMoveArrow: undefined,
+  historyIndex: undefined,
 };
 
 export function useGame() {
@@ -76,10 +76,12 @@ function gameReducer(game: Game, action: GameAction): Game {
       return {
         boardKey: generateKey(),
         positionFen: DEFAULT_POSITION,
+        firstPosition: DEFAULT_POSITION,
         boardOrientation: "w",
         historyMoves: [],
         inProgress: true,
         lastMoveArrow: undefined,
+        historyIndex: undefined,
       };
     case GameActionType.startNewGame:
       const newPosition = action.value;
@@ -87,10 +89,12 @@ function gameReducer(game: Game, action: GameAction): Game {
       return {
         boardKey: generateKey(),
         positionFen: newPosition,
+        firstPosition: newPosition,
         boardOrientation: newOrientation,
         historyMoves: [],
         inProgress: true,
         lastMoveArrow: undefined,
+        historyIndex: undefined,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);
@@ -113,6 +117,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         boardKey: generateKey(),
         historyMoves: [...game.historyMoves, move],
+        historyIndex: (game.historyIndex ?? -1) + 1,
       };
     case GameActionType.stopGame:
       return {
@@ -121,11 +126,31 @@ function gameReducer(game: Game, action: GameAction): Game {
       };
     case GameActionType.gotoPosition:
       if (game.inProgress) return game;
+
+      const index: number = action.value;
+      let newFen: string;
+      let moveArrow: Arrow | undefined;
+
+      if (index < 0) {
+        newFen = game.firstPosition;
+        moveArrow = undefined;
+      } else {
+        newFen = game.historyMoves[index].fen;
+        moveArrow = game.historyMoves[index].moveArrow;
+      }
+
       return {
         ...game,
         boardKey: generateKey(),
-        positionFen: action.value.newFen,
-        lastMoveArrow: action.value.moveArrow,
+        positionFen: newFen,
+        lastMoveArrow: moveArrow,
+      };
+    case GameActionType.setHistoryIndex:
+      if (game.inProgress) return game;
+      return {
+        ...game,
+        boardKey: generateKey(),
+        historyIndex: action.value,
       };
     default:
       throw Error("Unknown action: " + action.type);
