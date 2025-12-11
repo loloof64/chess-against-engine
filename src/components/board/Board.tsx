@@ -4,11 +4,13 @@ import {
   PieceDropHandlerArgs,
   Chessboard,
   PieceHandlerArgs,
+  Arrow,
 } from "react-chessboard";
 import convertSanToFan from "../../core/sanConversion";
 import { Chess, Move } from "chess.js";
 import {
   GameActionType,
+  HistoryUpdateProps,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
@@ -79,10 +81,15 @@ function Board() {
       moveToCommitResult.san,
       isWhiteTurnBeforeMove,
       moveToCommitResult.after,
-      (newFen) => {
+      {
+        startSquare: moveToCommit.from,
+        endSquare: moveToCommit.to,
+        color: "green",
+      },
+      ({ newFen, moveArrow }: HistoryUpdateProps) => {
         dispatch({
           type: GameActionType.gotoPosition,
-          value: newFen,
+          value: { newFen, moveArrow },
         });
       }
     );
@@ -101,13 +108,15 @@ function Board() {
     moveSan: string,
     isWhiteMove: boolean,
     fenAfterMove: string,
-    clickCallback: (fen: string) => void
+    moveArrow: Arrow,
+    clickCallback: ({ newFen, moveArrow }: HistoryUpdateProps) => void
   ) {
     const moveCaption = convertSanToFan(moveSan, isWhiteMove);
     const newMove = {
       fan: moveCaption,
       fen: fenAfterMove,
-      clickCallback: clickCallback,
+      moveArrow,
+      clickCallback,
     };
 
     dispatch({
@@ -146,6 +155,11 @@ function Board() {
           `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
           isWhiteTurnBeforeMove,
           "",
+          {
+            startSquare: move.from,
+            endSquare: move.to,
+            color: "green",
+          },
           () => {}
         );
       }
@@ -161,10 +175,15 @@ function Board() {
           move.san,
           isWhiteTurnBeforeMove,
           move.after,
-          (newFen) => {
+          {
+            startSquare: move.from,
+            endSquare: move.to,
+            color: "green",
+          },
+          ({ newFen, moveArrow }: HistoryUpdateProps) => {
             dispatch({
               type: GameActionType.gotoPosition,
-              value: newFen,
+              value: { newFen, moveArrow },
             });
           }
         );

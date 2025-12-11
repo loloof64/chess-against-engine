@@ -27,6 +27,11 @@ interface Game {
   lastMoveArrow?: Arrow;
 }
 
+export interface HistoryUpdateProps {
+  newFen: string;
+  moveArrow: Arrow;
+}
+
 const GameContext = createContext<Game>(null as any);
 const GameDispatchContext = createContext<React.Dispatch<GameAction>>(
   null as any
@@ -98,6 +103,7 @@ function gameReducer(game: Game, action: GameAction): Game {
       };
       return {
         ...game,
+        boardKey: generateKey(),
         positionFen: gameLogic.fen(),
         lastMoveArrow: arrow,
       };
@@ -118,7 +124,8 @@ function gameReducer(game: Game, action: GameAction): Game {
       return {
         ...game,
         boardKey: generateKey(),
-        positionFen: action.value,
+        positionFen: action.value.newFen,
+        lastMoveArrow: action.value.moveArrow,
       };
     default:
       throw Error("Unknown action: " + action.type);

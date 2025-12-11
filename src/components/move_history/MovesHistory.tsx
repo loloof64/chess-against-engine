@@ -15,6 +15,7 @@ function MovesHistory({ moves }: MovesHistoryProps) {
             <MoveHistoryNode
               fan={nodeDef.fan}
               fen={nodeDef.fen}
+              moveArrow={nodeDef.moveArrow}
               clickCallback={nodeDef.clickCallback}
             />
           }
