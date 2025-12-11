@@ -28,8 +28,8 @@ function Board() {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
 
-  function showGameOverNotification() {
-    const gameLogic = new Chess(positionFen);
+  function showGameOverNotification(fenAfterMove: string) {
+    const gameLogic = new Chess(fenAfterMove);
     let message: string;
     if (gameLogic.isCheckmate()) {
       const whiteWon = gameLogic.turn() !== "w";
@@ -48,14 +48,14 @@ function Board() {
     setIsMessageDialogOpen(true);
   }
 
-  function checkGameOverAndEventualyNotify() {
-    const gameLogic = new Chess(positionFen);
+  function checkGameOverAndEventualyNotify(fenAfterMove: string) {
+    const gameLogic = new Chess(fenAfterMove);
     const isGameOver = gameLogic.isGameOver();
     if (isGameOver) {
       dispatch({
         type: GameActionType.stopGame,
       });
-      showGameOverNotification();
+      showGameOverNotification(fenAfterMove);
     }
   }
 
@@ -80,7 +80,7 @@ function Board() {
       moveToCommitResult.after,
       (fen) => console.log(fen)
     );
-    checkGameOverAndEventualyNotify();
+    checkGameOverAndEventualyNotify(moveToCommitResult.after);
   }
 
   function handlePromotionDialogStatusChange(newState: boolean) {
@@ -121,7 +121,7 @@ function Board() {
   function handlePieceDrop({
     sourceSquare,
     targetSquare,
-  }: PieceDropHandlerArgs) {
+  }: PieceDropHandlerArgs): boolean {
     const chessLogic = new Chess(positionFen);
     const move = chessLogic.move({
       from: sourceSquare,
@@ -154,7 +154,7 @@ function Board() {
         addHistoryMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
           console.log(fen)
         );
-        checkGameOverAndEventualyNotify();
+        checkGameOverAndEventualyNotify(move.after);
         return true;
       }
     }
@@ -169,6 +169,7 @@ function Board() {
           onPieceDrop: handlePieceDrop,
           canDragPiece: handleCanDragPiece,
           position: positionFen,
+          showAnimations: true,
         }}
       />
 
