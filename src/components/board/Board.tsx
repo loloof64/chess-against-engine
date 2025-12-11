@@ -90,6 +90,10 @@ function Board() {
           type: GameActionType.gotoPosition,
           value: historyIndex,
         });
+        dispatch({
+          type: GameActionType.setHistoryIndex,
+          value: historyIndex,
+        });
       }
     );
     checkGameOverAndEventualyNotify(moveToCommitResult.after);
@@ -182,6 +186,10 @@ function Board() {
           (historyIndex: number) => {
             dispatch({
               type: GameActionType.gotoPosition,
+              value: historyIndex,
+            });
+            dispatch({
+              type: GameActionType.setHistoryIndex,
               value: historyIndex,
             });
           }
