@@ -18,8 +18,14 @@ import { useState } from "react";
 import MessageDialog from "./MessageDialog";
 
 function Board() {
-  const { historyMoves, positionFen, inProgress, boardKey, lastMoveArrow } =
-    useGame();
+  const {
+    historyMoves,
+    positionFen,
+    inProgress,
+    boardKey,
+    boardOrientation,
+    lastMoveArrow,
+  } = useGame();
   const dispatch = useGameDispatch();
 
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
@@ -208,6 +214,7 @@ function Board() {
         options={{
           onPieceDrop: handlePieceDrop,
           canDragPiece: handleCanDragPiece,
+          boardOrientation,
           position: positionFen,
           showAnimations: true,
           arrows: lastMoveArrow ? [lastMoveArrow] : [],

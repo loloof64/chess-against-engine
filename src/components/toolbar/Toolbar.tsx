@@ -18,21 +18,23 @@ function Toolbar() {
   }
 
   function stopGame() {
-    ////////////
-    console.log("game stopped");
-    /////////////
     dispatch({
       type: GameActionType.stopGame,
     });
   }
 
+  function reverseBoard() {
+    dispatch({
+      type: GameActionType.reverseBoard,
+    });
+  }
+
   return (
     <div className="toolbar">
-      <ul>
-        <li onClick={startNewDefaultGame}>New game</li>
-        <li onClick={startNewCustomGame}>New custom game</li>
-        <li onClick={stopGame}>Stop game</li>
-      </ul>
+      <button onClick={startNewDefaultGame}>New game</button>
+      <button onClick={startNewCustomGame}>New custom game</button>
+      <button onClick={stopGame}>Stop game</button>
+      <button onClick={reverseBoard}>Reverse board</button>
     </div>
   );
 }

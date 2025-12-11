@@ -1,4 +1,4 @@
-import { Chess, Color, Move } from "chess.js";
+import { Chess, Move } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
 import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
@@ -12,7 +12,10 @@ export enum GameActionType {
   stopGame,
   gotoPositionIndex,
   setHistoryIndex,
+  reverseBoard,
 }
+
+type BoardOrientation = "white" | "black" | undefined;
 
 interface GameAction {
   type: GameActionType;
@@ -22,7 +25,7 @@ interface GameAction {
 interface Game {
   boardKey: string;
   positionFen: string;
-  boardOrientation: Color;
+  boardOrientation: BoardOrientation;
   historyMoves: Array<MoveHistoryNodeProps>;
   inProgress: boolean;
   lastMoveArrow?: Arrow;
@@ -43,7 +46,7 @@ const initialGame: Game = {
   boardKey: generateKey(),
   positionFen: EMPTY_POSITION,
   firstPosition: EMPTY_POSITION,
-  boardOrientation: "w",
+  boardOrientation: "white",
   historyMoves: [],
   inProgress: false,
   lastMoveArrow: undefined,
@@ -77,7 +80,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardKey: generateKey(),
         positionFen: DEFAULT_POSITION,
         firstPosition: DEFAULT_POSITION,
-        boardOrientation: "w",
+        boardOrientation: "white",
         historyMoves: [],
         inProgress: true,
         lastMoveArrow: undefined,
@@ -85,7 +88,8 @@ function gameReducer(game: Game, action: GameAction): Game {
       };
     case GameActionType.startNewGame:
       const newPosition = action.value;
-      const newOrientation = newPosition.split(" ")[1] === "b" ? "b" : "w";
+      const newOrientation =
+        newPosition.split(" ")[1] === "b" ? "black" : "white";
       return {
         boardKey: generateKey(),
         positionFen: newPosition,
@@ -154,6 +158,13 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardKey: generateKey(),
         historyIndex: action.value,
       };
+    case GameActionType.reverseBoard: {
+      return {
+        ...game,
+        boardKey: generateKey(),
+        boardOrientation: game.boardOrientation === "black" ? "white" : "black",
+      };
+    }
     default:
       throw Error("Unknown action: " + action.type);
   }
