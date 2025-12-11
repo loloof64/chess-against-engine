@@ -1,7 +1,8 @@
-import { Chess, Color } from "chess.js";
+import { Chess, Color, Move } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
 import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
+import { Arrow } from "react-chessboard";
 
 export enum GameActionType {
   startNewDefaultGame,
@@ -23,6 +24,7 @@ interface Game {
   boardOrientation: Color;
   historyMoves: Array<MoveHistoryNodeProps>;
   inProgress: boolean;
+  lastMoveArrow?: Arrow;
 }
 
 const GameContext = createContext<Game>(null as any);
@@ -40,6 +42,7 @@ const initialGame: Game = {
   boardOrientation: "w",
   historyMoves: [],
   inProgress: false,
+  lastMoveArrow: undefined,
 };
 
 export function useGame() {
@@ -71,6 +74,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardOrientation: "w",
         historyMoves: [],
         inProgress: true,
+        lastMoveArrow: undefined,
       };
     case GameActionType.startNewGame:
       const newPosition = action.value;
@@ -81,14 +85,21 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardOrientation: newOrientation,
         historyMoves: [],
         inProgress: true,
+        lastMoveArrow: undefined,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);
-      const moveToDo = action.value;
+      const moveToDo: Move = action.value;
       gameLogic.move(moveToDo);
+      const arrow = {
+        startSquare: moveToDo.from,
+        endSquare: moveToDo.to,
+        color: "red",
+      };
       return {
         ...game,
         positionFen: gameLogic.fen(),
+        lastMoveArrow: arrow,
       };
     case GameActionType.appendHistoryMove:
       const move = action.value;
