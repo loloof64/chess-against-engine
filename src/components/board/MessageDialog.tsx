@@ -1,4 +1,4 @@
-import { Dialog } from "radix-ui";
+import { Dialog, VisuallyHidden } from "radix-ui";
 import "./MessageDialog.css";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
@@ -14,6 +14,12 @@ function MessageDialog({ isOpen, onOpenChange, message }: MessageDialogParams) {
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
+          <VisuallyHidden.Root>
+            <Dialog.Title>Simple message dialog</Dialog.Title>
+          </VisuallyHidden.Root>
+          <VisuallyHidden.Root>
+            <Dialog.Description>A simple message dialog.</Dialog.Description>
+          </VisuallyHidden.Root>
           <span className="messageZone">{message}</span>
           <Dialog.Close asChild>
             <button className="IconButton" aria-label="Close">

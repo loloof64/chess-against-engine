@@ -1,5 +1,5 @@
 import "./PromotionDialog.css";
-import { Dialog } from "radix-ui";
+import { Dialog, VisuallyHidden } from "radix-ui";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
 interface PromotionDialogParams {
@@ -20,6 +20,14 @@ function PromotionDialog({
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
+          <VisuallyHidden.Root asChild>
+            <Dialog.Title>Promotion choice</Dialog.Title>
+          </VisuallyHidden.Root>
+          <VisuallyHidden.Root asChild>
+            <Dialog.Description>
+              Choose your promotion piece.
+            </Dialog.Description>
+          </VisuallyHidden.Root>
           <fieldset className="Fieldset">
             <button className="dlgButton" onClick={() => onSelection("q")}>
               {whiteTurn ? "♕" : "♛"}
