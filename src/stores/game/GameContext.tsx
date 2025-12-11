@@ -9,6 +9,7 @@ export enum GameActionType {
   makeMove,
   appendHistoryMove,
   stopGame,
+  gotoPosition,
 }
 
 interface GameAction {
@@ -100,6 +101,13 @@ function gameReducer(game: Game, action: GameAction): Game {
       return {
         ...game,
         inProgress: false,
+      };
+    case GameActionType.gotoPosition:
+      if (game.inProgress) return game;
+      return {
+        ...game,
+        boardKey: generateKey(),
+        positionFen: action.value,
       };
     default:
       throw Error("Unknown action: " + action.type);

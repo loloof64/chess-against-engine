@@ -78,7 +78,12 @@ function Board() {
       moveToCommitResult.san,
       isWhiteTurnBeforeMove,
       moveToCommitResult.after,
-      (fen) => console.log(fen)
+      (newFen) => {
+        dispatch({
+          type: GameActionType.gotoPosition,
+          value: newFen,
+        });
+      }
     );
     checkGameOverAndEventualyNotify(moveToCommitResult.after);
   }
@@ -151,8 +156,16 @@ function Board() {
           type: GameActionType.makeMove,
           value: move,
         });
-        addHistoryMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
-          console.log(fen)
+        addHistoryMove(
+          move.san,
+          isWhiteTurnBeforeMove,
+          move.after,
+          (newFen) => {
+            dispatch({
+              type: GameActionType.gotoPosition,
+              value: newFen,
+            });
+          }
         );
         checkGameOverAndEventualyNotify(move.after);
         return true;
