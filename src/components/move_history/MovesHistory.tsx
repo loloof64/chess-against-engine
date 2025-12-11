@@ -12,25 +12,65 @@ interface MovesHistoryProps {
   firstPosition: string;
 }
 
-function MovesHistory({ moves, firstPosition }: MovesHistoryProps) {
+function MovesHistory({ moves }: MovesHistoryProps) {
   const { historyIndex } = useGame();
   const dispatch = useGameDispatch();
 
   function gotoFirstPosition() {
     dispatch({
-      type: GameActionType.gotoPosition,
-      value: {
-        newFen: firstPosition,
-        moveArrow: undefined,
-      },
+      type: GameActionType.gotoPositionIndex,
+      value: -1,
     });
   }
 
-  function gotoPreviousMove() {}
+  function gotoPreviousMove() {
+    const previousIndex = findPreviousIndex();
+    dispatch({
+      type: GameActionType.gotoPositionIndex,
+      value: previousIndex,
+    });
+  }
 
-  function gotoNextMove() {}
+  function gotoNextMove() {
+    const nextIndex = findNextIndex();
+    dispatch({
+      type: GameActionType.gotoPositionIndex,
+      value: nextIndex,
+    });
+  }
 
-  function gotoLastPosition() {}
+  function gotoLastPosition() {
+    dispatch({
+      type: GameActionType.gotoPositionIndex,
+      value: moves.length - 1,
+    });
+  }
+
+  function findPreviousIndex(): number {
+    let previousIndex = historyIndex ?? -1;
+    if (previousIndex <= -1) return -1;
+    do {
+      previousIndex--;
+      if (previousIndex < 0) break;
+      const currentNode = moves[previousIndex];
+      const isMoveNode = currentNode.fen !== "";
+      if (isMoveNode) break;
+    } while (true);
+    return previousIndex;
+  }
+
+  function findNextIndex(): number {
+    let nextIndex = historyIndex ?? -1;
+    if (nextIndex >= moves.length - 1) return moves.length - 1;
+    if (nextIndex < -1) nextIndex = -1;
+    do {
+      nextIndex++;
+      const currentNode = moves[nextIndex];
+      const isMoveNode = currentNode.fen !== "";
+      if (isMoveNode) break;
+    } while (true);
+    return nextIndex;
+  }
 
   return (
     <div className="history">

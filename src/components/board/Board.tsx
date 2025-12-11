@@ -87,7 +87,7 @@ function Board() {
       },
       (historyIndex) => {
         dispatch({
-          type: GameActionType.gotoPosition,
+          type: GameActionType.gotoPositionIndex,
           value: historyIndex,
         });
         dispatch({
@@ -185,7 +185,7 @@ function Board() {
           },
           (historyIndex: number) => {
             dispatch({
-              type: GameActionType.gotoPosition,
+              type: GameActionType.gotoPositionIndex,
               value: historyIndex,
             });
             dispatch({

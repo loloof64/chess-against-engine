@@ -10,7 +10,7 @@ export enum GameActionType {
   makeMove,
   appendHistoryMove,
   stopGame,
-  gotoPosition,
+  gotoPositionIndex,
   setHistoryIndex,
 }
 
@@ -124,14 +124,15 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         inProgress: false,
       };
-    case GameActionType.gotoPosition:
+    case GameActionType.gotoPositionIndex:
       if (game.inProgress) return game;
 
       const index: number = action.value;
+
       let newFen: string;
       let moveArrow: Arrow | undefined;
 
-      if (index < 0) {
+      if (index < 1) {
         newFen = game.firstPosition;
         moveArrow = undefined;
       } else {
@@ -144,6 +145,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardKey: generateKey(),
         positionFen: newFen,
         lastMoveArrow: moveArrow,
+        historyIndex: index,
       };
     case GameActionType.setHistoryIndex:
       if (game.inProgress) return game;
