@@ -1,28 +1,26 @@
 import "./Board.css";
 
 import {
-  ChessGame,
-  useChessGameContext,
-} from "@react-chess-tools/react-chess-game";
-import { PieceDropHandlerArgs } from "react-chessboard";
+  PieceDropHandlerArgs,
+  Chessboard,
+  PieceHandlerArgs,
+} from "react-chessboard";
 import convertSanToFan from "../../core/sanConversion";
 import { Chess, Move } from "chess.js";
 import {
-  EMPTY_POSITION,
   GameActionType,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "./PromotionDialog";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MessageDialog from "./MessageDialog";
 
 function Board() {
-  const { historyMoves } = useGame();
+  const { historyMoves, positionFen, inProgress, boardKey } = useGame();
   const dispatch = useGameDispatch();
-  const gameCtx = useChessGameContext();
 
-  const isWhiteTurn = gameCtx.currentFen.split(" ")[1] !== "b";
+  const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
   const [pendingPromotionMove, setPendingPromotionMove] = useState<
     Move | undefined
@@ -30,22 +28,18 @@ function Board() {
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
 
-  useEffect(() => {
-    const isNotEmptyPosition = gameCtx.currentFen !== EMPTY_POSITION;
-    if (isNotEmptyPosition) checkGameOverAndEventualyNotify();
-  }, [gameCtx.currentFen, gameCtx.info.isGameOver]);
-
   function showGameOverNotification() {
+    const gameLogic = new Chess(positionFen);
     let message: string;
-    if (gameCtx.info.isCheckmate) {
-      const whiteWon = gameCtx.info.turn !== "w";
+    if (gameLogic.isCheckmate()) {
+      const whiteWon = gameLogic.turn() !== "w";
       const winnerLabel = whiteWon ? "White" : "Black";
       message = `${winnerLabel} has won by checkmate.`;
-    } else if (gameCtx.info.isStalemate) {
+    } else if (gameLogic.isStalemate()) {
       message = `Draw by stalemate.`;
-    } else if (gameCtx.info.isInsufficientMaterial) {
+    } else if (gameLogic.isInsufficientMaterial()) {
       message = `Draw by insufficient material.`;
-    } else if (gameCtx.info.isThreefoldRepetition) {
+    } else if (gameLogic.isThreefoldRepetition()) {
       message = `Draw by three-fold repetition`;
     } else {
       message = `Draw by the fifty moves rule.`;
@@ -55,7 +49,8 @@ function Board() {
   }
 
   function checkGameOverAndEventualyNotify() {
-    const isGameOver = gameCtx.info.isGameOver;
+    const gameLogic = new Chess(positionFen);
+    const isGameOver = gameLogic.isGameOver();
     if (isGameOver) {
       dispatch({
         type: GameActionType.stopGame,
@@ -66,20 +61,26 @@ function Board() {
 
   function commitPromotion(piece: string) {
     setIsPromotionDialogOpen(false);
-    const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
-    const chessLogic = new Chess(gameCtx.currentFen);
-    const moveToCommit = chessLogic.move({
+    const turn = positionFen.split(" ")[1];
+    const isWhiteTurnBeforeMove = turn == "w";
+    const chessLogic = new Chess(positionFen);
+    const moveToCommit = {
       from: pendingPromotionMove?.from ?? "a1",
       to: pendingPromotionMove?.to ?? "a1",
       promotion: piece,
+    };
+    const moveToCommitResult = chessLogic.move(moveToCommit);
+    dispatch({
+      type: GameActionType.makeMove,
+      value: moveToCommit,
     });
-    gameCtx.methods.makeMove(moveToCommit);
     addHistoryMove(
-      moveToCommit.san,
+      moveToCommitResult.san,
       isWhiteTurnBeforeMove,
-      moveToCommit.after,
+      moveToCommitResult.after,
       (fen) => console.log(fen)
     );
+    checkGameOverAndEventualyNotify();
   }
 
   function handlePromotionDialogStatusChange(newState: boolean) {
@@ -109,20 +110,29 @@ function Board() {
     });
   }
 
+  function handleCanDragPiece({ piece }: PieceHandlerArgs): boolean {
+    if (!inProgress) return false;
+    const pieceType = piece.pieceType[0];
+    if (pieceType.length === 0) return false;
+    const playerTurn = new Chess(positionFen).turn();
+    return playerTurn === pieceType;
+  }
+
   function handlePieceDrop({
     sourceSquare,
     targetSquare,
   }: PieceDropHandlerArgs) {
-    const chessLogic = new Chess(gameCtx.currentFen);
+    const chessLogic = new Chess(positionFen);
     const move = chessLogic.move({
       from: sourceSquare,
       to: targetSquare ?? sourceSquare,
       promotion: "q",
     });
     if (move) {
-      const isWhiteTurnBeforeMove = gameCtx.info.turn == "w";
+      const turn = positionFen.split(" ")[1];
+      const isWhiteTurnBeforeMove = turn == "w";
       const isPromotionMove = move.isPromotion();
-      const moveNumber = parseInt(gameCtx.currentFen.split(" ")[5]);
+      const moveNumber = parseInt(positionFen.split(" ")[5]);
       const weShouldAddHistoryMoveNumber =
         isWhiteTurnBeforeMove || historyMoves.length === 0;
       if (weShouldAddHistoryMoveNumber) {
@@ -137,10 +147,14 @@ function Board() {
         setPendingPromotionMove(move);
         setIsPromotionDialogOpen(true);
       } else {
-        gameCtx.methods.makeMove(move);
+        dispatch({
+          type: GameActionType.makeMove,
+          value: move,
+        });
         addHistoryMove(move.san, isWhiteTurnBeforeMove, move.after, (fen) =>
           console.log(fen)
         );
+        checkGameOverAndEventualyNotify();
         return true;
       }
     }
@@ -149,12 +163,15 @@ function Board() {
 
   return (
     <>
-      <ChessGame.Board
+      <Chessboard
+        key={boardKey}
         options={{
           onPieceDrop: handlePieceDrop,
+          canDragPiece: handleCanDragPiece,
+          position: positionFen,
         }}
       />
-      <ChessGame.Sounds />
+
       <PromotionDialog
         whiteTurn={isWhiteTurn}
         isOpen={isPromotionDialogOpen}

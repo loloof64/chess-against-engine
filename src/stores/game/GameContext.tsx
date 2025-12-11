@@ -1,4 +1,4 @@
-import { Color } from "chess.js";
+import { Chess, Color } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
 import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
@@ -6,6 +6,7 @@ import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryN
 export enum GameActionType {
   startNewDefaultGame,
   startNewGame,
+  makeMove,
   appendHistoryMove,
   stopGame,
 }
@@ -80,10 +81,19 @@ function gameReducer(game: Game, action: GameAction): Game {
         historyMoves: [],
         inProgress: true,
       };
+    case GameActionType.makeMove:
+      const gameLogic = new Chess(game.positionFen);
+      const moveToDo = action.value;
+      gameLogic.move(moveToDo);
+      return {
+        ...game,
+        positionFen: gameLogic.fen(),
+      };
     case GameActionType.appendHistoryMove:
       const move = action.value;
       return {
         ...game,
+        boardKey: generateKey(),
         historyMoves: [...game.historyMoves, move],
       };
     case GameActionType.stopGame:
