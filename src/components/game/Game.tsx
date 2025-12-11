@@ -5,14 +5,12 @@ import Board from "../board/Board";
 import { useGame } from "../../stores/game/GameContext";
 
 function Game() {
-  const { inProgress, historyMoves } = useGame();
+  const { historyMoves } = useGame();
 
   return (
     <div className="game">
-      <div className={`board-wrapper ${inProgress ? "" : "locked"}`}>
-        <div className="board">
-          <Board />
-        </div>
+      <div className="board">
+        <Board />
       </div>
       <MovesHistory moves={historyMoves} />
     </div>
