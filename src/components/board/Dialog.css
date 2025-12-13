@@ -78,6 +78,27 @@
   background-color: var(--gray-3);
 }
 
+.messageZone {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.answerButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 20px;
+}
+
+.answerButtons button {
+  margin: 0 8px;
+}
+
 @keyframes overlayShow {
   from {
     opacity: 0;

@@ -18,9 +18,22 @@
         "title": "Diálogo de mensaje simple.",
         "description": "Un diálogo de mensaje simple."
       },
+      "confirmationDialog": {
+        "title": "Diálogo de confirmación simple.",
+        "description": "Un diálogo de confirmación simple.",
+        "buttons": {
+          "cancel": "Anular",
+          "confirm": "De acuerdo"
+        }
+      },
       "promotionDialog": {
         "title": "Elección de promoción.",
         "description": "Elige tu pieza de promoción."
+      }
+    },
+    "toolbar": {
+      "confirmNewGame": {
+        "message": "¿Quieres empezar una nueva partida y abandonar la actual?"
       }
     }
   }

@@ -1,17 +1,47 @@
 import "./Toolbar.css";
-import { GameActionType, useGameDispatch } from "../../stores/game/GameContext";
+import {
+  EMPTY_POSITION,
+  GameActionType,
+  useGame,
+  useGameDispatch,
+} from "../../stores/game/GameContext";
 
 import StartGameImg from "./icons/start.svg";
 import StopGameImg from "./icons/stop.svg";
 import ReverseBoardImg from "./icons/reverse.svg";
+import { useState } from "react";
+import ConfirmationDialog from "../board/ConfirmationDialog";
+import { t } from "i18next";
 
 function Toolbar() {
+  const { positionFen } = useGame();
   const dispatch = useGameDispatch();
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [confirmDialogMessage, setConfirmDialogMessage] = useState("");
 
-  function startNewDefaultGame() {
+  function handleConfirmationDialogStatusChange() {}
+
+  function handleConfirmDialogValidated() {
+    setIsConfirmDialogOpen(false);
     dispatch({
       type: GameActionType.startNewDefaultGame,
     });
+  }
+
+  function handleConfirmDialogCancelled() {
+    setIsConfirmDialogOpen(false);
+  }
+
+  function startNewDefaultGame() {
+    const noGameStarted = positionFen === EMPTY_POSITION;
+    if (noGameStarted) {
+      dispatch({
+        type: GameActionType.startNewDefaultGame,
+      });
+    } else {
+      setConfirmDialogMessage(t("toolbar.confirmNewGame.message"));
+      setIsConfirmDialogOpen(true);
+    }
   }
 
   function stopGame() {
@@ -37,6 +67,13 @@ function Toolbar() {
       <button onClick={reverseBoard}>
         <img src={ReverseBoardImg}></img>
       </button>
+      <ConfirmationDialog
+        isOpen={isConfirmDialogOpen}
+        message={confirmDialogMessage}
+        onConfirmCb={handleConfirmDialogValidated}
+        onCancelCb={handleConfirmDialogCancelled}
+        onOpenChange={handleConfirmationDialogStatusChange}
+      />
     </div>
   );
 }

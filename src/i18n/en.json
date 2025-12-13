@@ -18,9 +18,22 @@
         "title": "Simple message dialog.",
         "description": "A simple message dialog."
       },
+      "confirmationDialog": {
+        "title": "Simple confirmation dialog.",
+        "description": "A simple confirmation dialog.",
+        "buttons": {
+          "cancel": "Cancel",
+          "confirm": "Ok"
+        }
+      },
       "promotionDialog": {
         "title": "Promotion choice.",
         "description": "Choose your promotion piece."
+      }
+    },
+    "toolbar": {
+      "confirmNewGame": {
+        "message": "Do you want to start a new game and leave the current one ?"
       }
     }
   }

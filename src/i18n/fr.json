@@ -18,9 +18,22 @@
         "title": "Boîte de dialogue simple.",
         "description": "Une boîte de dialogue simple."
       },
+      "confirmationDialog": {
+        "title": "Boîte de dialogue confirmation.",
+        "description": "Une boîte de dialogue confirmation.",
+        "buttons": {
+          "cancel": "Annuler",
+          "confirm": "Ok"
+        }
+      },
       "promotionDialog": {
         "title": "Choix de la promotion.",
         "description": "Choisissez votre pièce de promotion."
+      }
+    },
+    "toolbar": {
+      "confirmNewGame": {
+        "message": "Voulez-vous commencer une nouvelle partie et quitter la partie en cours ?"
       }
     }
   }
