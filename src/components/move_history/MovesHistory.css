@@ -20,6 +20,10 @@
   border: 1px solid transparent;
 }
 
+.history-buttons button {
+  font-size: larger;
+}
+
 .history-moves {
   display: flex;
   flex-direction: row;
