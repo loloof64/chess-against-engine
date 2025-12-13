@@ -1,23 +1,22 @@
-import { Dialog, VisuallyHidden } from "radix-ui";
-import "./Dialog.css";
-import { Cross2Icon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
+import "./CustomPositionDialog.css";
+import { Dialog, VisuallyHidden } from "radix-ui";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import ChessPositionEditor from "../position_editor/ChessPositionEditor";
 
-interface ConfirmationDialogParams {
+interface CustomPositionDialogParams {
   isOpen: boolean;
-  message: string;
   onOpenChange: (newState: boolean) => void;
   onConfirmCb: () => void;
   onCancelCb: () => void;
 }
 
-function ConfirmationDialog({
+function CustomPositionDialog({
   isOpen,
   onOpenChange,
-  onCancelCb,
   onConfirmCb,
-  message,
-}: ConfirmationDialogParams) {
+  onCancelCb,
+}: CustomPositionDialogParams) {
   const { t } = useTranslation();
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -25,20 +24,20 @@ function ConfirmationDialog({
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
           <VisuallyHidden.Root>
-            <Dialog.Title>{t("board.confirmationDialog.title")}</Dialog.Title>
+            <Dialog.Title>{t("dialogs.messageDialog.title")}</Dialog.Title>
           </VisuallyHidden.Root>
           <VisuallyHidden.Root>
             <Dialog.Description>
-              {t("board.confirmationDialog.description")}
+              {t("dialogs.messageDialog.description")}
             </Dialog.Description>
           </VisuallyHidden.Root>
-          <span className="messageZone">{message}</span>
+          <ChessPositionEditor />
           <div className="answerButtons">
             <button onClick={onCancelCb}>
-              {t("board.confirmationDialog.buttons.cancel")}
+              {t("dialogs.confirmationDialog.buttons.cancel")}
             </button>
             <button onClick={onConfirmCb}>
-              {t("board.confirmationDialog.buttons.confirm")}
+              {t("dialogs.confirmationDialog.buttons.confirm")}
             </button>
           </div>
           <Dialog.Close asChild>
@@ -52,4 +51,4 @@ function ConfirmationDialog({
   );
 }
 
-export default ConfirmationDialog;
+export default CustomPositionDialog;

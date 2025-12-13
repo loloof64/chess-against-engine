@@ -13,9 +13,9 @@ import {
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
-import PromotionDialog from "./PromotionDialog";
+import PromotionDialog from "../dialogs/PromotionDialog";
 import { useState } from "react";
-import MessageDialog from "./MessageDialog";
+import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 
 function Board() {

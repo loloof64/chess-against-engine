@@ -3,13 +3,21 @@ import "./Dialog.css";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
 
-interface MessageDialogParams {
+interface ConfirmationDialogParams {
   isOpen: boolean;
   message: string;
   onOpenChange: (newState: boolean) => void;
+  onConfirmCb: () => void;
+  onCancelCb: () => void;
 }
 
-function MessageDialog({ isOpen, onOpenChange, message }: MessageDialogParams) {
+function ConfirmationDialog({
+  isOpen,
+  onOpenChange,
+  onCancelCb,
+  onConfirmCb,
+  message,
+}: ConfirmationDialogParams) {
   const { t } = useTranslation();
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -17,14 +25,22 @@ function MessageDialog({ isOpen, onOpenChange, message }: MessageDialogParams) {
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
           <VisuallyHidden.Root>
-            <Dialog.Title>{t("board.messageDialog.title")}</Dialog.Title>
+            <Dialog.Title>{t("dialogs.confirmationDialog.title")}</Dialog.Title>
           </VisuallyHidden.Root>
           <VisuallyHidden.Root>
             <Dialog.Description>
-              {t("board.messageDialog.description")}
+              {t("dialogs.confirmationDialog.description")}
             </Dialog.Description>
           </VisuallyHidden.Root>
           <span className="messageZone">{message}</span>
+          <div className="answerButtons">
+            <button onClick={onCancelCb}>
+              {t("dialogs.confirmationDialog.buttons.cancel")}
+            </button>
+            <button onClick={onConfirmCb}>
+              {t("dialogs.confirmationDialog.buttons.confirm")}
+            </button>
+          </div>
           <Dialog.Close asChild>
             <button className="IconButton" aria-label="Close">
               <Cross2Icon />
@@ -36,4 +52,4 @@ function MessageDialog({ isOpen, onOpenChange, message }: MessageDialogParams) {
   );
 }
 
-export default MessageDialog;
+export default ConfirmationDialog;

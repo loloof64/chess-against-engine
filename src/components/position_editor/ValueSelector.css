@@ -1,0 +1,49 @@
+.valueSelector {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+}
+
+.valueSelector .preview {
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.valueSelector .buttons {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid red;
+  width: fit-content;
+  height: fit-content;
+}
+
+.valueSelector .buttons .buttonsLine {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+}
+
+.valueSelector .buttons button {
+  width: 25px;
+  height: 25px;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.valueSelector button img {
+  width: 100%;
+  height: 100%;
+}
+
+.valueSelector .buttons button.white-bg {
+  background-color: white;
+}
+
+.valueSelector .buttons button.black-bg {
+  background-color: black;
+}

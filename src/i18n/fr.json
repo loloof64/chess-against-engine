@@ -1,19 +1,6 @@
 {
   "translation": {
-    "board": {
-      "component": {
-        "playerSide": {
-          "white": "Les Blancs",
-          "black": "Les Noirs"
-        },
-        "gameEnd": {
-          "checkmate": "{{side}} ont gagné par échec et mat.",
-          "stalemate": "Partie nulle par pat.",
-          "insufficientMaterial": "Partie nulle par matériel insuffisant.",
-          "threeFoldRepetition": "Partie nulle par triple répétition.",
-          "fiftyMovesRule": "Partie nulle par la règle des cinquante coups."
-        }
-      },
+    "dialogs": {
       "messageDialog": {
         "title": "Boîte de dialogue simple.",
         "description": "Une boîte de dialogue simple."
@@ -29,6 +16,21 @@
       "promotionDialog": {
         "title": "Choix de la promotion.",
         "description": "Choisissez votre pièce de promotion."
+      }
+    },
+    "board": {
+      "component": {
+        "playerSide": {
+          "white": "Les Blancs",
+          "black": "Les Noirs"
+        },
+        "gameEnd": {
+          "checkmate": "{{side}} ont gagné par échec et mat.",
+          "stalemate": "Partie nulle par pat.",
+          "insufficientMaterial": "Partie nulle par matériel insuffisant.",
+          "threeFoldRepetition": "Partie nulle par triple répétition.",
+          "fiftyMovesRule": "Partie nulle par la règle des cinquante coups."
+        }
       }
     },
     "toolbar": {

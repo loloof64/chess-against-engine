@@ -23,11 +23,11 @@ function PromotionDialog({
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
           <VisuallyHidden.Root asChild>
-            <Dialog.Title>{t("board.promotionDialog.title")}</Dialog.Title>
+            <Dialog.Title>{t("dialogs.promotionDialog.title")}</Dialog.Title>
           </VisuallyHidden.Root>
           <VisuallyHidden.Root asChild>
             <Dialog.Description>
-              {t("board.promotionDialog.description")}
+              {t("dialogs.promotionDialog.description")}
             </Dialog.Description>
           </VisuallyHidden.Root>
           <fieldset className="Fieldset">

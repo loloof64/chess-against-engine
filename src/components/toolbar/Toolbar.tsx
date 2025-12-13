@@ -10,9 +10,10 @@ import StartGameImg from "./icons/start.svg";
 import StopGameImg from "./icons/stop.svg";
 import ReverseBoardImg from "./icons/reverse.svg";
 import { useState } from "react";
-import ConfirmationDialog from "../board/ConfirmationDialog";
+import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import { t } from "i18next";
-import MessageDialog from "../board/MessageDialog";
+import MessageDialog from "../dialogs/MessageDialog";
+import CustomPositionDialog from "../dialogs/CustomPositionDialog";
 
 function Toolbar() {
   const { positionFen } = useGame();
@@ -28,15 +29,16 @@ function Toolbar() {
   const [isGameStoppedDialogOpen, setIsGameStoppedDialogOpen] = useState(false);
   const [gameStoppedDialogMessage, setGameStoppedDialogMessage] = useState("");
 
+  const [isCustomPositionDialogOpen, setIsCustomPositionDialogOpen] =
+    useState(false);
+
   function handleNewGameConfirmationDialogStatusChange(newState: boolean) {
     setIsConfirmNewGameDialogOpen(newState);
   }
 
   function handleNewGameConfirmDialogValidated() {
     setIsConfirmNewGameDialogOpen(false);
-    dispatch({
-      type: GameActionType.startNewDefaultGame,
-    });
+    setIsCustomPositionDialogOpen(true);
   }
 
   function handleNewGameConfirmDialogCancelled() {
@@ -65,12 +67,25 @@ function Toolbar() {
     setIsGameStoppedDialogOpen(newState);
   }
 
+  function handleCustomPositionDialogStatusChange(newState: boolean) {
+    setIsCustomPositionDialogOpen(newState);
+  }
+
+  function handleCustomPositionDialogValidated() {
+    setIsCustomPositionDialogOpen(false);
+    dispatch({
+      type: GameActionType.startNewDefaultGame,
+    });
+  }
+
+  function handleCustomPositionDialogCancelled() {
+    setIsCustomPositionDialogOpen(false);
+  }
+
   function startNewDefaultGame() {
     const noGameStarted = positionFen === EMPTY_POSITION;
     if (noGameStarted) {
-      dispatch({
-        type: GameActionType.startNewDefaultGame,
-      });
+      setIsCustomPositionDialogOpen(true);
     } else {
       setConfirmNewGameDialogMessage(t("toolbar.confirmNewGame.message"));
       setIsConfirmNewGameDialogOpen(true);
@@ -120,6 +135,12 @@ function Toolbar() {
         isOpen={isGameStoppedDialogOpen}
         message={gameStoppedDialogMessage}
         onOpenChange={handleGameStoppedDialogStatusChange}
+      />
+      <CustomPositionDialog
+        isOpen={isCustomPositionDialogOpen}
+        onOpenChange={handleCustomPositionDialogStatusChange}
+        onConfirmCb={handleCustomPositionDialogValidated}
+        onCancelCb={handleCustomPositionDialogCancelled}
       />
     </div>
   );
