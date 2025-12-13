@@ -12,24 +12,57 @@ import ReverseBoardImg from "./icons/reverse.svg";
 import { useState } from "react";
 import ConfirmationDialog from "../board/ConfirmationDialog";
 import { t } from "i18next";
+import MessageDialog from "../board/MessageDialog";
 
 function Toolbar() {
   const { positionFen } = useGame();
   const dispatch = useGameDispatch();
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [confirmDialogMessage, setConfirmDialogMessage] = useState("");
+  const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
+    useState(false);
+  const [confirmNewGameDialogMessage, setConfirmNewGameDialogMessage] =
+    useState("");
+  const [isConfirmStopGameDialogOpen, setIsConfirmStopGameDialogOpen] =
+    useState(false);
+  const [confirmStopGameDialogMessage, setConfirmStopGameDialogMessage] =
+    useState("");
+  const [isGameStoppedDialogOpen, setIsGameStoppedDialogOpen] = useState(false);
+  const [gameStoppedDialogMessage, setGameStoppedDialogMessage] = useState("");
 
-  function handleConfirmationDialogStatusChange() {}
+  function handleNewGameConfirmationDialogStatusChange(newState: boolean) {
+    setIsConfirmNewGameDialogOpen(newState);
+  }
 
-  function handleConfirmDialogValidated() {
-    setIsConfirmDialogOpen(false);
+  function handleNewGameConfirmDialogValidated() {
+    setIsConfirmNewGameDialogOpen(false);
     dispatch({
       type: GameActionType.startNewDefaultGame,
     });
   }
 
-  function handleConfirmDialogCancelled() {
-    setIsConfirmDialogOpen(false);
+  function handleNewGameConfirmDialogCancelled() {
+    setIsConfirmNewGameDialogOpen(false);
+  }
+
+  function handleStopGameConfirmationDialogStatusChange(newState: boolean) {
+    setIsConfirmStopGameDialogOpen(newState);
+  }
+
+  function handleStopGameConfirmDialogValidated() {
+    setIsConfirmStopGameDialogOpen(false);
+    dispatch({
+      type: GameActionType.stopGame,
+    });
+
+    setGameStoppedDialogMessage(t("toolbar.gameStopped"));
+    setIsGameStoppedDialogOpen(true);
+  }
+
+  function handleStopGameConfirmDialogCancelled() {
+    setIsConfirmStopGameDialogOpen(false);
+  }
+
+  function handleGameStoppedDialogStatusChange(newState: boolean) {
+    setIsGameStoppedDialogOpen(newState);
   }
 
   function startNewDefaultGame() {
@@ -39,15 +72,17 @@ function Toolbar() {
         type: GameActionType.startNewDefaultGame,
       });
     } else {
-      setConfirmDialogMessage(t("toolbar.confirmNewGame.message"));
-      setIsConfirmDialogOpen(true);
+      setConfirmNewGameDialogMessage(t("toolbar.confirmNewGame.message"));
+      setIsConfirmNewGameDialogOpen(true);
     }
   }
 
   function stopGame() {
-    dispatch({
-      type: GameActionType.stopGame,
-    });
+    const atLeastAGameStarted = positionFen !== EMPTY_POSITION;
+    if (atLeastAGameStarted) {
+      setConfirmStopGameDialogMessage(t("toolbar.confirmStopGame.message"));
+      setIsConfirmStopGameDialogOpen(true);
+    }
   }
 
   function reverseBoard() {
@@ -68,11 +103,23 @@ function Toolbar() {
         <img src={ReverseBoardImg}></img>
       </button>
       <ConfirmationDialog
-        isOpen={isConfirmDialogOpen}
-        message={confirmDialogMessage}
-        onConfirmCb={handleConfirmDialogValidated}
-        onCancelCb={handleConfirmDialogCancelled}
-        onOpenChange={handleConfirmationDialogStatusChange}
+        isOpen={isConfirmNewGameDialogOpen}
+        message={confirmNewGameDialogMessage}
+        onConfirmCb={handleNewGameConfirmDialogValidated}
+        onCancelCb={handleNewGameConfirmDialogCancelled}
+        onOpenChange={handleNewGameConfirmationDialogStatusChange}
+      />
+      <ConfirmationDialog
+        isOpen={isConfirmStopGameDialogOpen}
+        message={confirmStopGameDialogMessage}
+        onConfirmCb={handleStopGameConfirmDialogValidated}
+        onCancelCb={handleStopGameConfirmDialogCancelled}
+        onOpenChange={handleStopGameConfirmationDialogStatusChange}
+      />
+      <MessageDialog
+        isOpen={isGameStoppedDialogOpen}
+        message={gameStoppedDialogMessage}
+        onOpenChange={handleGameStoppedDialogStatusChange}
       />
     </div>
   );

@@ -34,7 +34,11 @@
     "toolbar": {
       "confirmNewGame": {
         "message": "Do you want to start a new game and leave the current one ?"
-      }
+      },
+      "confirmStopGame": {
+        "message": "Do you want to stop current game ?"
+      },
+      "gameStopped": "Game aborted."
     }
   }
 }

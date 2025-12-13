@@ -34,7 +34,11 @@
     "toolbar": {
       "confirmNewGame": {
         "message": "Voulez-vous commencer une nouvelle partie et quitter la partie en cours ?"
-      }
+      },
+      "confirmStopGame": {
+        "message": "Voulez-vous arrêter la partie en cours ?"
+      },
+      "gameStopped": "Partie interrompue."
     }
   }
 }
