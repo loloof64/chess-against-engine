@@ -1,0 +1,27 @@
+.posEditor {
+  display: flex;
+  flex-direction: column;
+}
+
+.posEditor .container1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.posEditor .board {
+  display: block;
+  width: 200px;
+  height: 200px;
+}
+
+.posEditor .options {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 65%;
+  max-width: 500px;
+}

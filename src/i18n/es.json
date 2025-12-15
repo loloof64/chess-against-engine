@@ -16,6 +16,35 @@
       "promotionDialog": {
         "title": "Elección de promoción.",
         "description": "Elige tu pieza de promoción."
+      },
+      "positionEditor": {
+        "ariaLabel": "Pestañas del editor de posición",
+        "tabBoard": "Tablero",
+        "tabAdvanced": "Avanzado",
+        "tabButtons": "Botones",
+        "advanced": {
+          "turn": {
+            "label": "Turno",
+            "white": "Blancas",
+            "black": "Negras"
+          },
+          "castles": {
+            "label": "Enroques",
+            "whiteOO": "Blancas OO",
+            "whiteOOO": "Blancas OOO",
+            "blackOO": "Negras OO",
+            "blackOOO": "Negras OOO"
+          },
+          "enPassantFile": "Archivo de en passant",
+          "drawHalfMovesCount": "Conteo de medias jugadas para tablas",
+          "moveNumber": "Número de jugada"
+        },
+        "shortcutButtons": {
+          "resetPosition": "Posición cargada",
+          "defaultPosition": "Posición por defecto",
+          "copyPosition": "Copiar posición",
+          "pastePosition": "Pegar posición"
+        }
       }
     },
     "board": {

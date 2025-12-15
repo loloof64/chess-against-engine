@@ -15,12 +15,12 @@ import BlackRook from "./vectors/Chess_rdt45.svg";
 import BlackQueen from "./vectors/Chess_qdt45.svg";
 import BlackKing from "./vectors/Chess_kdt45.svg";
 
-enum PieceColor {
+export enum PieceColor {
   white,
   black,
 }
 
-enum PieceType {
+export enum PieceType {
   none,
   pawn,
   knight,
@@ -46,66 +46,76 @@ enum PreviewType {
   blackKing,
 }
 
-function ValueSelector() {
-  const [pieceColor, setPieceColor] = useState(PieceColor.white);
-  const [pieceType, setPieceType] = useState(PieceType.none);
+interface ValueSelectorParams {
+  selectedPieceType: PieceType;
+  selectedPieceColor: PieceColor;
+  onPieceColorSelected: (color: PieceColor) => void;
+  onPieceTypeSelected: (newType: PieceType) => void;
+}
+
+function ValueSelector({
+  selectedPieceColor,
+  selectedPieceType,
+  onPieceColorSelected,
+  onPieceTypeSelected,
+}: ValueSelectorParams) {
   const [preview, setPreview] = useState(PreviewType.TrashBin);
 
   function handleWhiteClick() {
-    setPieceColor(PieceColor.white);
+    onPieceColorSelected(PieceColor.white);
   }
 
   function handleBlackClick() {
-    setPieceColor(PieceColor.black);
+    onPieceColorSelected(PieceColor.black);
   }
 
   useEffect(() => {
     updatePreview();
-  }, [pieceColor, pieceType]);
+  }, [selectedPieceColor, selectedPieceType]);
 
   function updatePreview() {
-    switch (pieceType) {
+    switch (selectedPieceType) {
       case PieceType.none:
         setPreview(PreviewType.TrashBin);
         break;
       case PieceType.pawn:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whitePawn
             : PreviewType.blackPawn
         );
         break;
       case PieceType.knight:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whiteKnight
             : PreviewType.blackKnight
         );
         break;
       case PieceType.bishop:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whiteBishop
             : PreviewType.blackBishop
         );
         break;
       case PieceType.rook:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whiteRook
             : PreviewType.blackRook
         );
         break;
       case PieceType.queen:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whiteQueen
             : PreviewType.blackQueen
         );
         break;
       case PieceType.king:
         setPreview(
-          pieceColor === PieceColor.white
+          selectedPieceColor === PieceColor.white
             ? PreviewType.whiteKing
             : PreviewType.blackKing
         );
@@ -154,41 +164,59 @@ function ValueSelector() {
       <div className="buttons">
         <div className="buttonsLine">
           <button className="white-bg" onClick={handleWhiteClick}></button>
-          <button onClick={() => setPieceType(PieceType.pawn)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.pawn)}>
             <img
-              src={pieceColor === PieceColor.white ? WhitePawn : BlackPawn}
+              src={
+                selectedPieceColor === PieceColor.white ? WhitePawn : BlackPawn
+              }
             />
           </button>
-          <button onClick={() => setPieceType(PieceType.knight)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.knight)}>
             <img
-              src={pieceColor === PieceColor.white ? WhiteKnight : BlackKnight}
+              src={
+                selectedPieceColor === PieceColor.white
+                  ? WhiteKnight
+                  : BlackKnight
+              }
             />
           </button>
-          <button onClick={() => setPieceType(PieceType.bishop)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.bishop)}>
             <img
-              src={pieceColor === PieceColor.white ? WhiteBishop : BlackBishop}
+              src={
+                selectedPieceColor === PieceColor.white
+                  ? WhiteBishop
+                  : BlackBishop
+              }
             />
           </button>
-          <button onClick={() => setPreview(PreviewType.TrashBin)}>🗑</button>
+          <button onClick={() => onPieceTypeSelected(PieceType.none)}>🗑</button>
         </div>
         <div className="buttonsLine">
           <button className="black-bg" onClick={handleBlackClick}></button>
-          <button onClick={() => setPieceType(PieceType.rook)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.rook)}>
             <img
-              src={pieceColor === PieceColor.white ? WhiteRook : BlackRook}
+              src={
+                selectedPieceColor === PieceColor.white ? WhiteRook : BlackRook
+              }
             />
           </button>
-          <button onClick={() => setPieceType(PieceType.queen)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.queen)}>
             <img
-              src={pieceColor === PieceColor.white ? WhiteQueen : BlackQueen}
+              src={
+                selectedPieceColor === PieceColor.white
+                  ? WhiteQueen
+                  : BlackQueen
+              }
             />
           </button>
-          <button onClick={() => setPieceType(PieceType.king)}>
+          <button onClick={() => onPieceTypeSelected(PieceType.king)}>
             <img
-              src={pieceColor === PieceColor.white ? WhiteKing : BlackKing}
+              src={
+                selectedPieceColor === PieceColor.white ? WhiteKing : BlackKing
+              }
             />
           </button>
-          <button onClick={() => setPieceType(PieceType.none)}>🗑</button>
+          <button onClick={() => onPieceTypeSelected(PieceType.none)}>🗑</button>
         </div>
       </div>
     </div>

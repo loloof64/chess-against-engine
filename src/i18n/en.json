@@ -16,6 +16,35 @@
       "promotionDialog": {
         "title": "Promotion choice.",
         "description": "Choose your promotion piece."
+      },
+      "positionEditor": {
+        "ariaLabel": "Position editor tabs",
+        "tabBoard": "Board",
+        "tabAdvanced": "Advanced",
+        "tabButtons": "Buttons",
+        "advanced": {
+          "turn": {
+            "label": "Turn",
+            "white": "White",
+            "black": "Black"
+          },
+          "castles": {
+            "label": "Castles",
+            "whiteOO": "White OO",
+            "whiteOOO": "White OOO",
+            "blackOO": "Black OO",
+            "blackOOO": "Black OOO"
+          },
+          "enPassantFile": "En-passant file",
+          "drawHalfMovesCount": "Half moves count for draw",
+          "moveNumber": "Move number"
+        },
+        "shortcutButtons": {
+          "resetPosition": "Loaded position",
+          "defaultPosition": "Default position",
+          "copyPosition": "Copy position",
+          "pastePosition": "Paste position"
+        }
       }
     },
     "board": {

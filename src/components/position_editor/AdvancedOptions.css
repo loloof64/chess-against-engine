@@ -1,0 +1,29 @@
+.advancedOptions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.field {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+}
+
+.radioOption,
+.checkboxOption {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+}
+
+.field > * {
+  margin-left: 10px;
+}

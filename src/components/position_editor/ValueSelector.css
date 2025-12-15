@@ -16,7 +16,7 @@
 .valueSelector .buttons {
   display: flex;
   flex-direction: column;
-  border: 1px solid red;
+  border: 1px solid black;
   width: fit-content;
   height: fit-content;
 }

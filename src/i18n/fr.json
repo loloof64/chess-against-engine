@@ -16,6 +16,35 @@
       "promotionDialog": {
         "title": "Choix de la promotion.",
         "description": "Choisissez votre pièce de promotion."
+      },
+      "positionEditor": {
+        "ariaLabel": "Onglets de l'éditeur de position",
+        "tabBoard": "Échiquier",
+        "tabAdvanced": "Avancé",
+        "tabButtons": "Boutons",
+        "advanced": {
+          "turn": {
+            "label": "Trait",
+            "white": "Blancs",
+            "black": "Noirs"
+          },
+          "castles": {
+            "label": "Roques",
+            "whiteOO": "Blancs OO",
+            "whiteOOO": "Blancs OOO",
+            "blackOO": "Noirs OO",
+            "blackOOO": "Noirs OOO"
+          },
+          "enPassantFile": "Colonne de prise en passant",
+          "drawHalfMovesCount": "Nombre de demi-coups pour la nulle",
+          "moveNumber": "Numéro du coup"
+        },
+        "shortcutButtons": {
+          "resetPosition": "Position chargée",
+          "defaultPosition": "Position par défaut",
+          "copyPosition": "Copier la position",
+          "pastePosition": "Coller la position"
+        }
       }
     },
     "board": {
