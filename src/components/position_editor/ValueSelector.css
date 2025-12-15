@@ -40,6 +40,10 @@
   height: 100%;
 }
 
+.valueSelector button.trashBin {
+  font-size: larger;
+}
+
 .valueSelector .buttons button.white-bg {
   background-color: white;
 }

@@ -189,7 +189,12 @@ function ValueSelector({
               }
             />
           </button>
-          <button onClick={() => onPieceTypeSelected(PieceType.none)}>🗑</button>
+          <button
+            className="trashBin"
+            onClick={() => onPieceTypeSelected(PieceType.none)}
+          >
+            🗑
+          </button>
         </div>
         <div className="buttonsLine">
           <button className="black-bg" onClick={handleBlackClick}></button>
@@ -216,7 +221,12 @@ function ValueSelector({
               }
             />
           </button>
-          <button onClick={() => onPieceTypeSelected(PieceType.none)}>🗑</button>
+          <button
+            className="trashBin"
+            onClick={() => onPieceTypeSelected(PieceType.none)}
+          >
+            🗑
+          </button>
         </div>
       </div>
     </div>
