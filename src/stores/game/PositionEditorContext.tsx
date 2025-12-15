@@ -1,11 +1,13 @@
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
+import { EMPTY_POSITION } from "./GameContext";
 
 export enum PositionEditorActionType {
   resetToDefault,
   resetToLoaded,
   setLoadedPosition,
   changeCurrentPosition,
+  erasePosition,
 }
 
 interface PositionEditor {
@@ -85,6 +87,7 @@ function positionEditorReducer(
         new Chess(action.value);
         return {
           ...positionEditor,
+          loadedPosition: action.value,
           currentPosition: action.value,
           commitedPosition: action.value,
         };
@@ -98,6 +101,12 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         currentPosition: action.value,
+      };
+    }
+    case PositionEditorActionType.erasePosition: {
+      return {
+        ...positionEditor,
+        currentPosition: EMPTY_POSITION,
       };
     }
     default:

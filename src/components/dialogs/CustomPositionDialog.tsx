@@ -19,6 +19,11 @@ function CustomPositionDialog({
   onCancelCb,
 }: CustomPositionDialogParams) {
   const { t } = useTranslation();
+
+  function handleCopyToClipboardRequest() {}
+
+  function handlePasteFromClipboardRequest() {}
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Portal>
@@ -56,7 +61,10 @@ function CustomPositionDialog({
                 <AdvancedOptions />
               </Tabs.Content>
               <Tabs.Content value="buttons" className="tabContent">
-                <ShortcutButtons />
+                <ShortcutButtons
+                  copyToClipboardCb={handleCopyToClipboardRequest}
+                  pasteFromClipboardCb={handlePasteFromClipboardRequest}
+                />
               </Tabs.Content>
             </Tabs.Root>
             <div className="answerButtons">

@@ -43,7 +43,8 @@
           "resetPosition": "Posición cargada",
           "defaultPosition": "Posición por defecto",
           "copyPosition": "Copiar posición",
-          "pastePosition": "Pegar posición"
+          "pastePosition": "Pegar posición",
+          "erasePosition": "Borrar posición"
         },
         "errors": {
           "illegalPosition": "¡Posición ilegal!"
