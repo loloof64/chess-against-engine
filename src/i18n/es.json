@@ -44,6 +44,9 @@
           "defaultPosition": "Posición por defecto",
           "copyPosition": "Copiar posición",
           "pastePosition": "Pegar posición"
+        },
+        "errors": {
+          "illegalPosition": "¡Posición ilegal!"
         }
       }
     },

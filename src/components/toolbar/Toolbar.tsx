@@ -14,10 +14,18 @@ import ConfirmationDialog from "../dialogs/ConfirmationDialog";
 import { t } from "i18next";
 import MessageDialog from "../dialogs/MessageDialog";
 import CustomPositionDialog from "../dialogs/CustomPositionDialog";
+import {
+  PositionEditorActionType,
+  usePositionEditor,
+  usePositionEditorDispatch,
+} from "../../stores/game/PositionEditorContext";
+import { Chess } from "chess.js";
 
 function Toolbar() {
-  const { positionFen } = useGame();
+  const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
+  const positionEditorDispatch = usePositionEditorDispatch();
+  const { currentPosition: editorCurrentPosition } = usePositionEditor();
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
   const [confirmNewGameDialogMessage, setConfirmNewGameDialogMessage] =
@@ -32,12 +40,19 @@ function Toolbar() {
   const [isCustomPositionDialogOpen, setIsCustomPositionDialogOpen] =
     useState(false);
 
+  const [errorDialogMessage, setErrorDialogMessage] = useState("");
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+
   function handleNewGameConfirmationDialogStatusChange(newState: boolean) {
     setIsConfirmNewGameDialogOpen(newState);
   }
 
   function handleNewGameConfirmDialogValidated() {
     setIsConfirmNewGameDialogOpen(false);
+    positionEditorDispatch({
+      type: PositionEditorActionType.setLoadedPosition,
+      value: firstPosition,
+    });
     setIsCustomPositionDialogOpen(true);
   }
 
@@ -71,11 +86,23 @@ function Toolbar() {
     setIsCustomPositionDialogOpen(newState);
   }
 
+  function handleErrorDialogStatusChange(newState: boolean) {
+    setIsErrorDialogOpen(newState);
+  }
+
   function handleCustomPositionDialogValidated() {
-    setIsCustomPositionDialogOpen(false);
-    dispatch({
-      type: GameActionType.startNewDefaultGame,
-    });
+    try {
+      new Chess(editorCurrentPosition);
+      setIsCustomPositionDialogOpen(false);
+      dispatch({
+        type: GameActionType.startNewGame,
+        value: editorCurrentPosition,
+      });
+    } catch (e) {
+      console.error(e);
+      setErrorDialogMessage(t("dialogs.positionEditor.errors.illegalPosition"));
+      setIsErrorDialogOpen(true);
+    }
   }
 
   function handleCustomPositionDialogCancelled() {
@@ -135,6 +162,11 @@ function Toolbar() {
         isOpen={isGameStoppedDialogOpen}
         message={gameStoppedDialogMessage}
         onOpenChange={handleGameStoppedDialogStatusChange}
+      />
+      <MessageDialog
+        isOpen={isErrorDialogOpen}
+        message={errorDialogMessage}
+        onOpenChange={handleErrorDialogStatusChange}
       />
       <CustomPositionDialog
         isOpen={isCustomPositionDialogOpen}

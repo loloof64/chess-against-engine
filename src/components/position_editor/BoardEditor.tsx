@@ -2,12 +2,19 @@ import { Chessboard } from "react-chessboard";
 import "./BoardEditor.css";
 import ValueSelector, { PieceColor, PieceType } from "./ValueSelector";
 import { useState } from "react";
-import { Chess, Color, DEFAULT_POSITION, PieceSymbol, Square } from "chess.js";
+import { Chess, Color, PieceSymbol, Square } from "chess.js";
+import {
+  PositionEditorActionType,
+  usePositionEditor,
+  usePositionEditorDispatch,
+} from "../../stores/game/PositionEditorContext";
 
 function BoardEditor() {
-  const [positionFen, setPositionFen] = useState(DEFAULT_POSITION);
   const [pieceType, setPieceType] = useState(PieceType.none);
   const [pieceColor, setPieceColor] = useState(PieceColor.white);
+
+  const { currentPosition } = usePositionEditor();
+  const dispatch = usePositionEditorDispatch();
 
   function convertColorFrom(pieceColor: PieceColor): Color {
     return pieceColor == PieceColor.white ? "w" : "b";
@@ -33,7 +40,7 @@ function BoardEditor() {
   }
 
   function setPieceAt(square: string) {
-    const gameLogic = new Chess(positionFen);
+    const gameLogic = new Chess(currentPosition, { skipValidation: true });
     const logicSquare: Square = square as Square;
     if (pieceType === PieceType.none) {
       gameLogic.remove(logicSquare);
@@ -42,7 +49,10 @@ function BoardEditor() {
       const newType = convertTypeFrom(pieceType);
       gameLogic.put({ type: newType, color: newColor }, logicSquare);
     }
-    setPositionFen(gameLogic.fen());
+    dispatch({
+      type: PositionEditorActionType.changeCurrentPosition,
+      value: gameLogic.fen(),
+    });
   }
 
   return (
@@ -51,7 +61,7 @@ function BoardEditor() {
         <div className="board">
           <Chessboard
             options={{
-              position: positionFen,
+              position: currentPosition,
               allowDragging: false,
               showNotation: false,
               onSquareClick: ({ square }) => setPieceAt(square),
