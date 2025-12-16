@@ -109,6 +109,11 @@ function Toolbar() {
     setIsCustomPositionDialogOpen(false);
   }
 
+  function handlePasteError() {
+    setErrorDialogMessage(t("dialogs.positionEditor.errors.illegalPosition"));
+    setIsErrorDialogOpen(true);
+  }
+
   function startNewDefaultGame() {
     const noGameStarted = positionFen === EMPTY_POSITION;
     if (noGameStarted) {
@@ -173,6 +178,7 @@ function Toolbar() {
         onOpenChange={handleCustomPositionDialogStatusChange}
         onConfirmCb={handleCustomPositionDialogValidated}
         onCancelCb={handleCustomPositionDialogCancelled}
+        onPasteErrorCb={handlePasteError}
       />
     </div>
   );

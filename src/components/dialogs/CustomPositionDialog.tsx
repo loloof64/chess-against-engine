@@ -4,12 +4,20 @@ import { Dialog, Tabs, VisuallyHidden } from "radix-ui";
 import BoardEditor from "../position_editor/BoardEditor";
 import AdvancedOptions from "../position_editor/AdvancedOptions";
 import ShortcutButtons from "../position_editor/ShortcutButtons";
+import {
+  PositionEditorActionType,
+  usePositionEditor,
+  usePositionEditorDispatch,
+} from "../../stores/game/PositionEditorContext";
+import { Chess } from "chess.js";
+import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
 
 interface CustomPositionDialogParams {
   isOpen: boolean;
   onOpenChange: (newState: boolean) => void;
   onConfirmCb: () => void;
   onCancelCb: () => void;
+  onPasteErrorCb: () => void;
 }
 
 function CustomPositionDialog({
@@ -17,12 +25,37 @@ function CustomPositionDialog({
   onOpenChange,
   onConfirmCb,
   onCancelCb,
+  onPasteErrorCb,
 }: CustomPositionDialogParams) {
   const { t } = useTranslation();
+  const { currentPosition } = usePositionEditor();
+  const positionEditorDispatch = usePositionEditorDispatch();
 
-  function handleCopyToClipboardRequest() {}
+  async function handleCopyToClipboardRequest() {
+    try {
+      await writeText(currentPosition);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
-  function handlePasteFromClipboardRequest() {}
+  async function handlePasteFromClipboardRequest() {
+    try {
+      const newPosition = await readText();
+      try {
+        new Chess(newPosition);
+        positionEditorDispatch({
+          type: PositionEditorActionType.changeCurrentPosition,
+          value: newPosition,
+        });
+      } catch (err) {
+        console.error(err);
+        onPasteErrorCb();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
