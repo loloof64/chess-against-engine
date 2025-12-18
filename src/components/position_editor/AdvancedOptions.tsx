@@ -48,7 +48,6 @@ function AdvancedOptions() {
     } catch (err) {
       console.error(err);
     }
-    //TODO check for validity
   }
 
   function handleEnPassantFileChange(value: string) {
@@ -67,7 +66,6 @@ function AdvancedOptions() {
     } catch (err) {
       console.error(err);
     }
-    //TODO check for validity
   }
 
   function handleDrawHalfMovesCountChange(newValue: string) {
@@ -133,12 +131,10 @@ function AdvancedOptions() {
   }
 
   function getCurrentCastles(): Array<string> {
-    //TODO check for validity
     return currentPosition.split(" ")[2].split("");
   }
 
   function getCurrentEnPassant(): string {
-    //TODO check for validity
     const enPassantPart = currentPosition.split(" ")[3];
     return enPassantPart === "-" ? enPassantPart : enPassantPart.charAt(0);
   }

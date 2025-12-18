@@ -1,0 +1,177 @@
+:root {
+  --chessboard-size: 75vmin;
+  --chessboard-cell: calc(var(--chessboard-size) / 8);
+}
+
+.chessboard-coords-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  align-items: center;
+  justify-items: center;
+}
+
+.files-top,
+.files-bottom {
+  display: flex;
+  justify-content: center;
+  width: var(--chessboard-size);
+  max-width: var(--chessboard-size);
+}
+
+.files-top span,
+.files-bottom span {
+  width: var(--chessboard-cell);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ranks-left,
+.ranks-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: var(--chessboard-size);
+  max-height: var(--chessboard-size);
+}
+
+.ranks-left span,
+.ranks-right span {
+  height: var(--chessboard-cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.files-top {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.files-bottom {
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+.board-area {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coords span {
+  display: block;
+  text-align: center;
+  font-size: 1.1em;
+  min-width: 1.5em;
+  min-height: 1.5em;
+  line-height: 1.5em;
+  color: #888;
+  user-select: none;
+  pointer-events: none;
+}
+
+.chessboard-coords-outergrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  max-width: 90vw;
+  max-height: 90vh;
+  min-width: 300px;
+  min-height: 300px;
+  position: relative;
+  margin: auto;
+  background-color: blue;
+}
+
+.file-label,
+.rank-label {
+  text-align: center;
+  font-size: clamp(0.8rem, 2.5vw, 2.2rem);
+  color: goldenrod;
+  user-select: none;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.file-label.top {
+  grid-row: 1;
+}
+.file-label.bottom {
+  grid-row: 10;
+}
+
+.rank-label.left {
+  grid-column: 1;
+}
+.rank-label.right {
+  grid-column: 10;
+}
+
+.board-area {
+  grid-row: 2 / span 8;
+  grid-column: 2 / span 8;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+.board-area > * {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.chessboard-coords-overlay-container {
+  position: relative;
+  width: 75vmin;
+  height: 75vmin;
+  max-width: 100vw;
+  max-height: 100vw;
+}
+
+.board-area {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.file-label.overlay,
+.rank-label.overlay {
+  position: absolute;
+  color: #888;
+  font-size: 1.1em;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-label.overlay {
+  height: 1.5em;
+}
+.rank-label.overlay {
+  width: 1.5em;
+}
