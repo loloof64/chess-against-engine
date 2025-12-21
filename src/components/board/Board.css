@@ -1,9 +1,3 @@
-:root {
-  --chessboard-size: 75vmin;
-  --chessboard-cell: calc(var(--chessboard-size) / 9);
-  --chessboard-half-cell: calc(var(--chessboard-cell) / 2);
-}
-
 .chessboard-coords-outergrid {
   display: grid;
   grid-template-columns: 1fr repeat(8, 2fr) 1fr;
@@ -36,7 +30,7 @@
 .file-label,
 .rank-label {
   text-align: center;
-  font-size: clamp(0.5rem, 2.5vw, 1.2rem);
+  font-size: clamp(0.6em, 2vmin, 1.2em);
   color: goldenrod;
   user-select: none;
   pointer-events: none;
