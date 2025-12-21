@@ -6,6 +6,12 @@ import {
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
+import { t } from "i18next";
+
+import First from "./vectors/first.svg";
+import Back from "./vectors/back.svg";
+import Next from "./vectors/next.svg";
+import Last from "./vectors/last.svg";
 
 interface MovesHistoryProps {
   moves: Array<MoveHistoryNodeProps>;
@@ -75,10 +81,18 @@ function MovesHistory({ moves }: MovesHistoryProps) {
   return (
     <div className="history">
       <div className="history-buttons">
-        <button onClick={gotoFirstPosition}>⇤</button>
-        <button onClick={gotoPreviousMove}>←</button>
-        <button onClick={gotoNextMove}>→</button>
-        <button onClick={gotoLastPosition}>⇥</button>
+        <button onClick={gotoFirstPosition}>
+          <img src={First} alt={t("history.buttonsAltLabels.first")} />
+        </button>
+        <button onClick={gotoPreviousMove}>
+          <img src={Back} alt={t("history.buttonsAltLabels.previous")} />
+        </button>
+        <button onClick={gotoNextMove}>
+          <img src={Next} alt={t("history.buttonsAltLabels.next")} />
+        </button>
+        <button onClick={gotoLastPosition}>
+          <img src={Last} alt={t("history.buttonsAltLabels.last")} />
+        </button>
       </div>
       <div className="history-moves">
         {moves.map((nodeDef, index) => (

@@ -73,7 +73,20 @@
       "confirmStopGame": {
         "message": "¿Quieres detener la partida actual?"
       },
-      "gameStopped": "Partida abortada."
+      "gameStopped": "Partida abortada.",
+      "altLabels": {
+        "newGame": "Empezar nueva partida",
+        "stopGame": "Detener la partida actual",
+        "reverseBoard": "Invertir el tablero"
+      }
+    },
+    "history": {
+      "buttonsAltLabels": {
+        "first": "Primera posición",
+        "previous": "Posición anterior",
+        "next": "Siguiente posición",
+        "last": "Última posición"
+      }
     }
   }
 }

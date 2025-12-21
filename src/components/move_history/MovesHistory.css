@@ -16,12 +16,19 @@
   align-items: center;
   background-color: salmon;
   width: 100%;
-  height: 8%;
+  height: 10vh;
   border: 1px solid transparent;
 }
 
 .history-buttons button {
-  font-size: larger;
+  font-size: medium;
+  aspect-ratio: 1/1;
+  height: 10vh;
+}
+
+.history-buttons button img {
+  width: 100%;
+  height: 100%;
 }
 
 .history-moves {

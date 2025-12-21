@@ -73,7 +73,20 @@
       "confirmStopGame": {
         "message": "Voulez-vous arrêter la partie en cours ?"
       },
-      "gameStopped": "Partie interrompue."
+      "gameStopped": "Partie interrompue.",
+      "altLabels": {
+        "newGame": "Nouvelle partie",
+        "stopGame": "Arrêter la partie en cours",
+        "reverseBoard": "Retourner l'échiquier"
+      }
+    },
+    "history": {
+      "buttonsAltLabels": {
+        "first": "Première position",
+        "previous": "Position précédente",
+        "next": "Position suivante",
+        "last": "Dernière position"
+      }
     }
   }
 }

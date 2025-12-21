@@ -141,13 +141,16 @@ function Toolbar() {
   return (
     <div className="toolbar">
       <button onClick={startNewDefaultGame}>
-        <img src={StartGameImg}></img>
+        <img src={StartGameImg} alt={t("toolbar.altLabels.newGame")}></img>
       </button>
       <button onClick={stopGame}>
-        <img src={StopGameImg}></img>
+        <img src={StopGameImg} alt={t("toolbar.altLabels.stopGame")}></img>
       </button>
       <button onClick={reverseBoard}>
-        <img src={ReverseBoardImg}></img>
+        <img
+          src={ReverseBoardImg}
+          alt={t("toolbar.altLabels.reverseBoard")}
+        ></img>
       </button>
       <ConfirmationDialog
         isOpen={isConfirmNewGameDialogOpen}

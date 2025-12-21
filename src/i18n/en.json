@@ -73,7 +73,20 @@
       "confirmStopGame": {
         "message": "Do you want to stop current game ?"
       },
-      "gameStopped": "Game aborted."
+      "gameStopped": "Game aborted.",
+      "altLabels": {
+        "newGame": "Start new game",
+        "stopGame": "Stop current game",
+        "reverseBoard": "Reverse the board"
+      }
+    },
+    "history": {
+      "buttonsAltLabels": {
+        "first": "First position",
+        "previous": "Previous position",
+        "next": "Next position",
+        "last": "Last position"
+      }
     }
   }
 }
