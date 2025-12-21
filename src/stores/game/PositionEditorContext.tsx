@@ -16,11 +16,16 @@ interface PositionEditor {
   currentPosition: string;
   // must be a legal position
   commitedPosition: string;
+  isWhiteTurn: boolean;
 }
 
 interface PositionEditorAction {
   type: PositionEditorActionType;
   value?: any;
+}
+
+function getTurnFrom(fen: string): boolean {
+  return fen.split(" ")[1] !== "b";
 }
 
 const PositionEditorContext = createContext<PositionEditor>(null as any);
@@ -32,6 +37,7 @@ const initialPositionEditor: PositionEditor = {
   loadedPosition: DEFAULT_POSITION,
   currentPosition: DEFAULT_POSITION,
   commitedPosition: DEFAULT_POSITION,
+  isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
 };
 
 export function usePositionEditor() {
@@ -67,6 +73,7 @@ function positionEditorReducer(
         ...positionEditor,
         currentPosition: DEFAULT_POSITION,
         commitedPosition: DEFAULT_POSITION,
+        isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
       };
     case PositionEditorActionType.resetToLoaded: {
       try {
@@ -75,6 +82,7 @@ function positionEditorReducer(
           ...positionEditor,
           currentPosition: positionEditor.loadedPosition,
           commitedPosition: positionEditor.loadedPosition,
+          isWhiteTurn: getTurnFrom(positionEditor.loadedPosition),
         };
       } catch (ex) {
         console.error(ex);
@@ -90,6 +98,7 @@ function positionEditorReducer(
           loadedPosition: action.value,
           currentPosition: action.value,
           commitedPosition: action.value,
+          isWhiteTurn: getTurnFrom(action.value),
         };
       } catch (ex) {
         console.error(ex);
@@ -101,12 +110,14 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         currentPosition: action.value,
+        isWhiteTurn: getTurnFrom(action.value),
       };
     }
     case PositionEditorActionType.erasePosition: {
       return {
         ...positionEditor,
         currentPosition: EMPTY_POSITION,
+        isWhiteTurn: getTurnFrom(action.value),
       };
     }
     default:
