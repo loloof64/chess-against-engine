@@ -14,12 +14,10 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
-
-const availableFiles = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const availableRanks = [8, 7, 6, 5, 4, 3, 2, 1];
+import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 
 function Board() {
   const {
@@ -40,18 +38,6 @@ function Board() {
   >();
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
-  const [files, setFiles] = useState(availableFiles);
-  const [ranks, setRanks] = useState(availableRanks);
-
-  useEffect(() => {
-    const whiteAtBottom = boardOrientation === "white";
-    setFiles(
-      whiteAtBottom ? availableFiles : availableFiles.map((e) => e).reverse()
-    );
-    setRanks(
-      whiteAtBottom ? availableRanks : availableRanks.map((e) => e).reverse()
-    );
-  }, [boardOrientation]);
 
   function showGameOverNotification(fenAfterMove: string) {
     const gameLogic = new Chess(fenAfterMove);
@@ -227,61 +213,24 @@ function Board() {
   }
 
   return (
-    <div className="chessboard-coords-outergrid">
-      {/* Top row: corner, files, corner */}
-      <div className="corner" />
-      {files.map((file, idx) => (
-        <div
-          className="file-label top"
-          key={"top-" + file}
-          style={{ gridColumn: idx + 2 }}
-        >
-          {file}
-        </div>
-      ))}
-      <div className="corner" />
-      {/* Board rows: rank, board, rank */}
-      {ranks.map((rank, i) => [
-        <div className="rank-label left" key={"left-" + rank}>
-          {rank}
-        </div>,
-        i === 0 ? (
-          <div
-            className="board-area"
-            key={"board-area"}
-            style={{ gridRow: `2 / span 8`, gridColumn: `2 / span 8` }}
-          >
-            <Chessboard
-              key={boardKey}
-              options={{
-                onPieceDrop: handlePieceDrop,
-                canDragPiece: handleCanDragPiece,
-                boardOrientation,
-                position: positionFen,
-                showAnimations: true,
-                showNotation: false,
-                arrows: lastMoveArrow ? [lastMoveArrow] : [],
-              }}
-            />
-          </div>
-        ) : null,
-        <div className="rank-label right" key={"right-" + rank}>
-          {rank}
-        </div>,
-      ])}
-      {/* Bottom row: corner, files, corner */}
-      <div className="corner" />
-      {files.map((file, idx) => (
-        <div
-          className="file-label bottom"
-          key={"bottom-" + file}
-          style={{ gridColumn: idx + 2 }}
-        >
-          {file}
-        </div>
-      ))}
-      <div className={`corner turn ${isWhiteTurn ? "white" : "black"}`} />
-      {/* Dialogs */}
+    <>
+      <BoardCoordinates
+        isWhiteTurn={isWhiteTurn}
+        boardOrientation={boardOrientation}
+      >
+        <Chessboard
+          key={boardKey}
+          options={{
+            onPieceDrop: handlePieceDrop,
+            canDragPiece: handleCanDragPiece,
+            boardOrientation,
+            position: positionFen,
+            showAnimations: true,
+            showNotation: false,
+            arrows: lastMoveArrow ? [lastMoveArrow] : [],
+          }}
+        />
+      </BoardCoordinates>
       <PromotionDialog
         whiteTurn={isWhiteTurn}
         isOpen={isPromotionDialogOpen}
@@ -293,7 +242,7 @@ function Board() {
         onOpenChange={handleMessageDialogStatusChange}
         message={messageDialogCaption}
       />
-    </div>
+    </>
   );
 }
 
