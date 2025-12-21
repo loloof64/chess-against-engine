@@ -24,7 +24,7 @@
 .file-label,
 .rank-label {
   text-align: center;
-  font-size: clamp(0.5rem, 2.5vw, 2.2rem);
+  font-size: clamp(0.5rem, 2.5vw, 1.2rem);
   color: goldenrod;
   user-select: none;
   pointer-events: none;
