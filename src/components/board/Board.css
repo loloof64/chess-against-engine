@@ -6,11 +6,11 @@
 
 .chessboard-coords-outergrid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-columns: 1fr repeat(8, 2fr) 1fr;
+  grid-template-rows: 1fr repeat(8, 2fr) 1fr;
   width: 100%;
-  height: auto;
   aspect-ratio: 1 / 1;
+  height: auto;
   max-width: 90vw;
   max-height: 90vh;
   min-width: 300px;
@@ -18,12 +18,13 @@
   position: relative;
   margin: auto;
   background-color: blue;
+  line-height: initial;
 }
 
 .file-label,
 .rank-label {
   text-align: center;
-  font-size: clamp(0.8rem, 2.5vw, 2.2rem);
+  font-size: clamp(0.5rem, 2.5vw, 2.2rem);
   color: goldenrod;
   user-select: none;
   pointer-events: none;
@@ -31,7 +32,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 
 .file-label.top {
