@@ -280,7 +280,7 @@ function Board() {
           {file}
         </div>
       ))}
-      <div className="corner" />
+      <div className={`corner turn ${isWhiteTurn ? "white" : "black"}`} />
       {/* Dialogs */}
       <PromotionDialog
         whiteTurn={isWhiteTurn}

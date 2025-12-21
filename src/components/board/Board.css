@@ -19,6 +19,20 @@
   line-height: initial;
 }
 
+.chessboard-coords-outergrid .turn {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.chessboard-coords-outergrid .turn.white {
+  background-color: white;
+}
+
+.chessboard-coords-outergrid .turn.black {
+  background-color: black;
+}
+
 .file-label,
 .rank-label {
   text-align: center;
