@@ -36,9 +36,36 @@ function MovesHistory() {
     }
   }
 
+  function scrollToSelectedElement() {
+    if (historyRef.current) {
+      const parentRect = historyRef.current.getBoundingClientRect();
+      const selectedChild = Array.from(historyRef.current.children).find(
+        (child) => child.classList.contains("selected")
+      );
+      const selectedChildRect = selectedChild?.getBoundingClientRect();
+      if (selectedChildRect) {
+        const selectedNodePositionX =
+          selectedChildRect.left -
+          parentRect.left +
+          historyRef.current.scrollLeft;
+        const selectedNodePositionY =
+          selectedChildRect.top - parentRect.top + historyRef.current.scrollTop;
+        historyRef.current.scrollTo({
+          left: selectedNodePositionX,
+          top: selectedNodePositionY,
+          behavior: "instant",
+        });
+      }
+    }
+  }
+
   useEffect(() => {
     scrollToLastElement();
   }, [historyMoves]);
+
+  useEffect(() => {
+    scrollToSelectedElement();
+  }, [historyIndex]);
 
   function gotoFirstPosition() {
     dispatch({
