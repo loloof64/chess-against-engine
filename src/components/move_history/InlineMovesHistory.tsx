@@ -6,10 +6,12 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import MoveHistoryNode from "./MoveHistoryNode";
+import { useEffect, useRef } from "react";
 
 function InlineMovesHistory() {
   const { historyIndex, firstPosition, historyMoves } = useGame();
   const dispatch = useGameDispatch();
+  const historyRef = useRef<HTMLDivElement | null>(null);
 
   function handleStartPositionClicked() {
     dispatch({
@@ -22,8 +24,22 @@ function InlineMovesHistory() {
     });
   }
 
+  useEffect(() => {
+    if (historyRef.current && historyRef.current.lastElementChild) {
+      const parentRect = historyRef.current.getBoundingClientRect();
+      const lastChildRect =
+        historyRef.current.lastElementChild.getBoundingClientRect();
+      const lastNodePositionX =
+        lastChildRect.left - parentRect.left + historyRef.current.scrollLeft;
+      historyRef.current.scrollTo({
+        left: lastNodePositionX,
+        behavior: "smooth",
+      });
+    }
+  }, [historyMoves]);
+
   return (
-    <div className="inline-history-moves">
+    <div className="inline-history-moves" ref={historyRef}>
       <MoveHistoryNode
         fan="|>"
         fen={firstPosition}
