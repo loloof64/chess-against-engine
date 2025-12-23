@@ -19,6 +19,16 @@ function MovesHistory() {
   const dispatch = useGameDispatch();
   const historyRef = useRef<HTMLDivElement | null>(null);
 
+  function scrollToStart() {
+    if (historyRef.current) {
+      historyRef.current.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "instant",
+      });
+    }
+  }
+
   function scrollToLastElement() {
     if (historyRef.current && historyRef.current.lastElementChild) {
       const parentRect = historyRef.current.getBoundingClientRect();
@@ -64,7 +74,8 @@ function MovesHistory() {
   }, [historyMoves]);
 
   useEffect(() => {
-    scrollToSelectedElement();
+    if ((historyIndex ?? -1) >= 0) scrollToSelectedElement();
+    else scrollToStart();
   }, [historyIndex]);
 
   function gotoFirstPosition() {
