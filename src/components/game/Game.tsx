@@ -15,7 +15,7 @@ function Game() {
       <MovesHistory />
     </div>
   ) : (
-    <div className="game portrait">
+    <div className="game">
       <div className="board">
         <Board />
       </div>
