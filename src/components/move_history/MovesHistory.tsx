@@ -12,10 +12,33 @@ import Back from "./vectors/back.svg";
 import Next from "./vectors/next.svg";
 import Last from "./vectors/last.svg";
 import MoveHistoryNode from "./MoveHistoryNode";
+import { useEffect, useRef } from "react";
 
 function MovesHistory() {
   const { historyIndex, historyMoves } = useGame();
   const dispatch = useGameDispatch();
+  const historyRef = useRef<HTMLDivElement | null>(null);
+
+  function scrollToLastElement() {
+    if (historyRef.current && historyRef.current.lastElementChild) {
+      const parentRect = historyRef.current.getBoundingClientRect();
+      const lastChildRect =
+        historyRef.current.lastElementChild.getBoundingClientRect();
+      const lastNodePositionX =
+        lastChildRect.left - parentRect.left + historyRef.current.scrollLeft;
+      const lastNodePositionY =
+        lastChildRect.top - parentRect.top + historyRef.current.scrollTop;
+      historyRef.current.scrollTo({
+        left: lastNodePositionX,
+        top: lastNodePositionY,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  useEffect(() => {
+    scrollToLastElement();
+  }, [historyMoves]);
 
   function gotoFirstPosition() {
     dispatch({
@@ -89,7 +112,7 @@ function MovesHistory() {
           <img src={Last} alt={t("history.buttonsAltLabels.last")} />
         </button>
       </div>
-      <div className="history-moves">
+      <div className="history-moves" ref={historyRef}>
         {historyMoves.map((nodeDef, index) => (
           <Fragment key={index}>
             {

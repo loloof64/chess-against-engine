@@ -24,7 +24,7 @@ function InlineMovesHistory() {
     });
   }
 
-  useEffect(() => {
+  function scrollToLastElement() {
     if (historyRef.current && historyRef.current.lastElementChild) {
       const parentRect = historyRef.current.getBoundingClientRect();
       const lastChildRect =
@@ -36,6 +36,10 @@ function InlineMovesHistory() {
         behavior: "smooth",
       });
     }
+  }
+
+  useEffect(() => {
+    scrollToLastElement();
   }, [historyMoves]);
 
   return (
