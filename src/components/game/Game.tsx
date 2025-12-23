@@ -2,17 +2,24 @@ import MovesHistory from "../move_history/MovesHistory";
 import "./Game.css";
 
 import Board from "../board/Board";
-import { useGame } from "../../stores/game/GameContext";
+import useWindowOrientation from "../../utils/useWindowOrientation";
+import InlineMovesHistory from "../move_history/InlineMovesHistory";
 
 function Game() {
-  const { historyMoves, firstPosition } = useGame();
-
-  return (
+  const { orientation } = useWindowOrientation();
+  return orientation === "landscape" ? (
     <div className="game">
       <div className="board">
         <Board />
       </div>
-      <MovesHistory moves={historyMoves} firstPosition={firstPosition} />
+      <MovesHistory />
+    </div>
+  ) : (
+    <div className="game portrait">
+      <div className="board">
+        <Board />
+      </div>
+      <InlineMovesHistory />
     </div>
   );
 }

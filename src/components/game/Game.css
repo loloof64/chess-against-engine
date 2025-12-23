@@ -12,3 +12,16 @@
   width: 75vmin;
   height: 75vmin;
 }
+
+.game.portrait .board {
+  width: 95vmin;
+  height: 95vmin;
+}
+
+@media (orientation: portrait) {
+  .game {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+}

@@ -3,7 +3,7 @@ import "./MoveHistoryNode.css";
 export interface MoveHistoryNodeProps {
   fan: string; // figurine algebraic notation
   fen: string; // Forsyth-Edwards notation
-  moveArrow: Arrow;
+  moveArrow?: Arrow;
   className: string;
   historyIndex: number;
   clickCallback: (historyIndex: number) => void;

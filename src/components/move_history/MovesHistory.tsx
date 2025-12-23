@@ -1,5 +1,4 @@
 import "./MovesHistory.css";
-import MoveHistoryNode, { MoveHistoryNodeProps } from "./MoveHistoryNode";
 import { Fragment } from "react/jsx-runtime";
 import {
   GameActionType,
@@ -12,14 +11,10 @@ import First from "./vectors/first.svg";
 import Back from "./vectors/back.svg";
 import Next from "./vectors/next.svg";
 import Last from "./vectors/last.svg";
+import MoveHistoryNode from "./MoveHistoryNode";
 
-interface MovesHistoryProps {
-  moves: Array<MoveHistoryNodeProps>;
-  firstPosition: string;
-}
-
-function MovesHistory({ moves }: MovesHistoryProps) {
-  const { historyIndex } = useGame();
+function MovesHistory() {
+  const { historyIndex, historyMoves } = useGame();
   const dispatch = useGameDispatch();
 
   function gotoFirstPosition() {
@@ -48,7 +43,7 @@ function MovesHistory({ moves }: MovesHistoryProps) {
   function gotoLastPosition() {
     dispatch({
       type: GameActionType.gotoPositionIndex,
-      value: moves.length - 1,
+      value: historyMoves.length - 1,
     });
   }
 
@@ -58,7 +53,7 @@ function MovesHistory({ moves }: MovesHistoryProps) {
     do {
       previousIndex--;
       if (previousIndex < 0) break;
-      const currentNode = moves[previousIndex];
+      const currentNode = historyMoves[previousIndex];
       const isMoveNode = currentNode.fen !== "";
       if (isMoveNode) break;
     } while (true);
@@ -67,11 +62,11 @@ function MovesHistory({ moves }: MovesHistoryProps) {
 
   function findNextIndex(): number {
     let nextIndex = historyIndex ?? -1;
-    if (nextIndex >= moves.length - 1) return moves.length - 1;
+    if (nextIndex >= historyMoves.length - 1) return historyMoves.length - 1;
     if (nextIndex < -1) nextIndex = -1;
     do {
       nextIndex++;
-      const currentNode = moves[nextIndex];
+      const currentNode = historyMoves[nextIndex];
       const isMoveNode = currentNode.fen !== "";
       if (isMoveNode) break;
     } while (true);
@@ -95,7 +90,7 @@ function MovesHistory({ moves }: MovesHistoryProps) {
         </button>
       </div>
       <div className="history-moves">
-        {moves.map((nodeDef, index) => (
+        {historyMoves.map((nodeDef, index) => (
           <Fragment key={index}>
             {
               <MoveHistoryNode
