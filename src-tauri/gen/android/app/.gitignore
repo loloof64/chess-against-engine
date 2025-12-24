@@ -1,0 +1,6 @@
+/src/main/java/com/loloof64/chess_against_engine/generated
+/src/main/jniLibs/**/*.so
+/src/main/assets/tauri.conf.json
+/tauri.build.gradle.kts
+/proguard-tauri.pro
+/tauri.properties

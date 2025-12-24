@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">chess-against-engine</string>
+    <string name="main_activity_title">chess-against-engine</string>
+</resources>
