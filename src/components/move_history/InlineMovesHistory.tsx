@@ -24,6 +24,16 @@ function InlineMovesHistory() {
     });
   }
 
+  function scrollToStart() {
+    if (historyRef.current) {
+      historyRef.current.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "instant",
+      });
+    }
+  }
+
   function scrollToLastElement() {
     if (historyRef.current && historyRef.current.lastElementChild) {
       const parentRect = historyRef.current.getBoundingClientRect();
@@ -38,9 +48,37 @@ function InlineMovesHistory() {
     }
   }
 
+  function scrollToSelectedElement() {
+    if (historyRef.current) {
+      const parentRect = historyRef.current.getBoundingClientRect();
+      const selectedChild = Array.from(historyRef.current.children).find(
+        (child) => child.classList.contains("selected")
+      );
+      const selectedChildRect = selectedChild?.getBoundingClientRect();
+      if (selectedChildRect) {
+        const selectedNodePositionX =
+          selectedChildRect.left -
+          parentRect.left +
+          historyRef.current.scrollLeft;
+        const selectedNodePositionY =
+          selectedChildRect.top - parentRect.top + historyRef.current.scrollTop;
+        historyRef.current.scrollTo({
+          left: selectedNodePositionX,
+          top: selectedNodePositionY,
+          behavior: "instant",
+        });
+      }
+    }
+  }
+
   useEffect(() => {
     scrollToLastElement();
   }, [historyMoves]);
+
+  useEffect(() => {
+    if ((historyIndex ?? -1) >= 0) scrollToSelectedElement();
+    else scrollToStart();
+  }, [historyIndex]);
 
   return (
     <div className="inline-history-moves" ref={historyRef}>
