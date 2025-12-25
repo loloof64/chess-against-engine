@@ -41,6 +41,12 @@
   height: auto;
 }
 
+.file-label.start,
+.rank-label.start {
+  color: aquamarine;
+  background-color: coral;
+}
+
 .file-label.hovered,
 .rank-label.hovered {
   color: crimson;

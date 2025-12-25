@@ -63,6 +63,8 @@ function BoardEditor() {
           <BoardCoordinates
             hoveredFile={null}
             hoveredRank={null}
+            startFile={null}
+            startRank={null}
             isWhiteTurn={isWhiteTurn}
             boardOrientation={isWhiteTurn ? "white" : "black"}
           >

@@ -43,15 +43,21 @@ function Board() {
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
   const [hoveredFile, setHoveredFile] = useState<number | null>(null);
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
+  const [startFile, setStartFile] = useState<number | null>(null);
+  const [startRank, setStartRank] = useState<number | null>(null);
 
   function handleTouchDown(file: number, rank: number): void {
     setHoveredFile(file);
     setHoveredRank(rank);
+    setStartFile(file);
+    setStartRank(rank);
   }
 
   function handleTouchUp(): void {
     setHoveredFile(null);
     setHoveredRank(null);
+    setStartFile(null);
+    setStartRank(null);
   }
 
   function handleTouchMove(file: number, rank: number): void {
@@ -239,6 +245,8 @@ function Board() {
         boardOrientation={boardOrientation}
         hoveredFile={hoveredFile}
         hoveredRank={hoveredRank}
+        startFile={startFile}
+        startRank={startRank}
       >
         <div className="innerChessboard">
           <Chessboard
