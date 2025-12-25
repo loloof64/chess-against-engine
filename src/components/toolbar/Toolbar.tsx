@@ -20,6 +20,8 @@ import {
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
 import { Chess } from "chess.js";
+import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
+import NativeToolbarSpace from "../native_toolbar_space/NativeToolbarSpace";
 
 function Toolbar() {
   const { positionFen, firstPosition } = useGame();
@@ -139,51 +141,54 @@ function Toolbar() {
   }
 
   return (
-    <div className="toolbar">
-      <button onClick={startNewDefaultGame}>
-        <img src={StartGameImg} alt={t("toolbar.altLabels.newGame")}></img>
-      </button>
-      <button onClick={stopGame}>
-        <img src={StopGameImg} alt={t("toolbar.altLabels.stopGame")}></img>
-      </button>
-      <button onClick={reverseBoard}>
-        <img
-          src={ReverseBoardImg}
-          alt={t("toolbar.altLabels.reverseBoard")}
-        ></img>
-      </button>
-      <ConfirmationDialog
-        isOpen={isConfirmNewGameDialogOpen}
-        message={confirmNewGameDialogMessage}
-        onConfirmCb={handleNewGameConfirmDialogValidated}
-        onCancelCb={handleNewGameConfirmDialogCancelled}
-        onOpenChange={handleNewGameConfirmationDialogStatusChange}
-      />
-      <ConfirmationDialog
-        isOpen={isConfirmStopGameDialogOpen}
-        message={confirmStopGameDialogMessage}
-        onConfirmCb={handleStopGameConfirmDialogValidated}
-        onCancelCb={handleStopGameConfirmDialogCancelled}
-        onOpenChange={handleStopGameConfirmationDialogStatusChange}
-      />
-      <MessageDialog
-        isOpen={isGameStoppedDialogOpen}
-        message={gameStoppedDialogMessage}
-        onOpenChange={handleGameStoppedDialogStatusChange}
-      />
-      <MessageDialog
-        isOpen={isErrorDialogOpen}
-        message={errorDialogMessage}
-        onOpenChange={handleErrorDialogStatusChange}
-      />
-      <CustomPositionDialog
-        isOpen={isCustomPositionDialogOpen}
-        onOpenChange={handleCustomPositionDialogStatusChange}
-        onConfirmCb={handleCustomPositionDialogValidated}
-        onCancelCb={handleCustomPositionDialogCancelled}
-        onPasteErrorCb={handlePasteError}
-      />
-    </div>
+    <>
+      {getPlatformKind() === PlatformKind.android && <NativeToolbarSpace />}
+      <div className="toolbar">
+        <button onClick={startNewDefaultGame}>
+          <img src={StartGameImg} alt={t("toolbar.altLabels.newGame")}></img>
+        </button>
+        <button onClick={stopGame}>
+          <img src={StopGameImg} alt={t("toolbar.altLabels.stopGame")}></img>
+        </button>
+        <button onClick={reverseBoard}>
+          <img
+            src={ReverseBoardImg}
+            alt={t("toolbar.altLabels.reverseBoard")}
+          ></img>
+        </button>
+        <ConfirmationDialog
+          isOpen={isConfirmNewGameDialogOpen}
+          message={confirmNewGameDialogMessage}
+          onConfirmCb={handleNewGameConfirmDialogValidated}
+          onCancelCb={handleNewGameConfirmDialogCancelled}
+          onOpenChange={handleNewGameConfirmationDialogStatusChange}
+        />
+        <ConfirmationDialog
+          isOpen={isConfirmStopGameDialogOpen}
+          message={confirmStopGameDialogMessage}
+          onConfirmCb={handleStopGameConfirmDialogValidated}
+          onCancelCb={handleStopGameConfirmDialogCancelled}
+          onOpenChange={handleStopGameConfirmationDialogStatusChange}
+        />
+        <MessageDialog
+          isOpen={isGameStoppedDialogOpen}
+          message={gameStoppedDialogMessage}
+          onOpenChange={handleGameStoppedDialogStatusChange}
+        />
+        <MessageDialog
+          isOpen={isErrorDialogOpen}
+          message={errorDialogMessage}
+          onOpenChange={handleErrorDialogStatusChange}
+        />
+        <CustomPositionDialog
+          isOpen={isCustomPositionDialogOpen}
+          onOpenChange={handleCustomPositionDialogStatusChange}
+          onConfirmCb={handleCustomPositionDialogValidated}
+          onCancelCb={handleCustomPositionDialogCancelled}
+          onPasteErrorCb={handlePasteError}
+        />
+      </div>
+    </>
   );
 }
 

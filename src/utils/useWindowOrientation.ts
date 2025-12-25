@@ -1,18 +1,19 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
+import getPlatformKind, { PlatformKind } from "./PlatformKind";
 
 type ScreenOrientation = "landscape" | "portrait";
 
 async function getWindowOrientation(): Promise<ScreenOrientation> {
-  if (window && window.innerWidth !== undefined) {
-    // Web/Android
-    return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
-  } else {
+  if (getPlatformKind() === PlatformKind.desktop) {
     // Tauri desktop
     const win = getCurrentWindow();
     const size = await win.innerSize();
     return size.width > size.height ? "landscape" : "portrait";
+  } else {
+    // Web/Android
+    return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
   }
 }
 
