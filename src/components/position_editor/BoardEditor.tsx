@@ -61,6 +61,8 @@ function BoardEditor() {
       <div className="container1">
         <div className="board">
           <BoardCoordinates
+            hoveredFile={null}
+            hoveredRank={null}
             isWhiteTurn={isWhiteTurn}
             boardOrientation={isWhiteTurn ? "white" : "black"}
           >

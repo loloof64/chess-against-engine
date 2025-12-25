@@ -14,11 +14,12 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
+import BoardTouch from "../board_touch/BoardTouch";
 
 function Board() {
   const {
@@ -41,10 +42,10 @@ function Board() {
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
   const [hoveredFile, setHoveredFile] = useState<number | null>(null);
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
-  const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  function handleTouchDown(event: React.TouchEvent<HTMLDivElement>): void {
-    handleTouchMove(event);
+  function handleTouchDown(file: number, rank: number): void {
+    setHoveredFile(file);
+    setHoveredRank(rank);
   }
 
   function handleTouchUp(): void {
@@ -52,20 +53,9 @@ function Board() {
     setHoveredRank(null);
   }
 
-  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
-    if (!overlayRef.current) return;
-
-    const rect = overlayRef.current.getBoundingClientRect();
-    const touch = event.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
-    const squareSize = rect.width / 8;
-    const file = Math.floor(x / squareSize);
-    const rank = Math.floor(y / squareSize);
-
-    setHoveredFile(file >= 0 && file < 8 ? file : null);
-    setHoveredRank(rank >= 0 && rank < 8 ? rank : null);
+  function handleTouchMove(file: number, rank: number): void {
+    setHoveredFile(file);
+    setHoveredRank(rank);
   }
 
   function showGameOverNotification(fenAfterMove: string) {
@@ -262,19 +252,10 @@ function Board() {
           }}
         />
         {getPlatformKind() === PlatformKind.android && (
-          <div
-            ref={overlayRef}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              zIndex: 10,
-            }}
-            onTouchStart={handleTouchDown}
-            onTouchEnd={handleTouchUp}
-            onTouchMove={handleTouchMove}
+          <BoardTouch
+            onTouch={handleTouchDown}
+            onMove={handleTouchMove}
+            onRelease={handleTouchUp}
           />
         )}
       </BoardCoordinates>

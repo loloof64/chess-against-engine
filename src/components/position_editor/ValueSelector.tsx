@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import "./ValueSelector.css";
 
-import WhitePawn from "./vectors/Chess_plt45.svg";
-import WhiteKnight from "./vectors/Chess_nlt45.svg";
-import WhiteBishop from "./vectors/Chess_blt45.svg";
-import WhiteRook from "./vectors/Chess_rlt45.svg";
-import WhiteQueen from "./vectors/Chess_qlt45.svg";
-import WhiteKing from "./vectors/Chess_klt45.svg";
+import WhitePawn from "../../assets/vectors/Chess_plt45.svg";
+import WhiteKnight from "../../assets/vectors/Chess_nlt45.svg";
+import WhiteBishop from "../../assets/vectors/Chess_blt45.svg";
+import WhiteRook from "../../assets/vectors/Chess_rlt45.svg";
+import WhiteQueen from "../../assets/vectors/Chess_qlt45.svg";
+import WhiteKing from "../../assets/vectors/Chess_klt45.svg";
 
-import BlackPawn from "./vectors/Chess_pdt45.svg";
-import BlackKnight from "./vectors/Chess_ndt45.svg";
-import BlackBishop from "./vectors/Chess_bdt45.svg";
-import BlackRook from "./vectors/Chess_rdt45.svg";
-import BlackQueen from "./vectors/Chess_qdt45.svg";
-import BlackKing from "./vectors/Chess_kdt45.svg";
+import BlackPawn from "../../assets/vectors/Chess_pdt45.svg";
+import BlackKnight from "../../assets/vectors/Chess_ndt45.svg";
+import BlackBishop from "../../assets/vectors/Chess_bdt45.svg";
+import BlackRook from "../../assets/vectors/Chess_rdt45.svg";
+import BlackQueen from "../../assets/vectors/Chess_qdt45.svg";
+import BlackKing from "../../assets/vectors/Chess_kdt45.svg";
 
 export enum PieceColor {
   white,
