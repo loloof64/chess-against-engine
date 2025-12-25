@@ -51,7 +51,9 @@ function BoardCoordinates({
       {/* Board rows: rank, board, rank */}
       {ranks.map((rank, i) => [
         <div
-          className={`rank-label left ${i === hoveredRank ? "hovered" : ""}`}
+          className={`rank-label left ${
+            7 - i === hoveredRank ? "hovered" : ""
+          }`}
           key={"left-" + rank}
         >
           {rank}
@@ -66,7 +68,9 @@ function BoardCoordinates({
           </div>
         ) : null,
         <div
-          className={`rank-label right ${i === hoveredRank ? "hovered" : ""}`}
+          className={`rank-label right ${
+            7 - i === hoveredRank ? "hovered" : ""
+          }`}
           key={"right-" + rank}
         >
           {rank}

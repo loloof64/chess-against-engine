@@ -18,7 +18,6 @@ import { useState } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
-import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import BoardTouch from "../board_touch/BoardTouch";
 
 function Board() {
@@ -239,25 +238,29 @@ function Board() {
         hoveredFile={hoveredFile}
         hoveredRank={hoveredRank}
       >
-        <Chessboard
-          key={boardKey}
-          options={{
-            onPieceDrop: handlePieceDrop,
-            canDragPiece: handleCanDragPiece,
-            boardOrientation,
-            position: positionFen,
-            showAnimations: true,
-            showNotation: false,
-            arrows: lastMoveArrow ? [lastMoveArrow] : [],
-          }}
-        />
-        {getPlatformKind() === PlatformKind.android && (
-          <BoardTouch
-            onTouch={handleTouchDown}
-            onMove={handleTouchMove}
-            onRelease={handleTouchUp}
+        <div className="innerChessboard">
+          <Chessboard
+            key={boardKey}
+            options={{
+              onPieceDrop: handlePieceDrop,
+              canDragPiece: handleCanDragPiece,
+              boardOrientation,
+              position: positionFen,
+              showAnimations: true,
+              showNotation: false,
+              arrows: lastMoveArrow ? [lastMoveArrow] : [],
+            }}
           />
-        )}
+          {
+            /* TODO remove comment : getPlatformKind() === PlatformKind.android && */
+            <BoardTouch
+              onTouch={handleTouchDown}
+              onMove={handleTouchMove}
+              onRelease={handleTouchUp}
+              currentPositionFen={positionFen}
+            />
+          }
+        </div>
       </BoardCoordinates>
       <PromotionDialog
         whiteTurn={isWhiteTurn}
