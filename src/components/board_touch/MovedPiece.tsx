@@ -1,3 +1,5 @@
+import "./MovedPiece.css";
+
 import WhitePawn from "../../assets/vectors/Chess_plt45.svg";
 import WhiteKnight from "../../assets/vectors/Chess_nlt45.svg";
 import WhiteBishop from "../../assets/vectors/Chess_blt45.svg";
@@ -23,7 +25,9 @@ interface MovedPieceParams {
 function MovedPiece({ piece, squareSize, x, y }: MovedPieceParams) {
   return (
     <div
+      className="movedPieceRoot"
       style={{
+        position: "absolute",
         left: x ?? 0,
         top: y ?? 0,
         width: squareSize ?? 0,
@@ -32,29 +36,29 @@ function MovedPiece({ piece, squareSize, x, y }: MovedPieceParams) {
       }}
     >
       {piece?.type === "p" && piece?.color === "w" ? (
-        <WhitePawn />
+        <img src={WhitePawn} />
       ) : piece?.type === "n" && piece?.color === "w" ? (
-        <WhiteKnight />
+        <img src={WhiteKnight} />
       ) : piece?.type === "b" && piece?.color === "w" ? (
-        <WhiteBishop />
+        <img src={WhiteBishop} />
       ) : piece?.type === "r" && piece?.color === "w" ? (
-        <WhiteRook />
+        <img src={WhiteRook} />
       ) : piece?.type === "q" && piece?.color === "w" ? (
-        <WhiteQueen />
+        <img src={WhiteQueen} />
       ) : piece?.type === "k" && piece?.color === "w" ? (
-        <WhiteKing />
+        <img src={WhiteKing} />
       ) : piece?.type === "p" && piece?.color === "b" ? (
-        <BlackPawn />
+        <img src={BlackPawn} />
       ) : piece?.type === "n" && piece?.color === "b" ? (
-        <BlackKnight />
+        <img src={BlackKnight} />
       ) : piece?.type === "b" && piece?.color === "b" ? (
-        <BlackBishop />
+        <img src={BlackBishop} />
       ) : piece?.type === "r" && piece?.color === "b" ? (
-        <BlackRook />
+        <img src={BlackRook} />
       ) : piece?.type === "q" && piece?.color === "b" ? (
-        <BlackQueen />
+        <img src={BlackQueen} />
       ) : piece?.type === "k" && piece?.color === "b" ? (
-        <BlackKing />
+        <img src={BlackKing} />
       ) : null}
     </div>
   );

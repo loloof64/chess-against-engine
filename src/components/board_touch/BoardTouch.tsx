@@ -50,8 +50,6 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
     const rawFile = Math.floor(x / squareSize);
     const rawRank = Math.floor(y / squareSize);
 
-    console.log("squareSize", squareSize);
-
     const file = boardOrientation === "white" ? rawFile : 7 - rawFile;
     const rank = boardOrientation === "white" ? 7 - rawRank : rawRank;
 
@@ -89,16 +87,20 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
 
   function handleTouchUp(): void {
     onRelease();
+    setPiece(null);
     setPieceX(null);
     setPieceY(null);
   }
 
   function handleTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
+    event.preventDefault();
     const coordinates = getTouchCoordinates(event);
     if (coordinates === null) return;
     const { x, y } = coordinates;
     const { file, rank } = getCellAt(x, y);
     onMove(file, rank);
+    setPieceX(x);
+    setPieceY(y);
   }
 
   /* TODO remove */
@@ -136,15 +138,19 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
 
   function handleMouseUp(): void {
     onRelease();
+    setPiece(null);
     setPieceX(null);
     setPieceY(null);
   }
 
   function handleMouseMove(event: React.MouseEvent<HTMLDivElement>): void {
+    event.preventDefault();
     const coordinates = getMouseCoordinates(event);
     if (coordinates === null) return;
     const { x, y } = coordinates;
     const { file, rank } = getCellAt(x, y);
+    setPieceX(x);
+    setPieceY(y);
     onMove(file, rank);
   }
   /* */
@@ -158,8 +164,8 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
         onTouchEnd={handleTouchUp}
         onTouchMove={handleTouchMove}
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
+        onDrag={handleMouseMove}
+        onDragEnd={handleMouseUp}
       >
         <MovedPiece
           piece={piece}
