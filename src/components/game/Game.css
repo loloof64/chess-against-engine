@@ -13,6 +13,11 @@
   height: 75vmin;
 }
 
+/* On android in landscape, we must leave space for buttons bar on the left */
+.game.android:not(.portrait) .board {
+  margin-left: 40px;
+}
+
 .game.portrait .board {
   width: 95vmin;
   height: 95vmin;
