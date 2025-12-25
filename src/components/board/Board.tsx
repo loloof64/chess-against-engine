@@ -19,11 +19,13 @@ import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
+import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 
 function Board() {
   const {
     historyMoves,
     positionFen,
+    dragAndDropPositionFen,
     inProgress,
     boardKey,
     boardOrientation,
@@ -245,21 +247,20 @@ function Board() {
               onPieceDrop: handlePieceDrop,
               canDragPiece: handleCanDragPiece,
               boardOrientation,
-              position: positionFen,
+              position: dragAndDropPositionFen ?? positionFen,
               showAnimations: true,
               showNotation: false,
               arrows: lastMoveArrow ? [lastMoveArrow] : [],
             }}
           />
-          {
-            /* TODO remove comment : getPlatformKind() === PlatformKind.android && */
+          {getPlatformKind() === PlatformKind.android && (
             <BoardTouch
               onTouch={handleTouchDown}
               onMove={handleTouchMove}
               onRelease={handleTouchUp}
               currentPositionFen={positionFen}
             />
-          }
+          )}
         </div>
       </BoardCoordinates>
       <PromotionDialog

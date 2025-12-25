@@ -1,11 +1,10 @@
-import { Chess, Move } from "chess.js";
+import { Chess, Move, Square } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
 import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
 import { Arrow } from "react-chessboard";
 
 export enum GameActionType {
-  startNewDefaultGame,
   startNewGame,
   makeMove,
   appendHistoryMove,
@@ -13,6 +12,8 @@ export enum GameActionType {
   gotoPositionIndex,
   setHistoryIndex,
   reverseBoard,
+  startDragAndDrop,
+  cancelDragAndDrop,
 }
 
 type BoardOrientation = "white" | "black" | undefined;
@@ -25,11 +26,12 @@ interface GameAction {
 interface Game {
   boardKey: string;
   positionFen: string;
+  firstPosition: string;
+  dragAndDropPositionFen?: string;
   boardOrientation: BoardOrientation;
   historyMoves: Array<MoveHistoryNodeProps>;
   inProgress: boolean;
   lastMoveArrow?: Arrow;
-  firstPosition: string;
   historyIndex: number | undefined;
 }
 
@@ -46,6 +48,7 @@ const initialGame: Game = {
   boardKey: generateKey(),
   positionFen: EMPTY_POSITION,
   firstPosition: EMPTY_POSITION,
+  dragAndDropPositionFen: undefined,
   boardOrientation: "white",
   historyMoves: [],
   inProgress: false,
@@ -75,17 +78,6 @@ export default function GameProvider({ children }: any) {
 
 function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
-    case GameActionType.startNewDefaultGame:
-      return {
-        boardKey: generateKey(),
-        positionFen: DEFAULT_POSITION,
-        firstPosition: DEFAULT_POSITION,
-        boardOrientation: "white",
-        historyMoves: [],
-        inProgress: true,
-        lastMoveArrow: undefined,
-        historyIndex: undefined,
-      };
     case GameActionType.startNewGame:
       const newPosition = action.value;
       const newOrientation =
@@ -94,6 +86,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         boardKey: generateKey(),
         positionFen: newPosition,
         firstPosition: newPosition,
+        dragAndDropPositionFen: undefined,
         boardOrientation: newOrientation,
         historyMoves: [],
         inProgress: true,
@@ -113,6 +106,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         boardKey: generateKey(),
         positionFen: gameLogic.fen(),
+        dragAndDropPositionFen: undefined,
         lastMoveArrow: arrow,
       };
     case GameActionType.appendHistoryMove:
@@ -148,6 +142,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         boardKey: generateKey(),
         positionFen: newFen,
+        dragAndDropPositionFen: undefined,
         lastMoveArrow: moveArrow,
         historyIndex: index,
       };
@@ -163,6 +158,25 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         boardKey: generateKey(),
         boardOrientation: game.boardOrientation === "black" ? "white" : "black",
+      };
+    }
+    case GameActionType.startDragAndDrop: {
+      const square = action.value as Square;
+      const gameLogic = new Chess(game.positionFen, { skipValidation: true });
+      gameLogic.remove(square);
+      const newPosition = gameLogic.fen();
+
+      return {
+        ...game,
+        dragAndDropPositionFen: newPosition,
+        boardKey: generateKey(),
+      };
+    }
+    case GameActionType.cancelDragAndDrop: {
+      return {
+        ...game,
+        dragAndDropPositionFen: undefined,
+        boardKey: generateKey(),
       };
     }
     default:
