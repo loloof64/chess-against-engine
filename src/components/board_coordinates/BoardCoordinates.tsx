@@ -9,12 +9,16 @@ type BoardOrientation = "white" | "black" | undefined;
 interface BoardCoordinatesParams {
   isWhiteTurn: boolean;
   boardOrientation: BoardOrientation;
+  hoveredFile: number | null;
+  hoveredRank: number | null;
   children: any;
 }
 
 function BoardCoordinates({
   isWhiteTurn,
   boardOrientation,
+  hoveredFile,
+  hoveredRank,
   children,
 }: BoardCoordinatesParams) {
   const [files, setFiles] = useState(availableFiles);
@@ -36,7 +40,7 @@ function BoardCoordinates({
       <div className="corner" />
       {files.map((file, idx) => (
         <div
-          className="file-label top"
+          className={`file-label top ${idx === hoveredFile ? "hovered" : ""}`}
           key={"top-" + file}
           style={{ gridColumn: idx + 2 }}
         >
@@ -46,7 +50,10 @@ function BoardCoordinates({
       <div className="corner" />
       {/* Board rows: rank, board, rank */}
       {ranks.map((rank, i) => [
-        <div className="rank-label left" key={"left-" + rank}>
+        <div
+          className={`rank-label left ${i === hoveredRank ? "hovered" : ""}`}
+          key={"left-" + rank}
+        >
           {rank}
         </div>,
         i === 0 ? (
@@ -58,7 +65,10 @@ function BoardCoordinates({
             {children}
           </div>
         ) : null,
-        <div className="rank-label right" key={"right-" + rank}>
+        <div
+          className={`rank-label right ${i === hoveredRank ? "hovered" : ""}`}
+          key={"right-" + rank}
+        >
           {rank}
         </div>,
       ])}
@@ -66,7 +76,9 @@ function BoardCoordinates({
       <div className="corner" />
       {files.map((file, idx) => (
         <div
-          className="file-label bottom"
+          className={`file-label bottom ${
+            idx === hoveredFile ? "hovered" : ""
+          }`}
           key={"bottom-" + file}
           style={{ gridColumn: idx + 2 }}
         >

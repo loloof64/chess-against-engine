@@ -14,10 +14,11 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
+import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 
 function Board() {
   const {
@@ -38,6 +39,34 @@ function Board() {
   >();
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [messageDialogCaption, setMessageDialogCaption] = useState("");
+  const [hoveredFile, setHoveredFile] = useState<number | null>(null);
+  const [hoveredRank, setHoveredRank] = useState<number | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+
+  function handleTouchDown(event: React.TouchEvent<HTMLDivElement>): void {
+    handleTouchMove(event);
+  }
+
+  function handleTouchUp(): void {
+    setHoveredFile(null);
+    setHoveredRank(null);
+  }
+
+  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
+    if (!overlayRef.current) return;
+
+    const rect = overlayRef.current.getBoundingClientRect();
+    const touch = event.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    const squareSize = rect.width / 8;
+    const file = Math.floor(x / squareSize);
+    const rank = Math.floor(y / squareSize);
+
+    setHoveredFile(file >= 0 && file < 8 ? file : null);
+    setHoveredRank(rank >= 0 && rank < 8 ? rank : null);
+  }
 
   function showGameOverNotification(fenAfterMove: string) {
     const gameLogic = new Chess(fenAfterMove);
@@ -217,6 +246,8 @@ function Board() {
       <BoardCoordinates
         isWhiteTurn={isWhiteTurn}
         boardOrientation={boardOrientation}
+        hoveredFile={hoveredFile}
+        hoveredRank={hoveredRank}
       >
         <Chessboard
           key={boardKey}
@@ -230,6 +261,22 @@ function Board() {
             arrows: lastMoveArrow ? [lastMoveArrow] : [],
           }}
         />
+        {getPlatformKind() === PlatformKind.android && (
+          <div
+            ref={overlayRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 10,
+            }}
+            onTouchStart={handleTouchDown}
+            onTouchEnd={handleTouchUp}
+            onTouchMove={handleTouchMove}
+          />
+        )}
       </BoardCoordinates>
       <PromotionDialog
         whiteTurn={isWhiteTurn}
