@@ -70,61 +70,6 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
     return () => window.removeEventListener("resize", updateSquareSize);
   }, []);
 
-  /* TODO remove*/
-  function getLocalMouseCoordinates(
-    event: React.MouseEvent<HTMLDivElement>
-  ): TouchCoordinates | null {
-    if (!overlayRef.current) return null;
-    const rect = overlayRef.current.getBoundingClientRect();
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
-  }
-
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>): void {
-    const coordinates = getLocalMouseCoordinates(event);
-    if (coordinates === null) return;
-    const { x, y } = coordinates;
-    const { file, rank } = getCellAt(x, y);
-    if (file < 0 || file > 7 || rank < 0 || rank > 7) return;
-    const piece = getPieceAt(file, rank);
-    if (piece === null) return;
-    setPiece(piece);
-    setPieceX(x);
-    setPieceY(y);
-    onTouch(file, rank);
-  }
-
-  function handleMouseUp(event: React.MouseEvent<HTMLDivElement>): void {
-    dispatch({
-      type: GameActionType.cancelDragAndDrop,
-    });
-    setPiece(null);
-    setPieceX(null);
-    setPieceY(null);
-    const coordinates = getLocalMouseCoordinates(event);
-    if (coordinates == null) {
-      onRelease(null);
-      return;
-    }
-    const { x, y } = coordinates;
-    const { file, rank } = getCellAt(x, y);
-    onRelease({ file, rank });
-  }
-
-  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>): void {
-    event.preventDefault();
-    const coordinates = getLocalMouseCoordinates(event);
-    if (coordinates === null) return;
-    const { x, y } = coordinates;
-    const { file, rank } = getCellAt(x, y);
-    setPieceX(x);
-    setPieceY(y);
-    onMove(file, rank);
-  }
-  /* */
-
   function getLocalTouchCoordinates(
     event: React.TouchEvent<HTMLDivElement>
   ): TouchCoordinates | null {
@@ -191,9 +136,6 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
         onTouchStart={handleTouchDown}
         onTouchEnd={handleTouchUp}
         onTouchMove={handleTouchMove}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
       >
         <MovedPiece
           piece={piece}

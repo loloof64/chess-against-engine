@@ -20,8 +20,7 @@ import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
 import getSquare from "../../utils/GetSquare";
-
-import { info } from "@tauri-apps/plugin-log";
+import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 
 function Board() {
   const {
@@ -65,10 +64,6 @@ function Board() {
     }
 
     const { file, rank } = args;
-
-    /////////TODO remove
-    info(`release at (${file}, ${rank})`);
-    /////////////////////////////
 
     const chessLogic = new Chess(positionFen);
     try {
@@ -343,14 +338,14 @@ function Board() {
               arrows: lastMoveArrow ? [lastMoveArrow] : [],
             }}
           />
-          {
-            /* TODO |put code again| getPlatformKind() === PlatformKind.android && */ <BoardTouch
+          {getPlatformKind() === PlatformKind.android && (
+            <BoardTouch
               onTouch={handleTouchDown}
               onMove={handleTouchMove}
               onRelease={handleTouchUp}
               currentPositionFen={positionFen}
             />
-          }
+          )}
         </div>
       </BoardCoordinates>
       <PromotionDialog
