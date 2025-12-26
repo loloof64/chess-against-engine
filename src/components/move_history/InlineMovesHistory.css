@@ -4,10 +4,12 @@
   flex-wrap: nowrap;
   word-break: keep-all;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   overflow-x: scroll;
   background-color: darkolivegreen;
   width: 100%;
+  height: 60px;
+  font-size: 30px;
 }
 
 .inline-history-moves button {
@@ -19,6 +21,7 @@
   background-color: transparent;
   font-family: "Free Serif", serif;
   font-size: x-large;
+  white-space: nowrap;
 }
 
 .inline-history-moves button.move.selected {
