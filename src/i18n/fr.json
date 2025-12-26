@@ -87,6 +87,20 @@
         "next": "Position suivante",
         "last": "Dernière position"
       }
+    },
+    "engineSelector": {
+      "loading": "Recherche de moteurs d'échecs ...",
+      "error": "Erreur : {{error}}",
+      "noEngineFound": "Aucun moteur d'échecs OEX trouvé. Veuillez installer un moteur d'échecs OEX (comme « Stockfish 17.1 Chess Engine ») depuis Google Play.",
+      "availableEngines": "Moteurs disponibles ({{count}}) :",
+      "chooseAnEngine": "Sélectionner un moteur ...",
+      "summary": "Voir tous les moteurs",
+      "packageLabel": "Package :",
+      "pathLabel": "Chemin :",
+      "protocolsLabel": "Protocoles :",
+      "packageValue": "Package : {{package}}",
+      "pathValue": "Chemin : {{path}}",
+      "protocolsValue": "Protocoles : {{protocols}}"
     }
   }
 }

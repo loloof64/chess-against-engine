@@ -87,6 +87,20 @@
         "next": "Siguiente posición",
         "last": "Última posición"
       }
+    },
+    "engineSelector": {
+      "loading": "Buscando motors de ajedrez ...",
+      "error": "Error: {{error}}",
+      "noEngineFound": "No se encontró motor de ajedrez OEX. Por favor, instala un motor de ajedrez OEX (como 'Stockfish 17.1 Chess Engine') desde Google Play.",
+      "availableEngines": "Motores disponibles ({{count}}) :",
+      "chooseAnEngine": "Selecciona un motor ...",
+      "summary": "Ver todos los motores",
+      "packageLabel": "Paquete:",
+      "pathLabel": "Ruta:",
+      "protocolsLabel": "Protocolos:",
+      "packageValue": "Paquete: {{package}}",
+      "pathValue": "Ruta: {{path}}",
+      "protocolsValue": "Protocolos: {{protocols}}"
     }
   }
 }

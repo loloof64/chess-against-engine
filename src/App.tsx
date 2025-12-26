@@ -1,16 +1,24 @@
 import "./App.css";
+import { EngineSelector } from "./components/EngineSelector";
 import Game from "./components/game/Game";
 import Toolbar from "./components/toolbar/Toolbar";
 import GameProvider from "./stores/game/GameContext";
 import PositionEditorProvider from "./stores/game/PositionEditorContext";
+import getPlatformKind, { PlatformKind } from "./utils/PlatformKind";
 
 function App() {
   return (
     <GameProvider>
       <PositionEditorProvider>
         <main className="container">
-          <Toolbar />
-          <Game />
+          {getPlatformKind() === PlatformKind.android ? (
+            <EngineSelector />
+          ) : (
+            <>
+              <Toolbar />
+              <Game />
+            </>
+          )}
         </main>
       </PositionEditorProvider>
     </GameProvider>
