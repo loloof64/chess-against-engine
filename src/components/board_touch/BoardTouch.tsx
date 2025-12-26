@@ -11,6 +11,7 @@ import getSquare from "../../utils/GetSquare";
 
 interface BoardTouchParams {
   currentPositionFen: string;
+  canDragPiece: (piece: Piece) => boolean;
   onTouch: (file: number, rank: number) => void;
   onMove: (file: number, rank: number) => void;
   onRelease: (args: { file: number; rank: number } | null) => void;
@@ -26,7 +27,12 @@ interface CellCoordinates {
   rank: number;
 }
 
-function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
+function BoardTouch({
+  onTouch,
+  onMove,
+  onRelease,
+  canDragPiece,
+}: BoardTouchParams) {
   const { positionFen, boardOrientation } = useGame();
   const dispatch = useGameDispatch();
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -91,6 +97,7 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
     if (file < 0 || file > 7 || rank < 0 || rank > 7) return;
     const piece = getPieceAt(file, rank);
     if (piece === null) return;
+    if (!canDragPiece(piece)) return;
     setPiece(piece);
     setPieceX(x);
     setPieceY(y);

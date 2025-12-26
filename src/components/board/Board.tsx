@@ -7,7 +7,7 @@ import {
   Arrow,
 } from "react-chessboard";
 import convertSanToFan from "../../core/sanConversion";
-import { Chess, Move } from "chess.js";
+import { Chess, Move, Piece } from "chess.js";
 import {
   GameActionType,
   useGame,
@@ -46,6 +46,11 @@ function Board() {
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
+
+  function handleBoardTouchCanDragPiece(piece: Piece): boolean {
+    const isWhitePieceSide = piece.color === "w";
+    return isWhiteTurn === isWhitePieceSide;
+  }
 
   function handleTouchDown(file: number, rank: number): void {
     setHoveredFile(file);
@@ -340,6 +345,7 @@ function Board() {
           />
           {getPlatformKind() === PlatformKind.android && (
             <BoardTouch
+              canDragPiece={handleBoardTouchCanDragPiece}
               onTouch={handleTouchDown}
               onMove={handleTouchMove}
               onRelease={handleTouchUp}
