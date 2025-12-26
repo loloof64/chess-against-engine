@@ -12,12 +12,19 @@ function AdvancedOptions() {
   const dispatch = usePositionEditorDispatch();
 
   function handleChangeTurn(newColor: Color) {
-    let parts = currentPosition.split(" ");
-    parts[1] = newColor;
-    const newPosition = parts.join(" ");
-
     try {
-      new Chess(newPosition); // check logic
+      /*
+        If the king is currently in check, then swapping turn
+        would lead to an illegal position.
+      */
+      const matchingGameLogic = new Chess(currentPosition);
+      if (matchingGameLogic.inCheck()) return;
+
+      let parts = currentPosition.split(" ");
+      parts[1] = newColor;
+      const newPosition = parts.join(" ");
+
+      new Chess(newPosition); // check validity
       dispatch({
         type: PositionEditorActionType.changeCurrentPosition,
         value: newPosition,
