@@ -27,6 +27,10 @@ function BoardCoordinates({
 }: BoardCoordinatesParams) {
   const [files, setFiles] = useState(availableFiles);
   const [ranks, setRanks] = useState(availableRanks);
+  const [hoveredColumn, setHoveredColumn] = useState(hoveredFile);
+  const [hoveredRow, setHoveredRow] = useState(hoveredRank);
+  const [startColumn, setStartColumn] = useState(startFile);
+  const [startRow, setStartRow] = useState(startRank);
 
   useEffect(() => {
     const whiteAtBottom = boardOrientation === "white";
@@ -36,7 +40,27 @@ function BoardCoordinates({
     setRanks(
       whiteAtBottom ? availableRanks : availableRanks.map((e) => e).reverse()
     );
-  }, [boardOrientation]);
+    if (hoveredFile === null) {
+      setHoveredColumn(null);
+    } else {
+      setHoveredColumn(whiteAtBottom ? hoveredFile : 7 - hoveredFile);
+    }
+    if (hoveredRank === null) {
+      setHoveredRow(null);
+    } else {
+      setHoveredRow(whiteAtBottom ? 7 - hoveredRank : hoveredRank);
+    }
+    if (startFile === null) {
+      setStartColumn(null);
+    } else {
+      setStartColumn(whiteAtBottom ? startFile : 7 - startFile);
+    }
+    if (startRank === null) {
+      setStartRow(null);
+    } else {
+      setStartRow(whiteAtBottom ? 7 - startRank : startRank);
+    }
+  }, [boardOrientation, startFile, startRank, hoveredFile, hoveredRank]);
 
   return (
     <div className="chessboard-coords-outergrid">
@@ -44,9 +68,9 @@ function BoardCoordinates({
       <div className="corner" />
       {files.map((file, idx) => (
         <div
-          className={`file-label top ${idx === hoveredFile ? "hovered" : ""} ${
-            idx === startFile ? "start" : ""
-          }`}
+          className={`file-label top ${
+            idx === hoveredColumn ? "hovered" : ""
+          } ${idx === startColumn ? "start" : ""}`}
           key={"top-" + file}
           style={{ gridColumn: idx + 2 }}
         >
@@ -57,9 +81,9 @@ function BoardCoordinates({
       {/* Board rows: rank, board, rank */}
       {ranks.map((rank, i) => [
         <div
-          className={`rank-label left ${
-            7 - i === hoveredRank ? "hovered" : ""
-          } ${7 - i === startRank ? "start" : ""}`}
+          className={`rank-label left ${i === hoveredRow ? "hovered" : ""} ${
+            i === startRow ? "start" : ""
+          }`}
           key={"left-" + rank}
         >
           {rank}
@@ -74,9 +98,9 @@ function BoardCoordinates({
           </div>
         ) : null,
         <div
-          className={`rank-label right ${
-            7 - i === hoveredRank ? "hovered" : ""
-          } ${7 -   i === startRank ? "start" : ""}`}
+          className={`rank-label right ${i === hoveredRow ? "hovered" : ""} ${
+            i === startRow ? "start" : ""
+          }`}
           key={"right-" + rank}
         >
           {rank}
@@ -87,8 +111,8 @@ function BoardCoordinates({
       {files.map((file, idx) => (
         <div
           className={`file-label bottom ${
-            idx === hoveredFile ? "hovered" : ""
-          } ${idx === startFile ? "start" : ""}`}
+            idx === hoveredColumn ? "hovered" : ""
+          } ${idx === startColumn ? "start" : ""}`}
           key={"bottom-" + file}
           style={{ gridColumn: idx + 2 }}
         >
