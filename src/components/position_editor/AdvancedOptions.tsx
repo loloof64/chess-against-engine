@@ -12,12 +12,19 @@ function AdvancedOptions() {
   const dispatch = usePositionEditorDispatch();
 
   function handleChangeTurn(newColor: Color) {
-    let gameLogic = new Chess(currentPosition);
-    gameLogic.setTurn(newColor);
-    dispatch({
-      type: PositionEditorActionType.changeCurrentPosition,
-      value: gameLogic.fen(),
-    });
+    let parts = currentPosition.split(" ");
+    parts[1] = newColor;
+    const newPosition = parts.join(" ");
+
+    try {
+      new Chess(newPosition); // check logic
+      dispatch({
+        type: PositionEditorActionType.changeCurrentPosition,
+        value: newPosition,
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function handleCastleChange(type: string, isToBeAdded: boolean) {
