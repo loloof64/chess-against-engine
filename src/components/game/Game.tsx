@@ -21,10 +21,10 @@ function Game() {
     </div>
   ) : (
     <div className="game">
+      <InlineMovesHistory />
       <div className="board">
         <Board />
       </div>
-      <InlineMovesHistory />
     </div>
   );
 }
