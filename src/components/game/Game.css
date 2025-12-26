@@ -17,9 +17,16 @@
   height: 95vmin;
 }
 
-/* On android in landscape, we must leave space for buttons bar on the left */
+/* On android in landscape, we must leave space for buttons bar on the left 
+   and space for notch on the right
+*/
 .game.android:not(.portrait) .board {
   margin-left: 40px;
+}
+
+.game.android:not(.portrait) .history {
+  margin-right: 40px;
+  width: calc(80vw - 75vmin - 2px);
 }
 
 @media (orientation: portrait) {
