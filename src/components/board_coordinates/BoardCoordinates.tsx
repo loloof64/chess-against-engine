@@ -76,7 +76,7 @@ function BoardCoordinates({
         <div
           className={`rank-label right ${
             7 - i === hoveredRank ? "hovered" : ""
-          } ${7 - i === startRank ? "start" : ""}`}
+          } ${7 -   i === startRank ? "start" : ""}`}
           key={"right-" + rank}
         >
           {rank}

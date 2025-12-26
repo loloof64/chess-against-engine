@@ -1,18 +1,19 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./BoardTouch.css";
 import MovedPiece from "./MovedPiece";
-import { Chess, Piece, Square } from "chess.js";
+import { Chess, Piece } from "chess.js";
 import {
   GameActionType,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
+import getSquare from "../../utils/GetSquare";
 
 interface BoardTouchParams {
   currentPositionFen: string;
   onTouch: (file: number, rank: number) => void;
   onMove: (file: number, rank: number) => void;
-  onRelease: () => void;
+  onRelease: (args: { file: number; rank: number } | null) => void;
 }
 
 interface TouchCoordinates {
@@ -33,12 +34,8 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
   const [pieceX, setPieceX] = useState<number | null>(null);
   const [pieceY, setPieceY] = useState<number | null>(null);
   const [piece, setPiece] = useState<Piece | null>(null);
-
-  function getSquare(file: number, rank: number): Square {
-    const fileStr = String.fromCharCode("a".charCodeAt(0) + file);
-    const rankStr = String.fromCharCode("1".charCodeAt(0) + rank);
-    return `${fileStr}${rankStr}` as Square;
-  }
+  const [savedCoordinates, setSavedCoordinates] =
+    useState<TouchCoordinates | null>(null);
 
   function getPieceAt(file: number, rank: number): Piece | null {
     try {
@@ -61,23 +58,88 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
     return { file, rank };
   }
 
-  function getTouchCoordinates(
+  useEffect(() => {
+    function updateSquareSize() {
+      if (overlayRef.current) {
+        const rect = overlayRef.current.getBoundingClientRect();
+        setSquareSize(rect.width / 8);
+      }
+    }
+    updateSquareSize();
+    window.addEventListener("resize", updateSquareSize);
+    return () => window.removeEventListener("resize", updateSquareSize);
+  }, []);
+
+  /* TODO remove*/
+  function getLocalMouseCoordinates(
+    event: React.MouseEvent<HTMLDivElement>
+  ): TouchCoordinates | null {
+    if (!overlayRef.current) return null;
+    const rect = overlayRef.current.getBoundingClientRect();
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+  }
+
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>): void {
+    const coordinates = getLocalMouseCoordinates(event);
+    if (coordinates === null) return;
+    const { x, y } = coordinates;
+    const { file, rank } = getCellAt(x, y);
+    if (file < 0 || file > 7 || rank < 0 || rank > 7) return;
+    const piece = getPieceAt(file, rank);
+    if (piece === null) return;
+    setPiece(piece);
+    setPieceX(x);
+    setPieceY(y);
+    onTouch(file, rank);
+  }
+
+  function handleMouseUp(event: React.MouseEvent<HTMLDivElement>): void {
+    dispatch({
+      type: GameActionType.cancelDragAndDrop,
+    });
+    setPiece(null);
+    setPieceX(null);
+    setPieceY(null);
+    const coordinates = getLocalMouseCoordinates(event);
+    if (coordinates == null) {
+      onRelease(null);
+      return;
+    }
+    const { x, y } = coordinates;
+    const { file, rank } = getCellAt(x, y);
+    onRelease({ file, rank });
+  }
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>): void {
+    event.preventDefault();
+    const coordinates = getLocalMouseCoordinates(event);
+    if (coordinates === null) return;
+    const { x, y } = coordinates;
+    const { file, rank } = getCellAt(x, y);
+    setPieceX(x);
+    setPieceY(y);
+    onMove(file, rank);
+  }
+  /* */
+
+  function getLocalTouchCoordinates(
     event: React.TouchEvent<HTMLDivElement>
   ): TouchCoordinates | null {
+    if (event.touches.length === 0) return null;
     if (!overlayRef.current) return null;
     const rect = overlayRef.current.getBoundingClientRect();
     const touch = event.touches[0];
     const x = touch.clientX - rect.left;
     const y = touch.clientY - rect.top;
-
-    const squareSize = Math.floor(rect.width / 8);
-    setSquareSize(squareSize);
-
     return { x, y };
   }
 
   function handleTouchDown(event: React.TouchEvent<HTMLDivElement>): void {
-    const coordinates = getTouchCoordinates(event);
+    const coordinates = getLocalTouchCoordinates(event);
+    setSavedCoordinates(coordinates);
     if (coordinates === null) return;
     const { x, y } = coordinates;
     const { file, rank } = getCellAt(x, y);
@@ -98,15 +160,21 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
     dispatch({
       type: GameActionType.cancelDragAndDrop,
     });
-    onRelease();
     setPiece(null);
     setPieceX(null);
     setPieceY(null);
+    if (savedCoordinates == null) {
+      onRelease(null);
+      return;
+    }
+    const { x, y } = savedCoordinates;
+    const { file, rank } = getCellAt(x, y);
+    onRelease({ file, rank });
   }
 
   function handleTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
-    event.preventDefault();
-    const coordinates = getTouchCoordinates(event);
+    const coordinates = getLocalTouchCoordinates(event);
+    setSavedCoordinates(coordinates);
     if (coordinates === null) return;
     const { x, y } = coordinates;
     const { file, rank } = getCellAt(x, y);
@@ -123,6 +191,9 @@ function BoardTouch({ onTouch, onMove, onRelease }: BoardTouchParams) {
         onTouchStart={handleTouchDown}
         onTouchEnd={handleTouchUp}
         onTouchMove={handleTouchMove}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
       >
         <MovedPiece
           piece={piece}

@@ -19,7 +19,9 @@ import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
-import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
+import getSquare from "../../utils/GetSquare";
+
+import { info } from "@tauri-apps/plugin-log";
 
 function Board() {
   const {
@@ -53,11 +55,91 @@ function Board() {
     setStartRank(rank);
   }
 
-  function handleTouchUp(): void {
-    setHoveredFile(null);
-    setHoveredRank(null);
-    setStartFile(null);
-    setStartRank(null);
+  function handleTouchUp(args: { file: number; rank: number } | null): void {
+    if (args === null) {
+      setHoveredFile(null);
+      setHoveredRank(null);
+      setStartFile(null);
+      setStartRank(null);
+      return;
+    }
+
+    const { file, rank } = args;
+
+    /////////TODO remove
+    info(`release at (${file}, ${rank})`);
+    /////////////////////////////
+
+    const chessLogic = new Chess(positionFen);
+    try {
+      const move = chessLogic.move({
+        from: getSquare(startFile!, startRank!),
+        to: getSquare(file, rank),
+        promotion: "q",
+      });
+      if (move) {
+        const turn = positionFen.split(" ")[1];
+        const isWhiteTurnBeforeMove = turn == "w";
+        const isPromotionMove = move.isPromotion();
+        const moveNumber = parseInt(positionFen.split(" ")[5]);
+        const weShouldAddHistoryMoveNumber =
+          isWhiteTurnBeforeMove || historyMoves.length === 0;
+        if (weShouldAddHistoryMoveNumber) {
+          addHistoryMove(
+            `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+            isWhiteTurnBeforeMove,
+            "",
+            {
+              startSquare: move.from,
+              endSquare: move.to,
+              color: "green",
+            },
+            () => {}
+          );
+        }
+        if (isPromotionMove) {
+          setPendingPromotionMove(move);
+          setIsPromotionDialogOpen(true);
+        } else {
+          dispatch({
+            type: GameActionType.makeMove,
+            value: move,
+          });
+          addHistoryMove(
+            move.san,
+            isWhiteTurnBeforeMove,
+            move.after,
+            {
+              startSquare: move.from,
+              endSquare: move.to,
+              color: "green",
+            },
+            (historyIndex: number) => {
+              dispatch({
+                type: GameActionType.gotoPositionIndex,
+                value: historyIndex,
+              });
+              dispatch({
+                type: GameActionType.setHistoryIndex,
+                value: historyIndex,
+              });
+            }
+          );
+          checkGameOverAndEventualyNotify(move.after);
+        }
+      }
+
+      setHoveredFile(null);
+      setHoveredRank(null);
+      setStartFile(null);
+      setStartRank(null);
+    } catch (e) {
+      console.error(e);
+      setHoveredFile(null);
+      setHoveredRank(null);
+      setStartFile(null);
+      setStartRank(null);
+    }
   }
 
   function handleTouchMove(file: number, rank: number): void {
@@ -261,14 +343,14 @@ function Board() {
               arrows: lastMoveArrow ? [lastMoveArrow] : [],
             }}
           />
-          {getPlatformKind() === PlatformKind.android && (
-            <BoardTouch
+          {
+            /* TODO |put code again| getPlatformKind() === PlatformKind.android && */ <BoardTouch
               onTouch={handleTouchDown}
               onMove={handleTouchMove}
               onRelease={handleTouchUp}
               currentPositionFen={positionFen}
             />
-          )}
+          }
         </div>
       </BoardCoordinates>
       <PromotionDialog
