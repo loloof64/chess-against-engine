@@ -117,7 +117,7 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         currentPosition: EMPTY_POSITION,
-        isWhiteTurn: getTurnFrom(action.value),
+        isWhiteTurn: getTurnFrom(EMPTY_POSITION),
       };
     }
     default:
