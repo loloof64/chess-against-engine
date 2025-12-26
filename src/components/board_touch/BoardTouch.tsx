@@ -10,7 +10,7 @@ import {
 import getSquare from "../../utils/GetSquare";
 
 interface BoardTouchParams {
-  currentPositionFen: string;
+  isInteractive: boolean;
   canDragPiece: (piece: Piece) => boolean;
   onTouch: (file: number, rank: number) => void;
   onMove: (file: number, rank: number) => void;
@@ -28,6 +28,7 @@ interface CellCoordinates {
 }
 
 function BoardTouch({
+  isInteractive,
   onTouch,
   onMove,
   onRelease,
@@ -89,6 +90,7 @@ function BoardTouch({
   }
 
   function handleTouchDown(event: React.TouchEvent<HTMLDivElement>): void {
+    if (!isInteractive) return;
     const coordinates = getLocalTouchCoordinates(event);
     setSavedCoordinates(coordinates);
     if (coordinates === null) return;
@@ -109,6 +111,7 @@ function BoardTouch({
   }
 
   function handleTouchUp(): void {
+    if (!isInteractive) return;
     dispatch({
       type: GameActionType.cancelDragAndDrop,
     });
@@ -125,6 +128,7 @@ function BoardTouch({
   }
 
   function handleTouchMove(event: React.TouchEvent<HTMLDivElement>): void {
+    if (!isInteractive) return;
     const coordinates = getLocalTouchCoordinates(event);
     setSavedCoordinates(coordinates);
     if (coordinates === null) return;

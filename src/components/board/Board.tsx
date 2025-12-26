@@ -349,7 +349,7 @@ function Board() {
               onTouch={handleTouchDown}
               onMove={handleTouchMove}
               onRelease={handleTouchUp}
-              currentPositionFen={positionFen}
+              isInteractive={inProgress}
             />
           )}
         </div>
