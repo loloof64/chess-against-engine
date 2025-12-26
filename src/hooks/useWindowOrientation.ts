@@ -1,7 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useState } from "react";
-import getPlatformKind, { PlatformKind } from "./PlatformKind";
+import getPlatformKind, { PlatformKind } from "../utils/PlatformKind";
 
 type ScreenOrientation = "landscape" | "portrait";
 

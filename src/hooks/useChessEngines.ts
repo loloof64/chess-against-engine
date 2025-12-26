@@ -17,22 +17,28 @@ export function useChessEngines() {
     const fetchEngines = async () => {
       try {
         setLoading(true);
+
+        console.log("Calling test_command...");
+        const testResult = await invoke<string>("test_command");
+        console.log("test_command result:", testResult);
+
+        console.log("Calling getInstalledEngines...");
         const result = await invoke<GetEnginesResponse>(
-          "plugin:chess_engines|getInstalledEngines"
+          "get_installed_engines"
         );
+        console.log("getInstalledEngines result:", result);
 
         if (result.success && result.engines) {
           setEngines(result.engines);
           setError(null);
         } else {
-          setError(result.error || "Erreur inconnue");
+          setError(result.error || "Unknown error");
           setEngines([]);
         }
       } catch (err) {
         const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "Erreur lors de la récupération des moteurs";
+          err instanceof Error ? err.message : "Error when fetching engines";
+        console.error("Error:", errorMessage);
         setError(errorMessage);
         setEngines([]);
       } finally {

@@ -1,4 +1,3 @@
 include ':app'
-include ':plugins:chess-engines:android'
 
 apply from: 'tauri.settings.gradle'
