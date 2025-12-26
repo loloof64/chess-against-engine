@@ -260,62 +260,67 @@ function Board() {
     targetSquare,
   }: PieceDropHandlerArgs): boolean {
     const chessLogic = new Chess(positionFen);
-    const move = chessLogic.move({
-      from: sourceSquare,
-      to: targetSquare ?? sourceSquare,
-      promotion: "q",
-    });
-    if (move) {
-      const turn = positionFen.split(" ")[1];
-      const isWhiteTurnBeforeMove = turn == "w";
-      const isPromotionMove = move.isPromotion();
-      const moveNumber = parseInt(positionFen.split(" ")[5]);
-      const weShouldAddHistoryMoveNumber =
-        isWhiteTurnBeforeMove || historyMoves.length === 0;
-      if (weShouldAddHistoryMoveNumber) {
-        addHistoryMove(
-          `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
-          isWhiteTurnBeforeMove,
-          "",
-          {
-            startSquare: move.from,
-            endSquare: move.to,
-            color: "green",
-          },
-          () => {}
-        );
+    try {
+      const move = chessLogic.move({
+        from: sourceSquare,
+        to: targetSquare ?? sourceSquare,
+        promotion: "q",
+      });
+      if (move) {
+        const turn = positionFen.split(" ")[1];
+        const isWhiteTurnBeforeMove = turn == "w";
+        const isPromotionMove = move.isPromotion();
+        const moveNumber = parseInt(positionFen.split(" ")[5]);
+        const weShouldAddHistoryMoveNumber =
+          isWhiteTurnBeforeMove || historyMoves.length === 0;
+        if (weShouldAddHistoryMoveNumber) {
+          addHistoryMove(
+            `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+            isWhiteTurnBeforeMove,
+            "",
+            {
+              startSquare: move.from,
+              endSquare: move.to,
+              color: "green",
+            },
+            () => {}
+          );
+        }
+        if (isPromotionMove) {
+          setPendingPromotionMove(move);
+          setIsPromotionDialogOpen(true);
+        } else {
+          dispatch({
+            type: GameActionType.makeMove,
+            value: move,
+          });
+          addHistoryMove(
+            move.san,
+            isWhiteTurnBeforeMove,
+            move.after,
+            {
+              startSquare: move.from,
+              endSquare: move.to,
+              color: "green",
+            },
+            (historyIndex: number) => {
+              dispatch({
+                type: GameActionType.gotoPositionIndex,
+                value: historyIndex,
+              });
+              dispatch({
+                type: GameActionType.setHistoryIndex,
+                value: historyIndex,
+              });
+            }
+          );
+          checkGameOverAndEventualyNotify(move.after);
+          return true;
+        }
       }
-      if (isPromotionMove) {
-        setPendingPromotionMove(move);
-        setIsPromotionDialogOpen(true);
-      } else {
-        dispatch({
-          type: GameActionType.makeMove,
-          value: move,
-        });
-        addHistoryMove(
-          move.san,
-          isWhiteTurnBeforeMove,
-          move.after,
-          {
-            startSquare: move.from,
-            endSquare: move.to,
-            color: "green",
-          },
-          (historyIndex: number) => {
-            dispatch({
-              type: GameActionType.gotoPositionIndex,
-              value: historyIndex,
-            });
-            dispatch({
-              type: GameActionType.setHistoryIndex,
-              value: historyIndex,
-            });
-          }
-        );
-        checkGameOverAndEventualyNotify(move.after);
-        return true;
-      }
+    } catch (e) {
+      console.error(e);
+      return false;
     }
     return false;
   }
