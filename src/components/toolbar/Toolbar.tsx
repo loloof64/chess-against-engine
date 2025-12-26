@@ -19,7 +19,7 @@ import {
   usePositionEditor,
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
-import { Chess } from "chess.js";
+import { Chess, Color } from "chess.js";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import NativeToolbarSpace from "../native_toolbar_space/NativeToolbarSpace";
 
@@ -94,7 +94,13 @@ function Toolbar() {
 
   function handleCustomPositionDialogValidated() {
     try {
-      new Chess(editorCurrentPosition);
+      let currentPositionParts = editorCurrentPosition.split(" ");
+      const currentTurn = currentPositionParts[1] as Color;
+      currentPositionParts[1] = currentTurn === "w" ? "b" : "w";
+      const turnChangedPosition = currentPositionParts.join(" ");
+      // check if player not in turn is in check
+      const turnChangedLogic = new Chess(turnChangedPosition);
+      if (turnChangedLogic.inCheck()) throw "king not in turn is in check.";
       setIsCustomPositionDialogOpen(false);
       dispatch({
         type: GameActionType.startNewGame,
