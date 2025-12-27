@@ -104,33 +104,36 @@ public class ChessEngineResolver {
 			String packageName) {
 		if (packageName != null) {
 			Log.d(TAG, "found engine provider, packageName=" + packageName);
+			String authority = null;
 			Bundle bundle = resolveInfo.activityInfo.metaData;
 			if (bundle != null) {
-				String authority = bundle
-						.getString("chess.provider.engine.authority");
+				authority = bundle.getString("chess.provider.engine.authority");
 				Log.d(TAG, "authority=" + authority);
-				if (authority != null) {
-					try {
-						Resources resources = context
-								.getPackageManager()
-								.getResourcesForApplication(
-										resolveInfo.activityInfo.applicationInfo);
-						int resId = resources.getIdentifier("enginelist",
-								"xml", packageName);
-						Log.d(TAG, "enginelist resId=" + resId);
-						if (resId != 0) {
-							XmlResourceParser parser = resources.getXml(resId);
-							parseEngineListXml(parser, authority, result,
-									packageName);
-						} else {
-							Log.e(TAG, "enginelist resource not found in " + packageName);
-						}
-					} catch (NameNotFoundException e) {
-						Log.e(TAG, e.getLocalizedMessage(), e);
-					} catch (Exception e) {
-						Log.e(TAG, "Error parsing engine list: " + e.getLocalizedMessage(), e);
-					}
+			}
+			// Use package name as default authority if not specified
+			if (authority == null) {
+				authority = packageName + ".provider";
+				Log.d(TAG, "No authority in metadata, using default: " + authority);
+			}
+			try {
+				Resources resources = context
+						.getPackageManager()
+						.getResourcesForApplication(
+								resolveInfo.activityInfo.applicationInfo);
+				int resId = resources.getIdentifier("enginelist",
+						"xml", packageName);
+				Log.d(TAG, "enginelist resId=" + resId);
+				if (resId != 0) {
+					XmlResourceParser parser = resources.getXml(resId);
+					parseEngineListXml(parser, authority, result,
+							packageName);
+				} else {
+					Log.e(TAG, "enginelist resource not found in " + packageName);
 				}
+			} catch (NameNotFoundException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			} catch (Exception e) {
+				Log.e(TAG, "Error parsing engine list: " + e.getLocalizedMessage(), e);
 			}
 		}
 		return result;
