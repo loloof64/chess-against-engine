@@ -84,6 +84,33 @@ export function EngineProcessProvider({ children }: { children: ReactNode }) {
     }
   }, [engineProcess]);
 
+  // Validate engine still exists when app resumes
+  useEffect(() => {
+    if (!engineProcess) return;
+
+    const validateEngine = async () => {
+      try {
+        const result = await invoke<any>("get_installed_engines");
+        if (result.success && result.engines) {
+          const engineStillExists = result.engines.some(
+            (e: any) => e.path === engineProcess.path
+          );
+          if (!engineStillExists) {
+            console.warn(
+              `Engine at ${engineProcess.path} is no longer installed, clearing state`
+            );
+            setEngineProcess(null);
+            currentProcessOutput = "";
+          }
+        }
+      } catch (error) {
+        console.error("Error validating engine:", error);
+      }
+    };
+
+    validateEngine();
+  }, []); // Run once on mount
+
   // Sync module-level output to React state
   useEffect(() => {
     const listener = (output: string) => {
@@ -93,6 +120,7 @@ export function EngineProcessProvider({ children }: { children: ReactNode }) {
     outputListeners.add(listener);
     return () => {
       outputListeners.delete(listener);
+
     };
   }, []);
 
