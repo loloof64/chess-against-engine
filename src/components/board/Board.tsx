@@ -14,13 +14,14 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
 import getSquare from "../../utils/GetSquare";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
+import { useEngineProcess } from "../../stores/game/AndroidEngineProcessContext";
 
 function Board() {
   const {
@@ -46,6 +47,22 @@ function Board() {
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
+
+  const { addOutputListener, engineProcess } = useEngineProcess();
+
+  useEffect(() => {
+    if (!engineProcess) {
+      console.log("No engine process running");
+      return;
+    }
+
+    console.log("Setting up engine output listener");
+    const unsubscribe = addOutputListener((output) => {
+      console.log("Engine output received:", output);
+    });
+
+    return unsubscribe; // Clean up listener on unmount
+  }, [addOutputListener, engineProcess]);
 
   function handleBoardTouchCanDragPiece(piece: Piece): boolean {
     const isWhitePieceSide = piece.color === "w";

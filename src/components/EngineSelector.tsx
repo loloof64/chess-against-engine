@@ -1,10 +1,35 @@
 import { useState } from "react";
 import { useChessEngines } from "../hooks/useChessEngines";
+import { useEngineProcess } from "../stores/game/AndroidEngineProcessContext";
 import { t } from "i18next";
 
 export function EngineSelector() {
   const { engines, loading, error } = useChessEngines();
-  const [selectedEngine, setSelectedEngine] = useState<string>("");
+  const { startEngineProcess, engineProcess } = useEngineProcess();
+  const [selectedEngineId, setSelectedEngineId] = useState<string>("");
+
+  const getEngineId = (engine: (typeof engines)[0]) =>
+    `${engine.packageName}|${engine.path}`;
+  const selected = engines.find((e) => getEngineId(e) === selectedEngineId);
+
+  const handleEngineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newId = e.target.value;
+    setSelectedEngineId(newId);
+
+    if (newId === "") {
+      return;
+    }
+
+    const selectedEngine = engines.find(
+      (engine) => getEngineId(engine) === newId
+    );
+    if (selectedEngine) {
+      console.log(
+        `Selected engine: ${selectedEngine.name} at ${selectedEngine.path}`
+      );
+      startEngineProcess(selectedEngine.path);
+    }
+  };
 
   if (loading) {
     return <div>{t("engineSelector.loading")}</div>;
@@ -22,18 +47,11 @@ export function EngineSelector() {
     return <div>{t("engineSelector.noEngineFound")}</div>;
   }
 
-  const getEngineId = (engine: (typeof engines)[0]) =>
-    `${engine.packageName}|${engine.path}`;
-  const selected = engines.find((e) => getEngineId(e) === selectedEngine);
-
   return (
     <div>
       <h2>{t("engineSelector.availableEngines", { count: engines.length })}</h2>
 
-      <select
-        value={selectedEngine}
-        onChange={(e) => setSelectedEngine(e.target.value)}
-      >
+      <select value={selectedEngineId} onChange={handleEngineSelect}>
         <option value="">{t("engineSelector.chooseAnEngine")}</option>
         {engines.map((engine) => (
           <option key={getEngineId(engine)} value={getEngineId(engine)}>
@@ -54,6 +72,28 @@ export function EngineSelector() {
           <p>
             <strong>{t("engineSelector.packageLabel")}</strong>{" "}
             {selected.packageName}
+          </p>
+        </div>
+      )}
+
+      {engineProcess && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "10px",
+            backgroundColor: "#e8f5e9",
+            border: "1px solid #4caf50",
+            borderRadius: "4px",
+          }}
+        >
+          <h3 style={{ color: "#2e7d32", margin: "0 0 10px 0" }}>
+            ✓ Engine Running
+          </h3>
+          <p>
+            <strong>Process ID:</strong> {engineProcess.id}
+          </p>
+          <p>
+            <strong>Path:</strong> {engineProcess.path}
           </p>
         </div>
       )}

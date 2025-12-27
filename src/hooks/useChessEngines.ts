@@ -55,5 +55,5 @@ export function useChessEngines() {
     fetchEngines();
   }, []);
 
-  return { engines, loading, error };
+  return { engines, loading, error, selectedEnginePath, setSelectedEnginePath };
 }
