@@ -91,7 +91,7 @@
     "engineSelector": {
       "loading": "Recherche de moteurs d'échecs ...",
       "error": "Erreur : {{error}}",
-      "noEngineFound": "Aucun moteur d'échecs OEX trouvé. Veuillez installer un moteur d'échecs OEX (comme « Stockfish 17.1 Chess Engine ») depuis Google Play.",
+      "noEngineFound": "Aucun moteur d'échecs OEX trouvé. Veuillez installer un moteur d'échecs OEX (comme 'Stockfish 17.1 Chess Engine' de Chess Engines, 'Chess Engines' de Lucian Musca) depuis Google Play.",
       "availableEngines": "Moteurs disponibles ({{count}}) :",
       "chooseAnEngine": "Sélectionner un moteur ...",
       "summary": "Voir tous les moteurs",

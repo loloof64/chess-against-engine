@@ -91,7 +91,7 @@
     "engineSelector": {
       "loading": "Searching for chess engines ...",
       "error": "Error: {{error}}",
-      "noEngineFound": "No chess OEX engine found. Please install a chess OEX (such as 'Stockfish 17.1 Chess Engine') from Google Play.",
+      "noEngineFound": "No chess OEX engine found. Please install a chess OEX (such as 'Stockfish 17.1 Chess Engine' by Chess Engines, 'Chess Engines' by Lucian Musca) from Google Play.",
       "availableEngines": "Available engines ({{count}}) :",
       "chooseAnEngine": "Select an engine ...",
       "summary": "See all engines",
