@@ -91,7 +91,7 @@
     "engineSelector": {
       "loading": "Buscando motors de ajedrez ...",
       "error": "Error: {{error}}",
-      "noEngineFound": "No se encontró motor de ajedrez OEX. Por favor, instala un motor de ajedrez OEX (como 'Stockfish 17.1 Chess Engine' de Chess Engines, 'Chess Engines' de Lucian Musca) desde Google Play.",
+      "noEngineFound": "No se encontró motor de ajedrez OEX. Por favor, instala un motor de ajedrez OEX (como «Stockfish 17.1 Chess Engine» de Chess Engines, «Chess Engines» de Lucian Musca) desde Google Play.",
       "availableEngines": "Motores disponibles ({{count}}) :",
       "chooseAnEngine": "Selecciona un motor ...",
       "summary": "Ver todos los motores",

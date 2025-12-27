@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChessEngine } from "../types/chess";
 import { invoke } from "@tauri-apps/api/core";
+import { t } from "i18next";
 
 interface GetEnginesResponse {
   success: boolean;
@@ -12,6 +13,9 @@ export function useChessEngines() {
   const [engines, setEngines] = useState<ChessEngine[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEnginePath, setSelectedEnginePath] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchEngines = async () => {
@@ -32,7 +36,8 @@ export function useChessEngines() {
           setEngines(result.engines);
           setError(null);
         } else {
-          setError(result.error || "No engines found");
+          console.error(result.error);
+          setError(t("engineSelector.noEngineFound"));
           setEngines([]);
         }
       } catch (err) {
