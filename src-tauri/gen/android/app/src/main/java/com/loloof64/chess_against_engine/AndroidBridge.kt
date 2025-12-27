@@ -109,7 +109,7 @@ object AndroidBridge {
             // Remove from map
             managedProcesses.remove(processId)
 
-            Log.d("EngineProcess", "Engine process stopped: $processId")
+            Log.i("EngineProcess", "ENGINE EXITED: $processId")
             true
         } catch (e: Exception) {
             Log.e("EngineProcess", "Error stopping engine process: ${e.message}", e)

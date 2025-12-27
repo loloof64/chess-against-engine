@@ -10,7 +10,7 @@ import { useEngineProcess } from "../../stores/game/AndroidEngineProcessContext"
 
 function Game() {
   const { orientation } = useWindowOrientation();
-  const { sendCommandToEngine } = useEngineProcess();
+  const { sendCommandToEngine, stopEngineProcess } = useEngineProcess();
   /* TODO remove after tests done */
   const commandInput = useRef<HTMLInputElement | null>(null);
 
@@ -78,6 +78,7 @@ function Game() {
             >
               Send to engine
             </button>
+            <button onClick={() => stopEngineProcess()}>Stop engine</button>
           </div>
         )
       }

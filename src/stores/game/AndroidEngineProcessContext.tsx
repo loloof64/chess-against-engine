@@ -79,6 +79,17 @@ export function EngineProcessProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Clean up engine process when component unmounts (app closes)
+  useEffect(() => {
+    return () => {
+      if (engineProcess) {
+        invoke("stop_engine_process", { processId: engineProcess.id }).catch(
+          (e) => console.error("Error stopping engine on unmount:", e)
+        );
+      }
+    };
+  }, [engineProcess]);
+
   const startEngineProcess = useCallback(async (path: string) => {
     if (path === "") return;
 
@@ -112,24 +123,33 @@ export function EngineProcessProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const stopEngineProcess = useCallback(async (processId?: string) => {
-    try {
-      const response = await invoke<ProcessResponse>("stop_engine_process", {
-        processId,
-      });
-
-      if (response.success) {
-        console.log(`Engine process stopped`);
-        setEngineProcess(null);
-        currentProcessOutput = "";
-        setProcessOutput("");
-      } else {
-        console.error(`Failed to stop engine: ${response.message}`);
+  const stopEngineProcess = useCallback(
+    async (processId?: string) => {
+      const idToStop = processId || engineProcess?.id;
+      if (!idToStop) {
+        console.warn("No engine process ID to stop");
+        return;
       }
-    } catch (error) {
-      console.error("Error stopping engine process:", error);
-    }
-  }, []);
+
+      try {
+        const response = await invoke<ProcessResponse>("stop_engine_process", {
+          processId: idToStop,
+        });
+
+        if (response.success) {
+          console.log(`Engine process stopped`);
+          setEngineProcess(null);
+          currentProcessOutput = "";
+          setProcessOutput("");
+        } else {
+          console.error(`Failed to stop engine: ${response.message}`);
+        }
+      } catch (error) {
+        console.error("Error stopping engine process:", error);
+      }
+    },
+    [engineProcess]
+  );
 
   const sendCommandToEngine = useCallback(
     async (command: string) => {
