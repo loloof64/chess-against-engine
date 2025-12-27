@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useState } from "react";
 import { ChessEngine } from "../types/chess";
+import { invoke } from "@tauri-apps/api/core";
 
 interface GetEnginesResponse {
   success: boolean;
@@ -18,27 +18,28 @@ export function useChessEngines() {
       try {
         setLoading(true);
 
-        console.log("Calling test_command...");
-        const testResult = await invoke<string>("test_command");
-        console.log("test_command result:", testResult);
-
-        console.log("Calling getInstalledEngines...");
+        console.log("Calling get_installed_engines...");
         const result = await invoke<GetEnginesResponse>(
           "get_installed_engines"
         );
-        console.log("getInstalledEngines result:", result);
+        console.log("get_installed_engines result:", result);
+        console.log("result.success:", result.success);
+        console.log("result.engines:", result.engines);
+        console.log("result.engines length:", result.engines?.length);
+        console.log("result.engines full:", JSON.stringify(result.engines));
 
-        if (result.success && result.engines) {
+        if (result.success && result.engines && result.engines.length > 0) {
           setEngines(result.engines);
           setError(null);
         } else {
-          setError(result.error || "Unknown error");
+          setError(result.error || "No engines found");
           setEngines([]);
         }
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Error when fetching engines";
-        console.error("Error:", errorMessage);
+        console.error("Full error:", err);
+        console.error("Error message:", errorMessage);
         setError(errorMessage);
         setEngines([]);
       } finally {
