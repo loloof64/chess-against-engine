@@ -62,10 +62,27 @@ const AndroidEngineProcessContext = createContext<
 >(undefined);
 
 export function EngineProcessProvider({ children }: { children: ReactNode }) {
+  // Initialize from localStorage to survive navigation
   const [engineProcess, setEngineProcess] = useState<AndroidProcess | null>(
-    null
+    () => {
+      try {
+        const saved = localStorage.getItem("engineProcess");
+        return saved ? JSON.parse(saved) : null;
+      } catch {
+        return null;
+      }
+    }
   );
   const [processOutput, setProcessOutput] = useState<string>("");
+
+  // Persist engineProcess to localStorage whenever it changes
+  useEffect(() => {
+    if (engineProcess) {
+      localStorage.setItem("engineProcess", JSON.stringify(engineProcess));
+    } else {
+      localStorage.removeItem("engineProcess");
+    }
+  }, [engineProcess]);
 
   // Sync module-level output to React state
   useEffect(() => {
