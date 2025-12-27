@@ -1,3 +1,5 @@
+
+// using code from https://github.com/gkalab/chessenginesupport-androidlib
 package com.loloof64.chess_against_engine
 
 import android.app.Activity
@@ -6,28 +8,24 @@ import android.content.pm.PackageManager
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
+import com.kalab.chess.enginesupport.ChessEngineResolver
 
 class ChessEnginesHelper(private val activity: Activity) {
 
     fun getInstalledEngines(): String {
         return try {
             val engines = mutableListOf<Map<String, Any>>()
-            
-            val pm = activity.packageManager
-            
-            // Search for apps that handle intent.chess.provider.ENGINE
-            val engineIntent = Intent("intent.chess.provider.ENGINE")
-            val resolveInfos = pm.queryIntentActivities(engineIntent, PackageManager.MATCH_DEFAULT_ONLY)
+            val enginesResolver = ChessEngineResolver(activity)
+            val resolveInfos = enginesResolver.resolveEngines()
             
             Log.d("ChessEnginesHelper", "Found ${resolveInfos.size} chess engines")
-            
+        
             resolveInfos.forEach { resolveInfo ->
-                Log.d("ChessEnginesHelper", "Engine found: ${resolveInfo.activityInfo.packageName}")
+                Log.d("ChessEnginesHelper", "Engine found: ${resolveInfo.packageName}")
                 engines.add(mapOf(
-                    "name" to (resolveInfo.activityInfo.loadLabel(pm).toString() ?: "Unknown"),
-                    "packageName" to (resolveInfo.activityInfo.packageName ?: "Unknown"),
-                    "path" to "",
-                    "supportedProtocols" to listOf("UCI")
+                    "name" to resolveInfo.name,
+                    "packageName" to resolveInfo.packageName,
+                    "path" to resolveInfo.enginePath,
                 ))
             }
             

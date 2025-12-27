@@ -13,8 +13,6 @@ struct Engine {
     path: String,
     #[serde(rename = "packageName")]
     package_name: String,
-    #[serde(rename = "supportedProtocols")]
-    supported_protocols: Vec<String>,
 }
 
 #[tauri::command]

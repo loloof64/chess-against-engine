@@ -56,10 +56,6 @@ export function EngineSelector() {
           <p>
             <strong>{t("engineSelector.pathLabel")}</strong> {selected.path}
           </p>
-          <p>
-            <strong>{t("engineSelector.protocolsLabel")}</strong>{" "}
-            {selected.supportedProtocols.join(", ")}
-          </p>
         </div>
       )}
 
@@ -71,19 +67,13 @@ export function EngineSelector() {
               <strong>{engine.name}</strong>
               <ul>
                 <li>
-                  {t("engineProtocol.packageValue", {
+                  {t("engineSelector.packageValue", {
                     package: engine.packageName,
                   })}
                 </li>{" "}
                 <li>
-                  {t("engineProtocol.pathValue", {
+                  {t("engineSelector.pathValue", {
                     path: engine.path,
-                  })}
-                </li>
-                <li>
-                  {" "}
-                  {t("engineProtocol.protocolsValue", {
-                    protocols: engine.supportedProtocols.join(", "),
                   })}
                 </li>
               </ul>

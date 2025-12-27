@@ -97,10 +97,8 @@
       "summary": "Ver todos los motores",
       "packageLabel": "Paquete:",
       "pathLabel": "Ruta:",
-      "protocolsLabel": "Protocolos:",
       "packageValue": "Paquete: {{package}}",
-      "pathValue": "Ruta: {{path}}",
-      "protocolsValue": "Protocolos: {{protocols}}"
+      "pathValue": "Ruta: {{path}}"
     }
   }
 }

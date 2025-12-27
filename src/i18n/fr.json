@@ -97,10 +97,8 @@
       "summary": "Voir tous les moteurs",
       "packageLabel": "Package :",
       "pathLabel": "Chemin :",
-      "protocolsLabel": "Protocoles :",
       "packageValue": "Package : {{package}}",
-      "pathValue": "Chemin : {{path}}",
-      "protocolsValue": "Protocoles : {{protocols}}"
+      "pathValue": "Chemin : {{path}}"
     }
   }
 }

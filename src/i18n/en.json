@@ -97,10 +97,8 @@
       "summary": "See all engines",
       "packageLabel": "Package:",
       "pathLabel": "Path:",
-      "protocolsLabel": "Protocols:",
       "packageValue": "Package: {{package}}",
-      "pathValue": "Path: {{path}}",
-      "protocolsValue": "Protocols: {{protocols}}"
+      "pathValue": "Path: {{path}}"
     }
   }
 }
