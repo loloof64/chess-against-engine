@@ -5,6 +5,16 @@
     <!-- AndroidTV support -->
     <uses-feature android:name="android.software.leanback" android:required="false" />
 
+    <!-- Query OEX chess engines -->
+    <queries>
+        <intent>
+            <action android:name="intent.chess.provider.ENGINE" />
+        </intent>
+        <intent>
+            <action android:name="intent.chess.provider.ACTIVATION" />
+        </intent>
+    </queries>
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

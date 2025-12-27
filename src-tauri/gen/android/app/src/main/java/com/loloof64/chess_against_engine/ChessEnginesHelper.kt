@@ -1,5 +1,4 @@
 
-// using code from https://github.com/gkalab/chessenginesupport-androidlib
 package com.loloof64.chess_against_engine
 
 import android.app.Activity
@@ -8,7 +7,6 @@ import android.content.pm.PackageManager
 import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
-import com.kalab.chess.enginesupport.ChessEngineResolver
 
 class ChessEnginesHelper(private val activity: Activity) {
 
