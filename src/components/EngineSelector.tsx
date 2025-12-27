@@ -35,7 +35,7 @@ export function EngineSelector() {
         <option value="">{t("engineSelector.chooseAnEngine")}</option>
         {engines.map((engine) => (
           <option key={engine.packageName} value={engine.packageName}>
-            {engine.name}
+            {engine.name}({engine.packageName})
           </option>
         ))}
       </select>
@@ -53,9 +53,6 @@ export function EngineSelector() {
             <strong>{t("engineSelector.packageLabel")}</strong>{" "}
             {selected.packageName}
           </p>
-          <p>
-            <strong>{t("engineSelector.pathLabel")}</strong> {selected.path}
-          </p>
         </div>
       )}
 
@@ -69,11 +66,6 @@ export function EngineSelector() {
                 <li>
                   {t("engineSelector.packageValue", {
                     package: engine.packageName,
-                  })}
-                </li>{" "}
-                <li>
-                  {t("engineSelector.pathValue", {
-                    path: engine.path,
                   })}
                 </li>
               </ul>
