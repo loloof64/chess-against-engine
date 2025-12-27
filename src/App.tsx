@@ -12,7 +12,9 @@ function App() {
       <PositionEditorProvider>
         <main className="container">
           {getPlatformKind() === PlatformKind.android ? (
-            <EngineSelector />
+            <div style={{ marginTop: "20px" }}>
+              <EngineSelector />
+            </div>
           ) : (
             <>
               <Toolbar />
