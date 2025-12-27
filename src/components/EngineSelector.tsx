@@ -22,7 +22,9 @@ export function EngineSelector() {
     return <div>{t("engineSelector.noEngineFound")}</div>;
   }
 
-  const selected = engines.find((e) => e.packageName === selectedEngine);
+  const getEngineId = (engine: (typeof engines)[0]) =>
+    `${engine.packageName}|${engine.path}`;
+  const selected = engines.find((e) => getEngineId(e) === selectedEngine);
 
   return (
     <div>
@@ -34,7 +36,7 @@ export function EngineSelector() {
       >
         <option value="">{t("engineSelector.chooseAnEngine")}</option>
         {engines.map((engine) => (
-          <option key={engine.packageName} value={engine.packageName}>
+          <option key={getEngineId(engine)} value={getEngineId(engine)}>
             {engine.name}({engine.packageName})
           </option>
         ))}
@@ -60,7 +62,7 @@ export function EngineSelector() {
         <summary>{t("engineSelector.summary")}</summary>
         <ul>
           {engines.map((engine) => (
-            <li key={engine.packageName}>
+            <li key={getEngineId(engine)}>
               <strong>{engine.name}</strong>
               <ul>
                 <li>
