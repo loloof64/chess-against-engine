@@ -7,18 +7,14 @@ import { useAndroidEngineProcess } from "./hooks/engine/AndroidEngineProcessCont
 import { useDesktopEngineProcess } from "./hooks/engine/DesktopEngineProcessContext";
 
 import getPlatformKind, { PlatformKind } from "./utils/PlatformKind";
-import { useUniformEngineCommunication } from "./hooks/engine/UniformEngineCommunication";
 
 function App() {
   const { engineProcess: androidEngineProcess } = useAndroidEngineProcess();
   const {
     startEngineProcess: startDesktopEngine,
-    engineProcess: desktopEngineProcess,
+    stopEngineProcess: stopDesktopEngine,
   } = useDesktopEngineProcess();
   const [showEngineSelector, setShowEngineSelector] = useState(false);
-  /* TODO remove */
-  const { sendCommandToInstalledEngine } = useUniformEngineCommunication();
-  const commandInput = useRef<HTMLInputElement | null>(null);
   const desktopEngineStartedRef = useRef(false);
 
   useEffect(() => {
@@ -38,6 +34,12 @@ function App() {
       desktopEngineStartedRef.current = true;
       startDesktopEngine();
     }
+
+    return () => {
+      if (desktopEngineStartedRef.current) {
+        stopDesktopEngine();
+      }
+    };
   }, []);
 
   return (
@@ -50,34 +52,6 @@ function App() {
         <>
           <Toolbar />
           <Game />
-          {
-            /*TODO remove */
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <input type="text" ref={commandInput} />
-              <button
-                disabled={
-                  getPlatformKind() === PlatformKind.desktop &&
-                  !desktopEngineProcess
-                }
-                onClick={() => {
-                  const newCommand = commandInput.current?.value;
-                  if (newCommand === null) return;
-                  sendCommandToInstalledEngine(newCommand!);
-                  commandInput.current!.value = "";
-                }}
-              >
-                Send command
-              </button>
-            </div>
-          }
         </>
       )}
     </main>
