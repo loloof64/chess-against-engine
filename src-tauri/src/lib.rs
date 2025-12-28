@@ -1,7 +1,50 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+#[allow(unused)]
+use std::io::{BufRead, BufReader, Write};
+use std::path::PathBuf;
+#[allow(unused)]
+use std::process::{Child, ChildStdout, Stdio};
 use std::sync::Mutex;
+use std::thread;
 use tauri_plugin_log::{Target, TargetKind};
+
+// Shared buffer for engine output per process
+lazy_static::lazy_static! {
+    static ref ENGINE_OUTPUT_BUFFER: Mutex<HashMap<String, Vec<String>>> = Mutex::new(HashMap::new());
+}
+
+#[allow(unused)]
+fn get_resource_dir() -> PathBuf {
+    #[cfg(debug_assertions)]
+    {
+        // In development, resources are at src-tauri/resources
+        PathBuf::from("../src-tauri/resources")
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        // In production, use Tauri's resource dir
+        tauri::api::path::resource_dir().unwrap_or_else(|_| PathBuf::from("resources"))
+    }
+}
+
+#[cfg(target_os = "linux")]
+#[allow(unused)]
+fn get_executable_path() -> String {
+    get_resource_dir()
+        .join("linux/stockfish-ubuntu-x86-64-avx2")
+        .to_string_lossy()
+        .to_string()
+}
+
+#[cfg(target_os = "windows")]
+#[allow(unused)]
+fn get_executable_path() -> String {
+    get_resource_dir()
+        .join("windows/stockfish-windows-x86-64-avx2.exe")
+        .to_string_lossy()
+        .to_string()
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct EnginesResponse {
@@ -37,11 +80,167 @@ struct EngineProcessInfo {
     path: String,
 }
 
-// Global process manager
+// Store desktop engine processes with stdin/stdout
+#[allow(dead_code)]
+struct DesktopEngineProcess {
+    id: String,
+    child: Child,
+}
+
+// Global process manager for Android
 lazy_static::lazy_static! {
     static ref PROCESS_MANAGER: Mutex<EngineProcessManager> = Mutex::new(EngineProcessManager {
         processes: HashMap::new(),
     });
+
+    // Global process manager for desktop
+    static ref DESKTOP_PROCESS_MANAGER: Mutex<HashMap<String, DesktopEngineProcess>> = Mutex::new(HashMap::new());
+}
+
+#[allow(unused)]
+fn spawn_output_reader(process_id: String, stdout: ChildStdout) {
+    thread::spawn(move || {
+        let reader = BufReader::new(stdout);
+        for line in reader.lines() {
+            if let Ok(output_line) = line {
+                // Buffer the output for the frontend to consume
+                let mut buffer = ENGINE_OUTPUT_BUFFER.lock().unwrap();
+                buffer
+                    .entry(process_id.clone())
+                    .or_insert_with(Vec::new)
+                    .push(output_line);
+            }
+        }
+    });
+}
+
+#[cfg(any(target_os = "windows", target_os = "linux"))]
+#[allow(unused)]
+fn start_engine_process_from_desktop(
+    process_id: String,
+    app_handle: tauri::AppHandle,
+) -> ProcessResponse {
+    use std::process::Command;
+
+    let executable_path = get_executable_path();
+
+    match Command::new(&executable_path)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+    {
+        Ok(mut child) => {
+            let stdout = child.stdout.take();
+
+            // Spawn output reader thread before inserting into manager
+            if let Some(stdout_handle) = stdout {
+                let process_id_clone = process_id.clone();
+                spawn_output_reader(process_id_clone, stdout_handle);
+            }
+
+            let mut manager = DESKTOP_PROCESS_MANAGER.lock().unwrap();
+            manager.insert(
+                process_id.clone(),
+                DesktopEngineProcess {
+                    id: process_id.clone(),
+                    child,
+                },
+            );
+
+            eprintln!(
+                "Engine process started: {} at {}",
+                process_id, executable_path
+            );
+            ProcessResponse {
+                success: true,
+                message: format!("Engine process started: {}", process_id),
+                process_id: Some(process_id),
+            }
+        }
+        Err(e) => {
+            eprintln!("Error starting engine from {}: {}", executable_path, e);
+            ProcessResponse {
+                success: false,
+                message: format!("Failed to start engine: {}", e),
+                process_id: None,
+            }
+        }
+    }
+}
+
+#[cfg(any(target_os = "windows", target_os = "linux"))]
+#[allow(unused)]
+fn send_command_to_desktop_engine(process_id: String, command: String) -> ProcessResponse {
+    let mut manager = DESKTOP_PROCESS_MANAGER.lock().unwrap();
+
+    if let Some(process) = manager.get_mut(&process_id) {
+        if let Some(ref mut stdin) = process.child.stdin {
+            match writeln!(stdin, "{}", command) {
+                Ok(_) => {
+                    eprintln!("Command sent to engine {}: {}", process_id, command);
+                    ProcessResponse {
+                        success: true,
+                        message: "Command sent to engine".to_string(),
+                        process_id: Some(process_id),
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error sending command to engine: {}", e);
+                    ProcessResponse {
+                        success: false,
+                        message: format!("Failed to send command: {}", e),
+                        process_id: None,
+                    }
+                }
+            }
+        } else {
+            ProcessResponse {
+                success: false,
+                message: "Engine stdin not available".to_string(),
+                process_id: None,
+            }
+        }
+    } else {
+        ProcessResponse {
+            success: false,
+            message: format!("Process {} not found", process_id),
+            process_id: None,
+        }
+    }
+}
+
+#[cfg(any(target_os = "windows", target_os = "linux"))]
+#[allow(unused)]
+fn stop_engine_process_from_desktop(process_id: String) -> ProcessResponse {
+    let mut manager = DESKTOP_PROCESS_MANAGER.lock().unwrap();
+
+    if let Some(mut process) = manager.remove(&process_id) {
+        match process.child.kill() {
+            Ok(_) => {
+                eprintln!("Engine process killed: {}", process_id);
+                ProcessResponse {
+                    success: true,
+                    message: format!("Engine process stopped: {}", process_id),
+                    process_id: Some(process_id),
+                }
+            }
+            Err(e) => {
+                eprintln!("Error killing engine process: {}", e);
+                ProcessResponse {
+                    success: false,
+                    message: format!("Failed to stop engine: {}", e),
+                    process_id: None,
+                }
+            }
+        }
+    } else {
+        ProcessResponse {
+            success: false,
+            message: format!("Process {} not found", process_id),
+            process_id: None,
+        }
+    }
 }
 
 #[tauri::command]
@@ -100,7 +299,11 @@ fn get_engines_from_android() -> Result<EnginesResponse, Box<dyn std::error::Err
 
 #[tauri::command]
 #[allow(unused)]
-fn start_engine_process(path: String, process_id: String) -> ProcessResponse {
+fn start_engine_process(
+    path: String,
+    process_id: String,
+    app_handle: tauri::AppHandle,
+) -> ProcessResponse {
     #[cfg(target_os = "android")]
     return match start_engine_from_android(&path, &process_id) {
         Ok(_) => {
@@ -130,7 +333,10 @@ fn start_engine_process(path: String, process_id: String) -> ProcessResponse {
         }
     };
 
-    #[cfg(not(target_os = "android"))]
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    return start_engine_process_from_desktop(process_id, app_handle);
+
+    #[cfg(not(any(target_os = "android", target_os = "windows", target_os = "linux")))]
     return ProcessResponse {
         success: false,
         message: "Engine process management not available on this platform".to_string(),
@@ -142,38 +348,37 @@ fn start_engine_process(path: String, process_id: String) -> ProcessResponse {
 #[allow(unused)]
 fn stop_engine_process(process_id: String) -> ProcessResponse {
     #[cfg(target_os = "android")]
-    {
-        return match stop_engine_from_android(&process_id) {
-            Ok(_) => {
-                // Remove from process manager
-                let mut manager = PROCESS_MANAGER.lock().unwrap();
-                manager.processes.remove(&process_id);
-                eprintln!("Engine process stopped: {}", process_id);
-                ProcessResponse {
-                    success: true,
-                    message: format!("Engine process stopped: {}", process_id),
-                    process_id: Some(process_id),
-                }
+    return match stop_engine_from_android(&process_id) {
+        Ok(_) => {
+            // Remove from process manager
+            let mut manager = PROCESS_MANAGER.lock().unwrap();
+            manager.processes.remove(&process_id);
+            eprintln!("Engine process stopped: {}", process_id);
+            ProcessResponse {
+                success: true,
+                message: format!("Engine process stopped: {}", process_id),
+                process_id: Some(process_id),
             }
-            Err(e) => {
-                eprintln!("Error stopping engine: {}", e);
-                ProcessResponse {
-                    success: false,
-                    message: format!("Failed to stop engine: {}", e),
-                    process_id: None,
-                }
-            }
-        };
-    }
-
-    #[cfg(not(target_os = "android"))]
-    {
-        ProcessResponse {
-            success: false,
-            message: "Engine process management not available on this platform".to_string(),
-            process_id: None,
         }
-    }
+        Err(e) => {
+            eprintln!("Error stopping engine: {}", e);
+            ProcessResponse {
+                success: false,
+                message: format!("Failed to stop engine: {}", e),
+                process_id: None,
+            }
+        }
+    };
+
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    return stop_engine_process_from_desktop(process_id);
+
+    #[cfg(not(any(target_os = "android", target_os = "windows", target_os = "linux")))]
+    return ProcessResponse {
+        success: false,
+        message: "Engine process management not available on this platform".to_string(),
+        process_id: None,
+    };
 }
 
 #[tauri::command]
@@ -211,7 +416,10 @@ fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
         }
     };
 
-    #[cfg(not(target_os = "android"))]
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    return send_command_to_desktop_engine(process_id, command);
+
+    #[cfg(not(any(target_os = "android", target_os = "windows", target_os = "linux")))]
     return ProcessResponse {
         success: false,
         message: "Engine process management not available on this platform".to_string(),
@@ -247,6 +455,29 @@ fn flush_buffered_engine_output() -> ProcessResponse {
         message: "Not on Android".to_string(),
         process_id: None,
     };
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct EngineOutputResponse {
+    success: bool,
+    outputs: Vec<String>,
+}
+
+#[tauri::command]
+fn get_buffered_engine_output(process_id: String) -> EngineOutputResponse {
+    let mut buffer = ENGINE_OUTPUT_BUFFER.lock().unwrap();
+
+    if let Some(outputs) = buffer.remove(&process_id) {
+        EngineOutputResponse {
+            success: true,
+            outputs,
+        }
+    } else {
+        EngineOutputResponse {
+            success: true,
+            outputs: vec![],
+        }
+    }
 }
 
 #[cfg(target_os = "android")]
@@ -351,8 +582,23 @@ pub fn run() {
             start_engine_process,
             stop_engine_process,
             send_engine_command,
-            flush_buffered_engine_output
+            flush_buffered_engine_output,
+            get_buffered_engine_output
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .setup(|_app| Ok(()))
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|_app_handle, event| {
+            if let tauri::RunEvent::Exit = event {
+                // Kill all engine processes on app exit
+                #[cfg(any(target_os = "windows", target_os = "linux"))]
+                {
+                    let mut manager = DESKTOP_PROCESS_MANAGER.lock().unwrap();
+                    for (process_id, mut process) in manager.drain() {
+                        let _ = process.child.kill();
+                        eprintln!("Engine process killed on exit: {}", process_id);
+                    }
+                }
+            }
+        });
 }
