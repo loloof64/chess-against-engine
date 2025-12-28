@@ -8,6 +8,7 @@ export enum PositionEditorActionType {
   setLoadedPosition,
   changeCurrentPosition,
   erasePosition,
+  setComputerSide,
 }
 
 interface PositionEditor {
@@ -17,6 +18,7 @@ interface PositionEditor {
   // must be a legal position
   commitedPosition: string;
   isWhiteTurn: boolean;
+  computerHasWhite: boolean;
 }
 
 interface PositionEditorAction {
@@ -38,6 +40,7 @@ const initialPositionEditor: PositionEditor = {
   currentPosition: DEFAULT_POSITION,
   commitedPosition: DEFAULT_POSITION,
   isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
+  computerHasWhite: true,
 };
 
 export function usePositionEditor() {
@@ -118,6 +121,12 @@ function positionEditorReducer(
         ...positionEditor,
         currentPosition: EMPTY_POSITION,
         isWhiteTurn: getTurnFrom(EMPTY_POSITION),
+      };
+    }
+    case PositionEditorActionType.setComputerSide: {
+      return {
+        ...positionEditor,
+        computerHasWhite: action.value,
       };
     }
     default:

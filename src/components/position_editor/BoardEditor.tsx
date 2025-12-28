@@ -9,6 +9,7 @@ import {
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
+import ComputerSideSelector from "./ComputerSideSelector";
 
 function BoardEditor() {
   const [pieceType, setPieceType] = useState(PieceType.none);
@@ -86,6 +87,7 @@ function BoardEditor() {
             onPieceColorSelected={setPieceColor}
             onPieceTypeSelected={setPieceType}
           />
+          <ComputerSideSelector />
         </div>
       </div>
     </div>

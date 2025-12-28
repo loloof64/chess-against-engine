@@ -22,6 +22,11 @@
         "tabBoard": "Board",
         "tabAdvanced": "Advanced",
         "tabButtons": "Buttons",
+        "computerSide": {
+          "label": "Computer side",
+          "white": "White",
+          "black": "Black"
+        },
         "advanced": {
           "turn": {
             "label": "Turn",

@@ -27,7 +27,8 @@ function Toolbar() {
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
-  const { currentPosition: editorCurrentPosition } = usePositionEditor();
+  const { currentPosition: editorCurrentPosition, computerHasWhite } =
+    usePositionEditor();
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
   const [confirmNewGameDialogMessage, setConfirmNewGameDialogMessage] =
@@ -104,7 +105,10 @@ function Toolbar() {
       setIsCustomPositionDialogOpen(false);
       dispatch({
         type: GameActionType.startNewGame,
-        value: editorCurrentPosition,
+        value: {
+          newPosition: editorCurrentPosition,
+          computerHasWhite,
+        },
       });
     } catch (e) {
       console.error(e);

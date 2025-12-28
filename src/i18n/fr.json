@@ -22,6 +22,11 @@
         "tabBoard": "Échiquier",
         "tabAdvanced": "Avancé",
         "tabButtons": "Boutons",
+        "computerSide": {
+          "label": "Côté ordinateur",
+          "white": "Blanc",
+          "black": "Noir"
+        },
         "advanced": {
           "turn": {
             "label": "Trait",

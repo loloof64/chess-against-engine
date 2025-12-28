@@ -22,6 +22,11 @@
         "tabBoard": "Tablero",
         "tabAdvanced": "Avanzado",
         "tabButtons": "Botones",
+        "computerSide": {
+          "label": "Computadora",
+          "white": "Blanco",
+          "black": "Negro"
+        },
         "advanced": {
           "turn": {
             "label": "Turno",
