@@ -88,7 +88,7 @@ object AndroidBridge {
             
             Log.d("EngineProcess", "Starting process...")
             val process = processBuilder.start()
-            Log.d("EngineProcess", "Process started successfully")
+            Log.d("EngineProcess", "Process started")
 
             // Create input/output streams
             val inputWriter = BufferedWriter(OutputStreamWriter(process.outputStream))

@@ -500,7 +500,7 @@ fn start_engine_from_android(
 
     eprintln!("Rust: Created JStrings");
 
-    let result = env.call_static_method(
+    let _result = env.call_static_method(
         class,
         "startEngineProcess",
         "(Ljava/lang/String;Ljava/lang/String;)Z",

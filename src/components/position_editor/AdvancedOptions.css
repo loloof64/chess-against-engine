@@ -27,3 +27,7 @@
 .field > * {
   margin-left: 10px;
 }
+
+.advancedOptions label {
+  font-size: smaller;
+}
