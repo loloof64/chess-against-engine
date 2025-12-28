@@ -1,0 +1,6 @@
+{
+  "identifier": "com.loloof64.chess-against-engine",
+  "bundle": {
+    "resources": ["resources/windows/**/*"]
+  }
+}

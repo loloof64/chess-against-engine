@@ -21,7 +21,8 @@ import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
 import getSquare from "../../utils/GetSquare";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
-import { useEngineProcess } from "../../stores/game/AndroidEngineProcessContext";
+import { useAndroidEngineProcess } from "../../hooks/engine/AndroidEngineProcessContext";
+import { useDesktopEngineProcess } from "../../hooks/engine/DesktopEngineProcessContext";
 
 function Board() {
   const {
@@ -48,21 +49,43 @@ function Board() {
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
 
-  const { addOutputListener, engineProcess } = useEngineProcess();
+  const {
+    addOutputListener: addAndroidOutputListener,
+    engineProcess: androidEngineProcess,
+  } = useAndroidEngineProcess();
+
+  const {
+    addOutputListener: addDesktopOutputListener,
+    engineProcess: desktopEngineProcess,
+  } = useDesktopEngineProcess();
 
   useEffect(() => {
-    if (!engineProcess) {
-      console.log("No engine process running");
+    if (!androidEngineProcess) {
+      console.log("No android engine process running");
       return;
     }
 
-    console.log("Setting up engine output listener");
-    const unsubscribe = addOutputListener((output) => {
-      console.log("Engine output received:", output);
+    console.log("Setting up android engine output listener");
+    const unsubscribe = addAndroidOutputListener((output) => {
+      console.log("Android engine output received:", output);
     });
 
     return unsubscribe; // Clean up listener on unmount
-  }, [addOutputListener, engineProcess]);
+  }, [addAndroidOutputListener, androidEngineProcess]);
+
+  useEffect(() => {
+    if (!desktopEngineProcess) {
+      console.log("No desktop engine process running");
+      return;
+    }
+
+    console.log("Setting up desktop engine output listener");
+    const unsubscribe = addDesktopOutputListener((output) => {
+      console.log("Desktop engine output received:", output);
+    });
+
+    return unsubscribe; // Clean up listener on unmount
+  }, [addDesktopOutputListener, desktopEngineProcess]);
 
   function handleBoardTouchCanDragPiece(piece: Piece): boolean {
     const isWhitePieceSide = piece.color === "w";
