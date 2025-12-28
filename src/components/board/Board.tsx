@@ -266,6 +266,7 @@ function Board() {
       dispatch({
         type: GameActionType.stopGame,
       });
+      sendCommandToInstalledEngine("stop\n");
       showGameOverNotification(fenAfterMove);
     }
   }

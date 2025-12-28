@@ -22,8 +22,10 @@ import {
 import { Chess, Color } from "chess.js";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import NativeToolbarSpace from "../native_toolbar_space/NativeToolbarSpace";
+import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
 
 function Toolbar() {
+  const { sendCommandToInstalledEngine } = useUniformEngineCommunication();
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
@@ -72,6 +74,7 @@ function Toolbar() {
     dispatch({
       type: GameActionType.stopGame,
     });
+    sendCommandToInstalledEngine("stop\n");
 
     setGameStoppedDialogMessage(t("toolbar.gameStopped"));
     setIsGameStoppedDialogOpen(true);
@@ -110,6 +113,10 @@ function Toolbar() {
           computerHasWhite,
         },
       });
+      /* The new game may start by an engine thinking,
+      so we'll avoid shutdown this process.
+      sendCommandToInstalledEngine("stop\n");
+      */
     } catch (e) {
       console.error(e);
       setErrorDialogMessage(t("dialogs.positionEditor.errors.illegalPosition"));
