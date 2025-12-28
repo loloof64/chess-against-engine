@@ -15,7 +15,8 @@ function BoardEditor() {
   const [pieceType, setPieceType] = useState(PieceType.none);
   const [pieceColor, setPieceColor] = useState(PieceColor.white);
 
-  const { currentPosition, isWhiteTurn } = usePositionEditor();
+  const { currentPosition, isWhiteTurn, computerHasWhite } =
+    usePositionEditor();
   const dispatch = usePositionEditorDispatch();
 
   function convertColorFrom(pieceColor: PieceColor): Color {
@@ -67,11 +68,11 @@ function BoardEditor() {
             startFile={null}
             startRank={null}
             isWhiteTurn={isWhiteTurn}
-            boardOrientation={isWhiteTurn ? "white" : "black"}
+            boardOrientation={computerHasWhite ? "black" : "white"}
           >
             <Chessboard
               options={{
-                boardOrientation: isWhiteTurn ? "white" : "black",
+                boardOrientation: computerHasWhite ? "black" : "white",
                 position: currentPosition,
                 allowDragging: false,
                 showNotation: false,

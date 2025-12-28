@@ -82,8 +82,7 @@ function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewGame:
       const { newPosition, computerHasWhite } = action.value;
-      const newOrientation =
-        newPosition.split(" ")[1] === "b" ? "black" : "white";
+      const newOrientation = computerHasWhite ? "black" : "white";
       return {
         boardKey: generateKey(),
         positionFen: newPosition,
