@@ -23,8 +23,14 @@ fn get_resource_dir() -> PathBuf {
     }
     #[cfg(not(debug_assertions))]
     {
-        // In production, use Tauri's resource dir
-        tauri::api::path::resource_dir().unwrap_or_else(|_| PathBuf::from("resources"))
+        // In production, resources are bundled next to the executable
+        if let Ok(exe_path) = std::env::current_exe() {
+            if let Some(exe_dir) = exe_path.parent() {
+                return exe_dir.join("resources");
+            }
+        }
+        // Fallback
+        PathBuf::from("resources")
     }
 }
 
