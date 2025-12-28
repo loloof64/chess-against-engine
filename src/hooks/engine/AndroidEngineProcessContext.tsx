@@ -59,16 +59,10 @@ export function AndroidEngineProcessProvider({
 }: {
   children: ReactNode;
 }) {
-  // Initialize from localStorage to survive navigation
+  // For Android, always start fresh without stored engine process
+  // because the process won't be available after app restart/kill
   const [engineProcess, setEngineProcess] = useState<AndroidProcess | null>(
-    () => {
-      try {
-        const saved = localStorage.getItem("engineProcess");
-        return saved ? JSON.parse(saved) : null;
-      } catch {
-        return null;
-      }
-    }
+    null
   );
   const [processOutput, setProcessOutput] = useState<string>("");
 
@@ -81,32 +75,10 @@ export function AndroidEngineProcessProvider({
     }
   }, [engineProcess]);
 
-  // Validate engine still exists when app resumes
+  // Clear any stale engine process from localStorage on app start
   useEffect(() => {
-    if (!engineProcess) return;
-
-    const validateEngine = async () => {
-      try {
-        const result = await invoke<any>("get_installed_engines");
-        if (result.success && result.engines) {
-          const engineStillExists = result.engines.some(
-            (e: any) => e.path === engineProcess.path
-          );
-          if (!engineStillExists) {
-            console.warn(
-              `Engine at ${engineProcess.path} is no longer installed, clearing state`
-            );
-            setEngineProcess(null);
-            currentProcessOutput = "";
-          }
-        }
-      } catch (error) {
-        console.error("Error validating engine:", error);
-      }
-    };
-
-    validateEngine();
-  }, []); // Run once on mount
+    localStorage.removeItem("engineProcess");
+  }, []);
 
   // Sync module-level output to React state
   useEffect(() => {
