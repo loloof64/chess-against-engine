@@ -22,6 +22,7 @@ import BoardTouch from "../board_touch/BoardTouch";
 import getSquare from "../../utils/GetSquare";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
+import WaitCpuMove from "../ wait_cpu_move/WaitCpuMove";
 
 function Board() {
   const {
@@ -32,6 +33,7 @@ function Board() {
     boardKey,
     boardOrientation,
     lastMoveArrow,
+    computerHasWhite,
   } = useGame();
   const dispatch = useGameDispatch();
   const { t } = useTranslation();
@@ -49,6 +51,7 @@ function Board() {
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
+  const [isComputerThinking, setIsComputerThinking] = useState(false);
 
   useEffect(() => {
     const unsubscribe = addEngineOutputListener((output) => {
@@ -58,6 +61,10 @@ function Board() {
 
     return unsubscribe;
   }, [addEngineOutputListener]);
+
+  useEffect(() => {
+    setIsComputerThinking(inProgress && isWhiteTurn === computerHasWhite);
+  }, [inProgress, isWhiteTurn, computerHasWhite]);
 
   function handleBoardTouchCanDragPiece(piece: Piece): boolean {
     const isWhitePieceSide = piece.color === "w";
@@ -369,6 +376,7 @@ function Board() {
               isInteractive={inProgress}
             />
           )}
+          {isComputerThinking && <WaitCpuMove />}
         </div>
       </BoardCoordinates>
       <PromotionDialog

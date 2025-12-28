@@ -1,0 +1,30 @@
+.waitCpuMove {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.waitCpuMove .circProgressBar {
+  width: 70%;
+  height: 70%;
+  border: 4px solid rgba(163, 10, 10, 0.3);
+  border-top: 4px solid rgb(26, 141, 235);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
