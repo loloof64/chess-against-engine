@@ -46,6 +46,27 @@ object AndroidBridge {
     fun startEngineProcess(path: String, processId: String): Boolean {
         return try {
             Log.d("EngineProcess", "Starting engine process: $path with ID: $processId")
+            
+            // Verify the file exists and is executable
+            val engineFile = java.io.File(path)
+            if (!engineFile.exists()) {
+                Log.e("EngineProcess", "Engine file does not exist at path: $path")
+                Log.e("EngineProcess", "File absolute path: ${engineFile.absolutePath}")
+                Log.e("EngineProcess", "Parent exists: ${engineFile.parentFile?.exists()}")
+                return false
+            }
+            
+            Log.d("EngineProcess", "Engine file exists. File size: ${engineFile.length()} bytes")
+            Log.d("EngineProcess", "Is file: ${engineFile.isFile}")
+            Log.d("EngineProcess", "Can read: ${engineFile.canRead()}")
+            
+            if (!engineFile.canExecute()) {
+                Log.w("EngineProcess", "Engine file is not executable, attempting to set executable permissions")
+                if (!engineFile.setExecutable(true, false)) {
+                    Log.e("EngineProcess", "Failed to set executable permissions on file")
+                }
+            }
+            Log.d("EngineProcess", "File is now executable: ${engineFile.canExecute()}")
 
             // Check if process already exists
             if (managedProcesses.containsKey(processId)) {
@@ -54,9 +75,20 @@ object AndroidBridge {
             }
 
             // Start the process
+            Log.d("EngineProcess", "About to start ProcessBuilder with path: $path")
             val processBuilder = ProcessBuilder(path)
             processBuilder.redirectErrorStream(true)
+            
+            // Set environment variable for library path
+            val env = processBuilder.environment()
+            if (engineFile.parent != null) {
+                env["LD_LIBRARY_PATH"] = "${engineFile.parentFile?.absolutePath}:${env["LD_LIBRARY_PATH"] ?: ""}"
+                Log.d("EngineProcess", "Set LD_LIBRARY_PATH to: ${env["LD_LIBRARY_PATH"]}")
+            }
+            
+            Log.d("EngineProcess", "Starting process...")
             val process = processBuilder.start()
+            Log.d("EngineProcess", "Process started successfully")
 
             // Create input/output streams
             val inputWriter = BufferedWriter(OutputStreamWriter(process.outputStream))
@@ -72,6 +104,7 @@ object AndroidBridge {
             )
 
             managedProcesses[processId] = managedProcess
+            Log.d("EngineProcess", "Process added to managedProcesses, current count: ${managedProcesses.size}")
 
             // Start listening to output in a separate thread
             listenToProcessOutput(processId, outputReader)
@@ -80,6 +113,7 @@ object AndroidBridge {
             true
         } catch (e: Exception) {
             Log.e("EngineProcess", "Error starting engine process: ${e.message}", e)
+            e.printStackTrace()
             false
         }
     }

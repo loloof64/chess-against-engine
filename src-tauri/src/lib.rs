@@ -391,18 +391,6 @@ fn stop_engine_process(process_id: String) -> ProcessResponse {
 #[allow(unused)]
 fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
     #[cfg(target_os = "android")]
-    {
-        let manager = PROCESS_MANAGER.lock().unwrap();
-        if !manager.processes.contains_key(&process_id) {
-            return ProcessResponse {
-                success: false,
-                message: format!("Process {} not found", process_id),
-                process_id: None,
-            };
-        }
-    }
-
-    #[cfg(target_os = "android")]
     return match send_command_to_engine_android(&process_id, &command) {
         Ok(_) => {
             eprintln!("Command sent to engine {}: {}", process_id, command);
@@ -493,21 +481,33 @@ fn start_engine_from_android(
 ) -> Result<(), Box<dyn std::error::Error>> {
     use ndk_context;
 
+    eprintln!(
+        "Rust: start_engine_from_android called with path={}, process_id={}",
+        path, process_id
+    );
+
     let vm_ptr = ndk_context::android_context().vm();
     let vm = unsafe { jni::JavaVM::from_raw(vm_ptr as *mut jni::sys::JavaVM)? };
     let mut env = vm.get_env()?;
 
+    eprintln!("Rust: Found Java VM");
+
     let class = env.find_class("com/loloof64/chess_against_engine/AndroidBridge")?;
+    eprintln!("Rust: Found AndroidBridge class");
 
     let path_jstring = env.new_string(path)?;
     let process_id_jstring = env.new_string(process_id)?;
 
-    env.call_static_method(
+    eprintln!("Rust: Created JStrings");
+
+    let result = env.call_static_method(
         class,
         "startEngineProcess",
         "(Ljava/lang/String;Ljava/lang/String;)Z",
         &[(&path_jstring).into(), (&process_id_jstring).into()],
     )?;
+
+    eprintln!("Rust: Called startEngineProcess on Android side");
 
     Ok(())
 }
