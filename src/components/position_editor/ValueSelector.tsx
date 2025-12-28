@@ -138,7 +138,7 @@ function ValueSelector({
       case PreviewType.whiteQueen:
         return WhiteQueen;
       case PreviewType.whiteKing:
-        return WhiteKnight;
+        return WhiteKing;
       case PreviewType.blackPawn:
         return BlackPawn;
       case PreviewType.blackKnight:
