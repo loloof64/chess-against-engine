@@ -37,8 +37,10 @@ function Board() {
   } = useGame();
   const dispatch = useGameDispatch();
   const { t } = useTranslation();
-  const { addOutputListener: addEngineOutputListener } =
-    useUniformEngineCommunication();
+  const {
+    addOutputListener: addEngineOutputListener,
+    sendCommandToInstalledEngine,
+  } = useUniformEngineCommunication();
 
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
@@ -51,20 +53,89 @@ function Board() {
   const [hoveredRank, setHoveredRank] = useState<number | null>(null);
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
-  const [isComputerThinking, setIsComputerThinking] = useState(false);
+  const [computerIsThinking, setComputerIsThinking] = useState(false);
 
   useEffect(() => {
     const unsubscribe = addEngineOutputListener((output) => {
-      /* TODO adapt */
-      console.log("Engine output received:", output);
+      const isMoveResult = output.startsWith("bestmove");
+      if (computerIsThinking && isMoveResult) {
+        const uciMove = output.split(" ")[1];
+        const startSquare = uciMove.substring(0, 2);
+        const endSquare = uciMove.substring(2, 4);
+        const promotion = uciMove.length >= 5 ? uciMove.charAt(4) : "q";
+        try {
+          const chessLogic = new Chess(positionFen);
+          const move = chessLogic.move({
+            from: startSquare,
+            to: endSquare,
+            promotion,
+          });
+          if (move) {
+            const turn = positionFen.split(" ")[1];
+            const isWhiteTurnBeforeMove = turn == "w";
+            const moveNumber = parseInt(positionFen.split(" ")[5]);
+            const weShouldAddHistoryMoveNumber =
+              isWhiteTurnBeforeMove || historyMoves.length === 0;
+            if (weShouldAddHistoryMoveNumber) {
+              addHistoryMove(
+                `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+                isWhiteTurnBeforeMove,
+                "",
+                {
+                  startSquare: move.from,
+                  endSquare: move.to,
+                  color: "green",
+                },
+                () => {}
+              );
+            }
+            dispatch({
+              type: GameActionType.makeMove,
+              value: move,
+            });
+            addHistoryMove(
+              move.san,
+              isWhiteTurnBeforeMove,
+              move.after,
+              {
+                startSquare: move.from,
+                endSquare: move.to,
+                color: "green",
+              },
+              (historyIndex: number) => {
+                dispatch({
+                  type: GameActionType.gotoPositionIndex,
+                  value: historyIndex,
+                });
+                dispatch({
+                  type: GameActionType.setHistoryIndex,
+                  value: historyIndex,
+                });
+              }
+            );
+            checkGameOverAndEventualyNotify(move.after);
+            setComputerIsThinking(false);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
     });
 
     return unsubscribe;
-  }, [addEngineOutputListener]);
+  }, [addEngineOutputListener, computerIsThinking, positionFen, historyMoves]);
 
   useEffect(() => {
-    setIsComputerThinking(inProgress && isWhiteTurn === computerHasWhite);
-  }, [inProgress, isWhiteTurn, computerHasWhite]);
+    const isComputerTurn = isWhiteTurn === computerHasWhite;
+    const computerStartThinking =
+      inProgress && isComputerTurn && !computerIsThinking;
+    if (computerStartThinking) {
+      setComputerIsThinking(true);
+      sendCommandToInstalledEngine(`position fen ${positionFen}`);
+      const positionCommandToEngine = "go movetime 1000";
+      sendCommandToInstalledEngine(positionCommandToEngine);
+    }
+  }, [inProgress, isWhiteTurn, computerHasWhite, positionFen]);
 
   function handleBoardTouchCanDragPiece(piece: Piece): boolean {
     const isWhitePieceSide = piece.color === "w";
@@ -376,7 +447,7 @@ function Board() {
               isInteractive={inProgress}
             />
           )}
-          {isComputerThinking && <WaitCpuMove />}
+          {computerIsThinking && <WaitCpuMove />}
         </div>
       </BoardCoordinates>
       <PromotionDialog
