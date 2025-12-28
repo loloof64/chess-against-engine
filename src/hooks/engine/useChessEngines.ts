@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChessEngine } from "../types/chess";
+import { ChessEngine } from "../../types/chess";
 import { invoke } from "@tauri-apps/api/core";
 import { t } from "i18next";
 
