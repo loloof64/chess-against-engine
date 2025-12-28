@@ -1,16 +1,14 @@
 export enum PlatformKind {
   desktop,
   android,
-  web,
 }
 
 function getPlatformKind(): PlatformKind {
+  // Check if running on Android
   if (/Android/i.test(navigator.userAgent)) {
     return PlatformKind.android;
   }
-  if (window && window.innerWidth !== undefined) {
-    return PlatformKind.web;
-  }
+  // Default to desktop for Tauri app
   return PlatformKind.desktop;
 }
 

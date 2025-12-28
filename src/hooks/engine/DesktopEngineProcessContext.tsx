@@ -8,23 +8,16 @@ import {
   useRef,
 } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { OutputListener, ProcessResponse } from "./common";
 
 interface DesktopProcess {
   id: string;
-}
-
-interface ProcessResponse {
-  success: boolean;
-  message: string;
-  process_id?: string;
 }
 
 interface EngineOutputResponse {
   success: boolean;
   outputs: string[];
 }
-
-type OutputListener = (output: string) => void;
 
 interface DesktopEngineProcessContextType {
   engineProcess: DesktopProcess | null;
@@ -58,7 +51,6 @@ export function DesktopEngineProcessProvider({
     null
   );
   const [processOutput, setProcessOutput] = useState<string>("");
-  const hasStartedRef = useRef(false); // Track if we've already started
   const currentProcessIdRef = useRef<string | null>(null); // Track current process ID for cleanup
 
   // Set up event listener on mount
@@ -68,35 +60,7 @@ export function DesktopEngineProcessProvider({
     };
   }, []);
 
-  // Auto-start engine on mount (desktop only) - guard against double-mount with ref
-  useEffect(() => {
-    if (hasStartedRef.current) return; // Already attempted to start
-    hasStartedRef.current = true;
-
-    const processId = `engine_${Date.now()}_${Math.random()
-      .toString(36)
-      .substring(2, 9)}`;
-
-    const autoStartEngine = async () => {
-      try {
-        const response = await invoke<ProcessResponse>("start_engine_process", {
-          path: "",
-          processId,
-        });
-
-        if (response.success) {
-          currentProcessIdRef.current = processId;
-          setEngineProcess({ id: processId });
-        }
-      } catch (error) {
-        console.error("Error auto-starting engine:", error);
-      }
-    };
-
-    autoStartEngine();
-  }, []); // Empty dependency - only run once on mount
-
-  // Clean up engine process when component unmounts (app closes) - use ref to avoid loop
+  // Clean up engine process when component unmounts (app closes)
   useEffect(() => {
     return () => {
       if (currentProcessIdRef.current) {
@@ -151,6 +115,12 @@ export function DesktopEngineProcessProvider({
   }, []);
 
   const startEngineProcess = useCallback(async () => {
+    // Prevent starting multiple engines if one is already running
+    if (engineProcess) {
+      console.log("Engine process already running:", engineProcess.id);
+      return;
+    }
+
     const processId = `engine_${Date.now()}_${Math.random()
       .toString(36)
       .substring(2, 9)}`;
@@ -176,7 +146,7 @@ export function DesktopEngineProcessProvider({
         const newProcess: DesktopProcess = {
           id: processId,
         };
-
+        currentProcessIdRef.current = processId;
         setEngineProcess(newProcess);
         console.log("Engine process started successfully:", newProcess);
       } else {

@@ -4,16 +4,22 @@ import { AndroidEngineSelector } from "./components/AndroidEngineSelector";
 import Game from "./components/game/Game";
 import Toolbar from "./components/toolbar/Toolbar";
 import { useAndroidEngineProcess } from "./hooks/engine/AndroidEngineProcessContext";
+import { useDesktopEngineProcess } from "./hooks/engine/DesktopEngineProcessContext";
 
 import getPlatformKind, { PlatformKind } from "./utils/PlatformKind";
-import { useDesktopEngineProcess } from "./hooks/engine/DesktopEngineProcessContext";
+import { useUniformEngineCommunication } from "./hooks/engine/UniformEngineCommunication";
 
 function App() {
   const { engineProcess: androidEngineProcess } = useAndroidEngineProcess();
+  const {
+    startEngineProcess: startDesktopEngine,
+    engineProcess: desktopEngineProcess,
+  } = useDesktopEngineProcess();
   const [showEngineSelector, setShowEngineSelector] = useState(false);
-  const { sendCommandToEngine } = useDesktopEngineProcess();
   /* TODO remove */
+  const { sendCommandToInstalledEngine } = useUniformEngineCommunication();
   const commandInput = useRef<HTMLInputElement | null>(null);
+  const desktopEngineStartedRef = useRef(false);
 
   useEffect(() => {
     setShowEngineSelector(
@@ -22,6 +28,17 @@ function App() {
         androidEngineProcess === null
     );
   }, [androidEngineProcess]);
+
+  // Start desktop engine on app load - only once
+  useEffect(() => {
+    if (
+      getPlatformKind() === PlatformKind.desktop &&
+      !desktopEngineStartedRef.current
+    ) {
+      desktopEngineStartedRef.current = true;
+      startDesktopEngine();
+    }
+  }, []);
 
   return (
     <main className="container">
@@ -46,10 +63,14 @@ function App() {
             >
               <input type="text" ref={commandInput} />
               <button
+                disabled={
+                  getPlatformKind() === PlatformKind.desktop &&
+                  !desktopEngineProcess
+                }
                 onClick={() => {
                   const newCommand = commandInput.current?.value;
                   if (newCommand === null) return;
-                  sendCommandToEngine(newCommand!);
+                  sendCommandToInstalledEngine(newCommand!);
                   commandInput.current!.value = "";
                 }}
               >

@@ -8,6 +8,7 @@ import GameProvider from "./stores/game/GameContext";
 import PositionEditorProvider from "./stores/game/PositionEditorContext";
 import { AndroidEngineProcessProvider } from "./hooks/engine/AndroidEngineProcessContext";
 import { DesktopEngineProcessProvider } from "./hooks/engine/DesktopEngineProcessContext";
+import { UniformEngineCommunicationProvider } from "./hooks/engine/UniformEngineCommunication.tsx";
 
 await attachConsole();
 
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <PositionEditorProvider>
         <AndroidEngineProcessProvider>
           <DesktopEngineProcessProvider>
-            <App />
+            <UniformEngineCommunicationProvider>
+              <App />
+            </UniformEngineCommunicationProvider>
           </DesktopEngineProcessProvider>
         </AndroidEngineProcessProvider>
       </PositionEditorProvider>

@@ -14,15 +14,14 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
 import getSquare from "../../utils/GetSquare";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
-import { useAndroidEngineProcess } from "../../hooks/engine/AndroidEngineProcessContext";
-import { useDesktopEngineProcess } from "../../hooks/engine/DesktopEngineProcessContext";
+import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
 
 function Board() {
   const {
@@ -36,6 +35,8 @@ function Board() {
   } = useGame();
   const dispatch = useGameDispatch();
   const { t } = useTranslation();
+  const { addOutputListener: addEngineOutputListener } =
+    useUniformEngineCommunication();
 
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
@@ -49,43 +50,14 @@ function Board() {
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
 
-  const {
-    addOutputListener: addAndroidOutputListener,
-    engineProcess: androidEngineProcess,
-  } = useAndroidEngineProcess();
-
-  const {
-    addOutputListener: addDesktopOutputListener,
-    engineProcess: desktopEngineProcess,
-  } = useDesktopEngineProcess();
-
   useEffect(() => {
-    if (!androidEngineProcess) {
-      console.log("No android engine process running");
-      return;
-    }
-
-    console.log("Setting up android engine output listener");
-    const unsubscribe = addAndroidOutputListener((output) => {
-      console.log("Android engine output received:", output);
+    const unsubscribe = addEngineOutputListener((output) => {
+      /* TODO adapt */
+      console.log("Engine output received:", output);
     });
 
-    return unsubscribe; // Clean up listener on unmount
-  }, [addAndroidOutputListener, androidEngineProcess]);
-
-  useEffect(() => {
-    if (!desktopEngineProcess) {
-      console.log("No desktop engine process running");
-      return;
-    }
-
-    console.log("Setting up desktop engine output listener");
-    const unsubscribe = addDesktopOutputListener((output) => {
-      console.log("Desktop engine output received:", output);
-    });
-
-    return unsubscribe; // Clean up listener on unmount
-  }, [addDesktopOutputListener, desktopEngineProcess]);
+    return unsubscribe;
+  }, [addEngineOutputListener]);
 
   function handleBoardTouchCanDragPiece(piece: Piece): boolean {
     const isWhitePieceSide = piece.color === "w";

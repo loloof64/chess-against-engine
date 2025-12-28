@@ -7,19 +7,12 @@ import {
   useEffect,
 } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { OutputListener, ProcessResponse } from "./common";
 
 interface AndroidProcess {
   path: string;
   id: string;
 }
-
-interface ProcessResponse {
-  success: boolean;
-  message: string;
-  process_id?: string;
-}
-
-type OutputListener = (output: string) => void;
 
 interface AndroidEngineProcessContextType {
   engineProcess: AndroidProcess | null;
