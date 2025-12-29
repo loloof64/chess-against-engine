@@ -19,3 +19,41 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep AndroidBridge class for JNI access
+-keep class com.loloof64.chess_against_engine.AndroidBridge {
+    public static *;
+    public *;
+}
+
+# Keep MainActivity
+-keep class com.loloof64.chess_against_engine.MainActivity {
+    public *;
+}
+
+# Keep ChessEngineResolver
+-keep class com.loloof64.chess_against_engine.ChessEngineResolver {
+    public *;
+}
+
+# Keep all JavaScript interface classes
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Keep WebView related classes
+-keepclassmembers class * extends android.webkit.WebViewClient {
+    public void *(android.webkit.WebView, java.lang.String);
+    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
+    public boolean *(android.webkit.WebView, java.lang.String);
+}
+
+# Keep all classes in the generated package
+-keep class com.loloof64.chess_against_engine.generated.** { *; }
+
+# Don't strip any method/class that is annotated with @Keep
+-keep @interface androidx.annotation.Keep
+-keep @androidx.annotation.Keep class *
+-keepclassmembers class * {
+    @androidx.annotation.Keep *;
+}
