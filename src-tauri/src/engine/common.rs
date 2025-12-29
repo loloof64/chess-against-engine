@@ -57,21 +57,7 @@ pub fn get_resource_dir() -> PathBuf {
         // In production, resources are bundled with the application
         // Try multiple locations for cross-platform compatibility (AppImage, deb, rpm, etc.)
 
-        // 1. Try AppImage APPDIR environment variable
-        if let Ok(appdir) = std::env::var("APPDIR") {
-            // AppImage structure: $APPDIR/usr/lib/chess-against-engine/resources
-            let path = PathBuf::from(&appdir).join("usr/lib/chess-against-engine/resources");
-            if path.exists() {
-                return path;
-            }
-            // Also try $APPDIR/usr/bin/resources
-            let path = PathBuf::from(&appdir).join("usr/bin/resources");
-            if path.exists() {
-                return path;
-            }
-        }
-
-        // 2. Try next to executable
+        // 1. For Windows and macOS: Try next to executable first
         if let Ok(exe_path) = std::env::current_exe() {
             if let Some(exe_dir) = exe_path.parent() {
                 let path = exe_dir.join("resources");
@@ -89,7 +75,21 @@ pub fn get_resource_dir() -> PathBuf {
             }
         }
 
-        // 3. Try system-wide installation paths
+        // 2. Try AppImage APPDIR environment variable (Linux)
+        if let Ok(appdir) = std::env::var("APPDIR") {
+            // AppImage structure: $APPDIR/usr/lib/chess-against-engine/resources
+            let path = PathBuf::from(&appdir).join("usr/lib/chess-against-engine/resources");
+            if path.exists() {
+                return path;
+            }
+            // Also try $APPDIR/usr/bin/resources
+            let path = PathBuf::from(&appdir).join("usr/bin/resources");
+            if path.exists() {
+                return path;
+            }
+        }
+
+        // 3. Try system-wide installation paths (Linux)
         for sys_path in &[
             "/usr/lib/chess-against-engine/resources",
             "/usr/lib64/chess-against-engine/resources",

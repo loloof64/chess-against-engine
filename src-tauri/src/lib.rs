@@ -10,6 +10,38 @@ use engine::common::*;
 use tauri_plugin_log::{Target, TargetKind};
 
 #[tauri::command]
+fn debug_engine_path(app_handle: tauri::AppHandle) -> ProcessResponse {
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    {
+        match engine::desktop::get_executable_path(&app_handle) {
+            Ok(path) => {
+                ProcessResponse {
+                    success: true,
+                    message: format!("Engine path: {}", path),
+                    process_id: None,
+                }
+            }
+            Err(e) => {
+                ProcessResponse {
+                    success: false,
+                    message: e,
+                    process_id: None,
+                }
+            }
+        }
+    }
+
+    #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+    {
+        ProcessResponse {
+            success: false,
+            message: "Not available on this platform".to_string(),
+            process_id: None,
+        }
+    }
+}
+
+#[tauri::command]
 fn get_installed_engines() -> EnginesResponse {
     #[cfg(target_os = "android")]
     {
@@ -226,7 +258,8 @@ pub fn run() {
             stop_engine_process,
             send_engine_command,
             flush_buffered_engine_output,
-            get_buffered_engine_output
+            get_buffered_engine_output,
+            debug_engine_path
         ])
         .setup(|_app| Ok(()))
         .build(tauri::generate_context!())

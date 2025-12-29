@@ -6,6 +6,7 @@ use std::io::Write;
 use std::process::{Child, ChildStdout, Stdio};
 use std::sync::Mutex;
 use std::thread;
+use tauri::Manager;
 
 // Store desktop engine processes with stdin/stdout
 #[allow(dead_code)]
@@ -38,30 +39,102 @@ pub fn spawn_output_reader(process_id: String, stdout: ChildStdout) {
 
 #[cfg(target_os = "linux")]
 #[allow(unused)]
-pub fn get_executable_path() -> String {
-    get_resource_dir()
-        .join("linux/stockfish-ubuntu-x86-64-avx2")
-        .to_string_lossy()
-        .to_string()
+pub fn get_executable_path(app_handle: &tauri::AppHandle) -> Result<String, String> {
+    let exe_name = "stockfish-ubuntu-x86-64-avx2";
+    
+    // When bundled with resources/linux/**/* in tauri.linux.conf.json,
+    // Tauri strips the "resources/" prefix, so files end up at linux/file
+    let path_variations = vec![
+        format!("linux/{}", exe_name),             // Most likely in production
+        exe_name.to_string(),                      // If directly in resources
+        format!("resources/linux/{}", exe_name),   // Alternative
+    ];
+    
+    for path_var in &path_variations {
+        if let Ok(resource_path) = app_handle
+            .path()
+            .resolve(path_var, tauri::path::BaseDirectory::Resource)
+        {
+            eprintln!("Trying Tauri resource path: {:?}", resource_path);
+            if resource_path.exists() {
+                eprintln!("Found engine at: {:?}", resource_path);
+                return Ok(resource_path.to_string_lossy().to_string());
+            }
+        }
+    }
+
+    // Fallback to manual resolution
+    let fallback_path = get_resource_dir()
+        .join(format!("linux/{}", exe_name));
+    
+    eprintln!("Trying fallback path: {:?}", fallback_path);
+    if fallback_path.exists() {
+        eprintln!("Found engine at fallback: {:?}", fallback_path);
+        Ok(fallback_path.to_string_lossy().to_string())
+    } else {
+        Err(format!("Engine executable not found. Tried Tauri resource paths: {:?} and fallback: {:?}", 
+            path_variations, fallback_path))
+    }
 }
 
 #[cfg(target_os = "windows")]
 #[allow(unused)]
-pub fn get_executable_path() -> String {
-    get_resource_dir()
-        .join("windows/stockfish-windows-x86-64-avx2.exe")
-        .to_string_lossy()
-        .to_string()
+pub fn get_executable_path(app_handle: &tauri::AppHandle) -> Result<String, String> {
+    let exe_name = "stockfish-windows-x86-64-avx2.exe";
+    
+    // When bundled with resources/windows/**/* in tauri.windows.conf.json,
+    // Tauri strips the "resources/" prefix, so files end up at windows/file.exe
+    let path_variations = vec![
+        format!("windows/{}", exe_name),           // Most likely in production
+        exe_name.to_string(),                      // If directly in resources
+        format!("resources/windows/{}", exe_name), // Alternative
+    ];
+    
+    for path_var in &path_variations {
+        if let Ok(resource_path) = app_handle
+            .path()
+            .resolve(path_var, tauri::path::BaseDirectory::Resource)
+        {
+            eprintln!("Trying Tauri resource path: {:?}", resource_path);
+            if resource_path.exists() {
+                eprintln!("Found engine at: {:?}", resource_path);
+                return Ok(resource_path.to_string_lossy().to_string());
+            }
+        }
+    }
+
+    // Fallback to manual resolution
+    let fallback_path = get_resource_dir()
+        .join(format!("windows/{}", exe_name));
+    
+    eprintln!("Trying fallback path: {:?}", fallback_path);
+    if fallback_path.exists() {
+        eprintln!("Found engine at fallback: {:?}", fallback_path);
+        Ok(fallback_path.to_string_lossy().to_string())
+    } else {
+        Err(format!("Engine executable not found. Tried Tauri resource paths: {:?} and fallback: {:?}", 
+            path_variations, fallback_path))
+    }
 }
 
 #[allow(unused)]
 pub fn start_engine_process_from_desktop(
     process_id: String,
-    _app_handle: tauri::AppHandle,
+    app_handle: tauri::AppHandle,
 ) -> ProcessResponse {
     use std::process::Command;
 
-    let executable_path = get_executable_path();
+    let executable_path = match get_executable_path(&app_handle) {
+        Ok(path) => path,
+        Err(e) => {
+            eprintln!("Error getting executable path: {}", e);
+            return ProcessResponse {
+                success: false,
+                message: format!("Failed to locate engine executable: {}", e),
+                process_id: None,
+            };
+        }
+    };
 
     match Command::new(&executable_path)
         .stdin(Stdio::piped())
