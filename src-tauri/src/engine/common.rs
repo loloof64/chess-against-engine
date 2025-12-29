@@ -60,9 +60,15 @@ pub fn get_resource_dir() -> PathBuf {
         // 1. For Windows and macOS: Try next to executable first
         if let Ok(exe_path) = std::env::current_exe() {
             if let Some(exe_dir) = exe_path.parent() {
+                // Try resources directory
                 let path = exe_dir.join("resources");
                 if path.exists() {
                     return path;
+                }
+                // NSIS may put resources directly in exe directory
+                // Check if the exe_dir itself contains resources
+                if exe_dir.join("windows").exists() || exe_dir.join("linux").exists() {
+                    return exe_dir.to_path_buf();
                 }
                 // Try ../resources (for some installations)
                 let path = exe_dir

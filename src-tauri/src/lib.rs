@@ -47,7 +47,7 @@ fn get_installed_engines() -> EnginesResponse {
     {
         match engine::android::get_engines_from_android() {
             Ok(result) => return result,
-            Err(e) => eprintln!("Error calling Android: {}", e),
+            Err(_e) => {}
         }
     }
 
@@ -78,7 +78,6 @@ fn start_engine_process(
                         path: path.clone(),
                     },
                 );
-                eprintln!("Engine process started: {} at {}", process_id, path);
                 ProcessResponse {
                     success: true,
                     message: format!("Engine process started: {}", process_id),
@@ -86,7 +85,6 @@ fn start_engine_process(
                 }
             }
             Err(e) => {
-                eprintln!("Error starting engine: {}", e);
                 ProcessResponse {
                     success: false,
                     message: format!("Failed to start engine: {}", e),
@@ -121,7 +119,6 @@ fn stop_engine_process(process_id: String) -> ProcessResponse {
                 // Remove from process manager
                 let mut manager = engine::android::PROCESS_MANAGER.lock().unwrap();
                 manager.processes.remove(&process_id);
-                eprintln!("Engine process stopped: {}", process_id);
                 ProcessResponse {
                     success: true,
                     message: format!("Engine process stopped: {}", process_id),
@@ -129,7 +126,6 @@ fn stop_engine_process(process_id: String) -> ProcessResponse {
                 }
             }
             Err(e) => {
-                eprintln!("Error stopping engine: {}", e);
                 ProcessResponse {
                     success: false,
                     message: format!("Failed to stop engine: {}", e),
@@ -161,7 +157,6 @@ fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
     {
         return match engine::android::send_command_to_engine_android(&process_id, &command) {
             Ok(_) => {
-                eprintln!("Command sent to engine {}: {}", process_id, command);
                 ProcessResponse {
                     success: true,
                     message: format!("Command sent to engine"),
@@ -169,7 +164,6 @@ fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
                 }
             }
             Err(e) => {
-                eprintln!("Error sending command to engine: {}", e);
                 ProcessResponse {
                     success: false,
                     message: format!("Failed to send command: {}", e),
@@ -199,7 +193,6 @@ fn flush_buffered_engine_output() -> ProcessResponse {
     #[cfg(target_os = "android")]
     return match engine::android::flush_buffered_output_android() {
         Ok(_) => {
-            eprintln!("Flushed buffered engine output");
             ProcessResponse {
                 success: true,
                 message: "Buffered output flushed".to_string(),
@@ -207,7 +200,6 @@ fn flush_buffered_engine_output() -> ProcessResponse {
             }
         }
         Err(e) => {
-            eprintln!("Error flushing buffered output: {}", e);
             ProcessResponse {
                 success: false,
                 message: format!("Failed to flush output: {}", e),
@@ -270,9 +262,8 @@ pub fn run() {
                 #[cfg(any(target_os = "windows", target_os = "linux"))]
                 {
                     let mut manager = engine::desktop::DESKTOP_PROCESS_MANAGER.lock().unwrap();
-                    for (process_id, mut process) in manager.drain() {
+                    for (_process_id, mut process) in manager.drain() {
                         let _ = process.child.kill();
-                        eprintln!("Engine process killed on exit: {}", process_id);
                     }
                 }
             }
