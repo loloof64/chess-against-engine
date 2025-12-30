@@ -35,12 +35,13 @@ interface Game {
   historyIndex: number | undefined;
   computerHasWhite: boolean;
   useClock: boolean;
+  whiteTimeHours: number;
+  whiteTimeMinutes: number;
+  whiteTimeSeconds: number;
+  blackTimeHours: number;
+  blackTimeMinutes: number;
+  blackTimeSeconds: number;
 }
-
-const GameContext = createContext<Game>(null as any);
-const GameDispatchContext = createContext<React.Dispatch<GameAction>>(
-  null as any
-);
 
 export const EMPTY_POSITION = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
 export const DEFAULT_POSITION =
@@ -58,7 +59,18 @@ const initialGame: Game = {
   historyIndex: undefined,
   computerHasWhite: true,
   useClock: false,
+  whiteTimeHours: 0,
+  whiteTimeMinutes: 5,
+  whiteTimeSeconds: 0,
+  blackTimeHours: 0,
+  blackTimeMinutes: 5,
+  blackTimeSeconds: 0,
 };
+
+const GameContext = createContext<Game>(initialGame);
+const GameDispatchContext = createContext<React.Dispatch<GameAction>>(
+  null as any
+);
 
 export function useGame() {
   return useContext(GameContext);
@@ -83,7 +95,7 @@ export default function GameProvider({ children }: any) {
 function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewGame:
-      const { newPosition, computerHasWhite, useClock } = action.value;
+      const { newPosition, computerHasWhite, useClock, whiteTimeHours, whiteTimeMinutes, whiteTimeSeconds, blackTimeHours, blackTimeMinutes, blackTimeSeconds } = action.value;
       const newOrientation = computerHasWhite ? "black" : "white";
       return {
         boardKey: generateKey(),
@@ -97,6 +109,12 @@ function gameReducer(game: Game, action: GameAction): Game {
         historyIndex: undefined,
         computerHasWhite,
         useClock,
+        whiteTimeHours,
+        whiteTimeMinutes,
+        whiteTimeSeconds,
+        blackTimeHours,
+        blackTimeMinutes,
+        blackTimeSeconds,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);

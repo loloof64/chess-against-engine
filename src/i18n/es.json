@@ -56,7 +56,11 @@
             "label": "Usar reloj",
             "yes": "Sí",
             "no": "No"
-          }
+          },
+          "baseTimeLabel": "Tiempo",
+          "hours": "h",
+          "minutes": "m",
+          "seconds": "s"
         },
         "errors": {
           "illegalPosition": "¡Posición ilegal!"

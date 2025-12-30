@@ -17,3 +17,20 @@
 .clockOptions label {
     font-size: smaller;
 }
+
+.clockOptions .baseTime {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+}
+.clockOptions .baseTime .baseTimeField {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.clockOptions .baseTime .baseTimeField input[type="number"] {
+    width: 30px;
+}

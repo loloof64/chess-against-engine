@@ -4,12 +4,33 @@ import { PositionEditorActionType, usePositionEditor, usePositionEditorDispatch 
 
 function ClockOptions() {
     const dispatch = usePositionEditorDispatch();
-    const { useClock } = usePositionEditor();
+    const { useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } = usePositionEditor();
 
 function handleChangeUseClock(use: boolean) {
     dispatch({
         type: PositionEditorActionType.setUseClock,
         value: use,
+    });
+}
+
+function handleChangeBaseTimeHours(hours: number) {
+    dispatch({
+        type: PositionEditorActionType.setBaseTimeHours,
+        value: hours,
+    });
+}   
+
+function handleChangeBaseTimeMinutes(minutes: number) {
+    dispatch({
+        type: PositionEditorActionType.setBaseTimeMinutes,
+        value: minutes,
+    });
+}   
+
+function handleChangeBaseTimeSeconds(seconds: number) {
+    dispatch({
+        type: PositionEditorActionType.setBaseTimeSeconds,
+        value: seconds,
     });
 }
 
@@ -32,6 +53,25 @@ function handleChangeUseClock(use: boolean) {
                     </label>
                 </div>
             </div>
+            {
+                useClock && (
+                    <div className="baseTime">
+                        <label>{t("dialogs.positionEditor.clockOptions.baseTimeLabel")}</label>
+                        <div className='baseTimeField'>
+                            <input type='number' min="0" max="6" name='baseTimeHours' value={baseTimeHours} onChange={e => handleChangeBaseTimeHours(Number(e.target.value))} />
+                            <label htmlFor='baseTimeHours'>{t("dialogs.positionEditor.clockOptions.hours")}</label>
+                        </div>
+                        <div className='baseTimeField'>
+                            <input type='number' min="0" max="59" name='baseTimeMinutes' value={baseTimeMinutes} onChange={e => handleChangeBaseTimeMinutes(Number(e.target.value))} />
+                            <label htmlFor='baseTimeMinutes'>{t("dialogs.positionEditor.clockOptions.minutes")}</label>
+                        </div>
+                        <div className='baseTimeField'>
+                            <input type='number' min="0" max="59" name='baseTimeSeconds' value={baseTimeSeconds} onChange={e => handleChangeBaseTimeSeconds(Number(e.target.value))}     />
+                            <label htmlFor='baseTimeSeconds'>{t("dialogs.positionEditor.clockOptions.seconds")}</label>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     )
 }

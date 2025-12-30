@@ -56,7 +56,11 @@
             "label": "Use clock",
             "yes": "Yes",
             "no": "No"
-          }
+          },
+          "baseTimeLabel": "Time",
+          "hours": "h",
+          "minutes": "m",
+          "seconds": "s"
         },
         "errors": {
           "illegalPosition": "Illegal position !"

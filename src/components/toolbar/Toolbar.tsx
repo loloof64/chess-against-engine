@@ -29,7 +29,7 @@ function Toolbar() {
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
-  const { currentPosition: editorCurrentPosition, computerHasWhite, useClock } =
+  const { currentPosition: editorCurrentPosition, computerHasWhite, useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } =
     usePositionEditor();
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
@@ -112,6 +112,12 @@ function Toolbar() {
           newPosition: editorCurrentPosition,
           computerHasWhite,
           useClock,
+          whiteTimeHours: baseTimeHours,
+          whiteTimeMinutes: baseTimeMinutes,
+          whiteTimeSeconds: baseTimeSeconds,
+          blackTimeHours: baseTimeHours,
+          blackTimeMinutes: baseTimeMinutes,
+          blackTimeSeconds: baseTimeSeconds,
         },
       });
       /* The new game may start by an engine thinking,

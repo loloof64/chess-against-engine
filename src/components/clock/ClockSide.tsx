@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useGame } from "../../stores/game/GameContext";
+import formatTime from "../../utils/FormatTime";
 import "./ClockSide.css";
 
 interface ClockSideParams {
@@ -6,7 +9,12 @@ interface ClockSideParams {
 }
 
 function ClockSide({ isWhite, isRunning }: ClockSideParams) {
-  const timeStr = "00:00:00";
+  const {whiteTimeHours, whiteTimeMinutes, whiteTimeSeconds, blackTimeHours, blackTimeMinutes, blackTimeSeconds } = useGame()  
+  const [timeStr, setTimeStr] = useState("--:--:--");
+  
+  useEffect(() => {
+    setTimeStr(isWhite ? formatTime(whiteTimeHours, whiteTimeMinutes, whiteTimeSeconds) : formatTime(blackTimeHours, blackTimeMinutes, blackTimeSeconds));
+  }, [isWhite, whiteTimeHours, whiteTimeMinutes, whiteTimeSeconds, blackTimeHours, blackTimeMinutes, blackTimeSeconds]);
   return (
     <div
       className={`chessClockSide ${isWhite ? "white" : "black"} ${

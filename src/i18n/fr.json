@@ -56,7 +56,11 @@
             "label": "Avec pendule",
             "yes": "Oui",
             "no": "Non"
-          }
+          },
+          "baseTimeLabel": "Temps",
+          "hours": "h",
+          "minutes": "m",
+          "seconds": "s"
         },
         "errors": {
           "illegalPosition": "Position illégale !"
