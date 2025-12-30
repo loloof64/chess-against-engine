@@ -9,6 +9,7 @@ export enum PositionEditorActionType {
   changeCurrentPosition,
   erasePosition,
   setComputerSide,
+  setUseClock,
 }
 
 interface PositionEditor {
@@ -19,6 +20,7 @@ interface PositionEditor {
   commitedPosition: string;
   isWhiteTurn: boolean;
   computerHasWhite: boolean;
+  useClock: boolean;
 }
 
 interface PositionEditorAction {
@@ -41,6 +43,7 @@ const initialPositionEditor: PositionEditor = {
   commitedPosition: DEFAULT_POSITION,
   isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
   computerHasWhite: true,
+  useClock: false,
 };
 
 export function usePositionEditor() {
@@ -127,6 +130,12 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         computerHasWhite: action.value,
+      };
+    }
+    case PositionEditorActionType.setUseClock: {
+      return {
+        ...positionEditor,
+        useClock: action.value,
       };
     }
     default:

@@ -19,7 +19,7 @@ function ComputerSideSelector() {
 
   return (
     <div className="computerSideSelector">
-      <label htmlFor="side">
+      <label>
         {t("dialogs.positionEditor.computerSide.label")}
       </label>
       <div className="radioOption">

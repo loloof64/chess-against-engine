@@ -34,6 +34,7 @@ interface Game {
   lastMoveArrow?: Arrow;
   historyIndex: number | undefined;
   computerHasWhite: boolean;
+  useClock?: boolean;
 }
 
 const GameContext = createContext<Game>(null as any);
@@ -56,6 +57,7 @@ const initialGame: Game = {
   lastMoveArrow: undefined,
   historyIndex: undefined,
   computerHasWhite: true,
+  useClock: false,
 };
 
 export function useGame() {
@@ -81,7 +83,7 @@ export default function GameProvider({ children }: any) {
 function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewGame:
-      const { newPosition, computerHasWhite } = action.value;
+      const { newPosition, computerHasWhite, useClock } = action.value;
       const newOrientation = computerHasWhite ? "black" : "white";
       return {
         boardKey: generateKey(),
@@ -94,6 +96,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         lastMoveArrow: undefined,
         historyIndex: undefined,
         computerHasWhite,
+        useClock,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);

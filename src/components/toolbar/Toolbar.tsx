@@ -29,7 +29,7 @@ function Toolbar() {
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
-  const { currentPosition: editorCurrentPosition, computerHasWhite } =
+  const { currentPosition: editorCurrentPosition, computerHasWhite, useClock } =
     usePositionEditor();
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
@@ -111,6 +111,7 @@ function Toolbar() {
         value: {
           newPosition: editorCurrentPosition,
           computerHasWhite,
+          useClock,
         },
       });
       /* The new game may start by an engine thinking,

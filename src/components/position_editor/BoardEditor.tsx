@@ -10,6 +10,7 @@ import {
 } from "../../stores/game/PositionEditorContext";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import ComputerSideSelector from "./ComputerSideSelector";
+import ClockOptions from "./ClockOptions";
 
 function BoardEditor() {
   const [pieceType, setPieceType] = useState(PieceType.none);
@@ -89,6 +90,7 @@ function BoardEditor() {
             onPieceTypeSelected={setPieceType}
           />
           <ComputerSideSelector />
+          <ClockOptions />
         </div>
       </div>
     </div>

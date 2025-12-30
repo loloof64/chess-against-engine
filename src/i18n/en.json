@@ -51,6 +51,13 @@
           "pastePosition": "Paste position",
           "erasePosition": "Clear position"
         },
+        "clockOptions": {
+          "useClock": {
+            "label": "Use clock",
+            "yes": "Yes",
+            "no": "No"
+          }
+        },
         "errors": {
           "illegalPosition": "Illegal position !"
         }

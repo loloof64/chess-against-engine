@@ -51,6 +51,13 @@
           "pastePosition": "Coller la position",
           "erasePosition": "Effacer la position"
         },
+        "clockOptions": {
+          "useClock": {
+            "label": "Avec pendule",
+            "yes": "Oui",
+            "no": "Non"
+          }
+        },
         "errors": {
           "illegalPosition": "Position illégale !"
         }

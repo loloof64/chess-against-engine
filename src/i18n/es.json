@@ -51,6 +51,13 @@
           "pastePosition": "Pegar posición",
           "erasePosition": "Borrar posición"
         },
+        "clockOptions": {
+          "useClock": {
+            "label": "Usar reloj",
+            "yes": "Sí",
+            "no": "No"
+          }
+        },
         "errors": {
           "illegalPosition": "¡Posición ilegal!"
         }

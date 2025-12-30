@@ -1,0 +1,19 @@
+.clockOptions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.clockOptions .useClock {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.clockOptions label {
+    font-size: smaller;
+}
