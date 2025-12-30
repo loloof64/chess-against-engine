@@ -8,11 +8,21 @@ export enum PositionEditorActionType {
   setLoadedPosition,
   changeCurrentPosition,
   erasePosition,
+  resetStateToSaved,
+  saveCurrentState,
   setComputerSide,
   setUseClock,
   setBaseTimeHours,
   setBaseTimeMinutes,
   setBaseTimeSeconds,
+}
+
+interface MiscState {
+  computerHasWhite: boolean;
+  useClock: boolean;
+  baseTimeHours: number;
+  baseTimeMinutes: number;
+  baseTimeSeconds: number;
 }
 
 interface PositionEditor {
@@ -21,12 +31,8 @@ interface PositionEditor {
   currentPosition: string;
   // must be a legal position
   commitedPosition: string;
-  isWhiteTurn: boolean;
-  computerHasWhite: boolean;
-  useClock: boolean;
-  baseTimeHours: number;
-  baseTimeMinutes: number;
-  baseTimeSeconds: number;
+  editedState: MiscState;
+  updatedState: MiscState;
 }
 
 interface PositionEditorAction {
@@ -34,25 +40,25 @@ interface PositionEditorAction {
   value?: any;
 }
 
-function getTurnFrom(fen: string): boolean {
-  return fen.split(" ")[1] !== "b";
-}
-
 const PositionEditorContext = createContext<PositionEditor>(null as any);
 const PositionEditorDispatchContext = createContext<
   React.Dispatch<PositionEditorAction>
 >(null as any);
 
-const initialPositionEditor: PositionEditor = {
-  loadedPosition: DEFAULT_POSITION,
-  currentPosition: DEFAULT_POSITION,
-  commitedPosition: DEFAULT_POSITION,
-  isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
+const initialState: MiscState = {
   computerHasWhite: true,
   useClock: false,
   baseTimeHours: 0,
   baseTimeMinutes: 5,
   baseTimeSeconds: 0,
+};
+
+const initialPositionEditor: PositionEditor = {
+  loadedPosition: DEFAULT_POSITION,
+  currentPosition: DEFAULT_POSITION,
+  commitedPosition: DEFAULT_POSITION,
+  editedState: initialState,
+  updatedState: initialState,
 };
 
 export function usePositionEditor() {
@@ -88,7 +94,6 @@ function positionEditorReducer(
         ...positionEditor,
         currentPosition: DEFAULT_POSITION,
         commitedPosition: DEFAULT_POSITION,
-        isWhiteTurn: getTurnFrom(DEFAULT_POSITION),
       };
     case PositionEditorActionType.resetToLoaded: {
       try {
@@ -97,7 +102,6 @@ function positionEditorReducer(
           ...positionEditor,
           currentPosition: positionEditor.loadedPosition,
           commitedPosition: positionEditor.loadedPosition,
-          isWhiteTurn: getTurnFrom(positionEditor.loadedPosition),
         };
       } catch (ex) {
         console.error(ex);
@@ -113,7 +117,6 @@ function positionEditorReducer(
           loadedPosition: action.value,
           currentPosition: action.value,
           commitedPosition: action.value,
-          isWhiteTurn: getTurnFrom(action.value),
         };
       } catch (ex) {
         console.error(ex);
@@ -125,44 +128,69 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         currentPosition: action.value,
-        isWhiteTurn: getTurnFrom(action.value),
       };
     }
     case PositionEditorActionType.erasePosition: {
       return {
         ...positionEditor,
         currentPosition: EMPTY_POSITION,
-        isWhiteTurn: getTurnFrom(EMPTY_POSITION),
+      };
+    }
+    case PositionEditorActionType.resetStateToSaved: {
+      return {
+        ...positionEditor, 
+        editedState: positionEditor.updatedState,
+      };
+    }
+    case PositionEditorActionType.saveCurrentState: {
+      return {
+        ...positionEditor,
+        updatedState: positionEditor.editedState,
       };
     }
     case PositionEditorActionType.setComputerSide: {
       return {
         ...positionEditor,
-        computerHasWhite: action.value,
+        editedState: {
+          ...positionEditor.editedState,
+          computerHasWhite: action.value,
+        },
       };
     }
     case PositionEditorActionType.setUseClock: {
       return {
         ...positionEditor,
-        useClock: action.value,
+        editedState: {
+          ...positionEditor.editedState,
+          useClock: action.value,
+        },
       };
     }
     case PositionEditorActionType.setBaseTimeHours: {
       return {
         ...positionEditor,
-        baseTimeHours: action.value,
+        editedState: {
+          ...positionEditor.editedState,
+          baseTimeHours: action.value,
+        },
       };
     }
     case PositionEditorActionType.setBaseTimeMinutes: {
       return {
         ...positionEditor,
-        baseTimeMinutes: action.value,
+        editedState: {
+          ...positionEditor.editedState,
+          baseTimeMinutes: action.value,
+        },
       };
     }
     case PositionEditorActionType.setBaseTimeSeconds: {
       return {
         ...positionEditor,
-        baseTimeSeconds: action.value,
+        editedState: {
+          ...positionEditor.editedState,
+          baseTimeSeconds: action.value,
+        },
       };
     }
     default:

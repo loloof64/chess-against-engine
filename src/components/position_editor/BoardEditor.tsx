@@ -11,12 +11,13 @@ import {
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import ComputerSideSelector from "./ComputerSideSelector";
 import ClockOptions from "./ClockOptions";
+import { hasWhiteTurn } from "../../utils/ChessUtils";
 
 function BoardEditor() {
   const [pieceType, setPieceType] = useState(PieceType.none);
   const [pieceColor, setPieceColor] = useState(PieceColor.white);
 
-  const { currentPosition, isWhiteTurn, computerHasWhite } =
+  const { currentPosition, editedState :{  computerHasWhite } } =
     usePositionEditor();
   const dispatch = usePositionEditorDispatch();
 
@@ -68,7 +69,7 @@ function BoardEditor() {
             hoveredRank={null}
             startFile={null}
             startRank={null}
-            isWhiteTurn={isWhiteTurn}
+            isWhiteTurn={hasWhiteTurn(currentPosition)}
             boardOrientation={computerHasWhite ? "black" : "white"}
           >
             <Chessboard

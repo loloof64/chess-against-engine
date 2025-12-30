@@ -8,7 +8,7 @@ import {
 
 function ComputerSideSelector() {
   const dispatch = usePositionEditorDispatch();
-  const { computerHasWhite } = usePositionEditor();
+  const { editedState: { computerHasWhite } } = usePositionEditor();
 
   function handleChangeComputerTempSide(hasWhiteSide: boolean) {
     dispatch({

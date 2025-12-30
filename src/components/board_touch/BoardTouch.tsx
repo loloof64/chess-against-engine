@@ -7,7 +7,7 @@ import {
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
-import getSquare from "../../utils/GetSquare";
+import {getSquare} from "../../utils/ChessUtils";
 
 interface BoardTouchParams {
   isInteractive: boolean;

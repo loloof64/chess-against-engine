@@ -29,7 +29,7 @@ function Toolbar() {
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
-  const { currentPosition: editorCurrentPosition, computerHasWhite, useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } =
+  const { currentPosition: editorCurrentPosition, editedState: { computerHasWhite, useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } } =
     usePositionEditor();
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
@@ -106,6 +106,9 @@ function Toolbar() {
       const turnChangedLogic = new Chess(turnChangedPosition);
       if (turnChangedLogic.inCheck()) throw "king not in turn is in check.";
       setIsCustomPositionDialogOpen(false);
+      positionEditorDispatch({
+        type: PositionEditorActionType.saveCurrentState,
+      });      
       dispatch({
         type: GameActionType.startNewGame,
         value: {
@@ -132,6 +135,9 @@ function Toolbar() {
   }
 
   function handleCustomPositionDialogCancelled() {
+    positionEditorDispatch({
+      type: PositionEditorActionType.resetStateToSaved,
+    });
     setIsCustomPositionDialogOpen(false);
   }
 

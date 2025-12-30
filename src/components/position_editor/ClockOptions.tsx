@@ -4,7 +4,7 @@ import { PositionEditorActionType, usePositionEditor, usePositionEditorDispatch 
 
 function ClockOptions() {
     const dispatch = usePositionEditorDispatch();
-    const { useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } = usePositionEditor();
+    const { editedState: { useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } } = usePositionEditor();
 
 function handleChangeUseClock(use: boolean) {
     dispatch({

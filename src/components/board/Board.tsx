@@ -19,7 +19,7 @@ import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
-import getSquare from "../../utils/GetSquare";
+import {getSquare} from "../../utils/ChessUtils";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
 import WaitCpuMove from "../ wait_cpu_move/WaitCpuMove";
