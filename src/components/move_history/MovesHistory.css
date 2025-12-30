@@ -1,6 +1,6 @@
 .history {
-  width: calc(90vw - 75vmin - 2px);
-  height: 75vmin;
+  width: calc(90vw - 68vmin - 2px);
+  height: 68vmin;
   display: flex;
   box-sizing: border-box;
   border: 1px solid black;

@@ -2,4 +2,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.chessClockSide.white {
+  background-color: whitesmoke;
+  color: black;
+}
+
+.chessClockSide.black {
+  background-color: black;
+  color: whitesmoke;
+}
+
+.chessClockSide.running {
+  background-color: blue;
+  color: yellow;
 }

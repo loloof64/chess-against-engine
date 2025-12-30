@@ -4,8 +4,8 @@ import ClockSide from "./ClockSide";
 function Clock() {
   return (
     <div className="chessClock">
-      <ClockSide />
-      <ClockSide />
+      <ClockSide isWhite={true} isRunning={true} />
+      <ClockSide isWhite={false} isRunning={false} />
     </div>
   );
 }

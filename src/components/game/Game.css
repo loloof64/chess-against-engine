@@ -4,12 +4,12 @@
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: calc(100% - 10vh);
+  height: calc(100% - 20vh);
 }
 
 .game .board {
-  width: 75vmin;
-  height: 75vmin;
+  width: 68vmin;
+  height: 68vmin;
 }
 
 .game.portrait .board {
@@ -26,7 +26,7 @@
 
 .game.android:not(.portrait) .history {
   margin-right: 40px;
-  width: calc(80vw - 75vmin - 2px);
+  width: calc(80vw - 68vmin - 2px);
 }
 
 @media (orientation: portrait) {
