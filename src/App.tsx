@@ -8,17 +8,17 @@ import { useDesktopEngineProcess } from "./hooks/engine/DesktopEngineProcessCont
 
 import getPlatformKind, { PlatformKind } from "./utils/PlatformKind";
 import Clock from "./components/clock/Clock";
+import { useGame } from "./stores/game/GameContext";
 
 function App() {
   const { engineProcess: androidEngineProcess } = useAndroidEngineProcess();
+  const {useClock} = useGame();
   const {
     startEngineProcess: startDesktopEngine,
     stopEngineProcess: stopDesktopEngine,
   } = useDesktopEngineProcess();
   const [showEngineSelector, setShowEngineSelector] = useState(false);
   const desktopEngineStartedRef = useRef(false);
-
-  const isTimed = true;
 
   useEffect(() => {
     setShowEngineSelector(
@@ -54,7 +54,7 @@ function App() {
       ) : (
         <>
           <Toolbar />
-          {isTimed && <Clock />}
+          {useClock && <Clock />}
           <Game />
         </>
       )}

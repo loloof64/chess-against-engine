@@ -34,7 +34,7 @@ interface Game {
   lastMoveArrow?: Arrow;
   historyIndex: number | undefined;
   computerHasWhite: boolean;
-  useClock?: boolean;
+  useClock: boolean;
 }
 
 const GameContext = createContext<Game>(null as any);
