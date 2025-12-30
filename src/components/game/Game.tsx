@@ -5,9 +5,11 @@ import Board from "../board/Board";
 import InlineMovesHistory from "../move_history/InlineMovesHistory";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import useWindowOrientation from "../../hooks/useWindowOrientation";
+import Clock from "../clock/Clock";
 
 function Game() {
   const { orientation } = useWindowOrientation();
+  const isTimed = true;
 
   return orientation === "landscape" ? (
     <div
@@ -19,6 +21,7 @@ function Game() {
         <Board />
       </div>
       <MovesHistory />
+      {isTimed && <Clock />}
     </div>
   ) : (
     <div className="game">
@@ -26,6 +29,7 @@ function Game() {
       <div className="board">
         <Board />
       </div>
+      {isTimed && <Clock />}
     </div>
   );
 }

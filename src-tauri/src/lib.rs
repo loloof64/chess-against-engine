@@ -10,24 +10,21 @@ use engine::common::*;
 use tauri_plugin_log::{Target, TargetKind};
 
 #[tauri::command]
+#[allow(unused)]
 fn debug_engine_path(app_handle: tauri::AppHandle) -> ProcessResponse {
     #[cfg(any(target_os = "windows", target_os = "linux"))]
     {
         match engine::desktop::get_executable_path(&app_handle) {
-            Ok(path) => {
-                ProcessResponse {
-                    success: true,
-                    message: format!("Engine path: {}", path),
-                    process_id: None,
-                }
-            }
-            Err(e) => {
-                ProcessResponse {
-                    success: false,
-                    message: e,
-                    process_id: None,
-                }
-            }
+            Ok(path) => ProcessResponse {
+                success: true,
+                message: format!("Engine path: {}", path),
+                process_id: None,
+            },
+            Err(e) => ProcessResponse {
+                success: false,
+                message: e,
+                process_id: None,
+            },
         }
     }
 
@@ -84,13 +81,11 @@ fn start_engine_process(
                     process_id: Some(process_id),
                 }
             }
-            Err(e) => {
-                ProcessResponse {
-                    success: false,
-                    message: format!("Failed to start engine: {}", e),
-                    process_id: None,
-                }
-            }
+            Err(e) => ProcessResponse {
+                success: false,
+                message: format!("Failed to start engine: {}", e),
+                process_id: None,
+            },
         };
     }
 
@@ -125,13 +120,11 @@ fn stop_engine_process(process_id: String) -> ProcessResponse {
                     process_id: Some(process_id),
                 }
             }
-            Err(e) => {
-                ProcessResponse {
-                    success: false,
-                    message: format!("Failed to stop engine: {}", e),
-                    process_id: None,
-                }
-            }
+            Err(e) => ProcessResponse {
+                success: false,
+                message: format!("Failed to stop engine: {}", e),
+                process_id: None,
+            },
         };
     }
 
@@ -156,20 +149,16 @@ fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
     #[cfg(target_os = "android")]
     {
         return match engine::android::send_command_to_engine_android(&process_id, &command) {
-            Ok(_) => {
-                ProcessResponse {
-                    success: true,
-                    message: format!("Command sent to engine"),
-                    process_id: Some(process_id),
-                }
-            }
-            Err(e) => {
-                ProcessResponse {
-                    success: false,
-                    message: format!("Failed to send command: {}", e),
-                    process_id: None,
-                }
-            }
+            Ok(_) => ProcessResponse {
+                success: true,
+                message: format!("Command sent to engine"),
+                process_id: Some(process_id),
+            },
+            Err(e) => ProcessResponse {
+                success: false,
+                message: format!("Failed to send command: {}", e),
+                process_id: None,
+            },
         };
     }
 
@@ -192,20 +181,16 @@ fn send_engine_command(process_id: String, command: String) -> ProcessResponse {
 fn flush_buffered_engine_output() -> ProcessResponse {
     #[cfg(target_os = "android")]
     return match engine::android::flush_buffered_output_android() {
-        Ok(_) => {
-            ProcessResponse {
-                success: true,
-                message: "Buffered output flushed".to_string(),
-                process_id: None,
-            }
-        }
-        Err(e) => {
-            ProcessResponse {
-                success: false,
-                message: format!("Failed to flush output: {}", e),
-                process_id: None,
-            }
-        }
+        Ok(_) => ProcessResponse {
+            success: true,
+            message: "Buffered output flushed".to_string(),
+            process_id: None,
+        },
+        Err(e) => ProcessResponse {
+            success: false,
+            message: format!("Failed to flush output: {}", e),
+            process_id: None,
+        },
     };
 
     #[cfg(not(target_os = "android"))]
