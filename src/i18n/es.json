@@ -91,9 +91,9 @@
         "message": "¿Quieres empezar una nueva partida y abandonar la actual?"
       },
       "confirmStopGame": {
-        "message": "¿Quieres detener la partida actual?"
+        "message": "¿Quieres abandonar la partida?"
       },
-      "gameStopped": "Partida abortada.",
+      "gameStopped": "Player has gave up.",
       "altLabels": {
         "newGame": "Empezar nueva partida",
         "stopGame": "Detener la partida actual",

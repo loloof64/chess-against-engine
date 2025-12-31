@@ -91,9 +91,9 @@
         "message": "Voulez-vous commencer une nouvelle partie et quitter la partie en cours ?"
       },
       "confirmStopGame": {
-        "message": "Voulez-vous arrêter la partie en cours ?"
+        "message": "Voulez-vous abandonner ?"
       },
-      "gameStopped": "Partie interrompue.",
+      "gameStopped": "Le joueur a abandonné.",
       "altLabels": {
         "newGame": "Nouvelle partie",
         "stopGame": "Arrêter la partie en cours",

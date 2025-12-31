@@ -91,9 +91,9 @@
         "message": "Do you want to start a new game and leave the current one ?"
       },
       "confirmStopGame": {
-        "message": "Do you want to stop current game ?"
+        "message": "Do you want to give up ?"
       },
-      "gameStopped": "Game aborted.",
+      "gameStopped": "Player has gave up.",
       "altLabels": {
         "newGame": "Start new game",
         "stopGame": "Stop current game",
