@@ -35,6 +35,7 @@ function Board() {
     boardOrientation,
     lastMoveArrow,
     computerHasWhite,
+    useClock,
     whiteTimeDeciseconds,
     blackTimeDeciseconds,
     whiteLossOnTime,
@@ -149,9 +150,11 @@ function Board() {
     if (computerStartThinking) {
       setComputerIsThinking(true);
       sendCommandToInstalledEngine(`position fen ${positionFen}`);
-      const positionCommandToEngine = `go wtime ${
-        whiteTimeDeciseconds * 100
-      } btime ${blackTimeDeciseconds * 100}`;
+      const positionCommandToEngine = useClock
+        ? `go wtime ${whiteTimeDeciseconds * 100} btime ${
+            blackTimeDeciseconds * 100
+          }`
+        : "go movetime 1000";
       sendCommandToInstalledEngine(positionCommandToEngine);
     }
   }, [inProgress, isWhiteTurn, computerHasWhite, positionFen]);
