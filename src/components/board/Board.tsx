@@ -38,6 +38,8 @@ function Board() {
     useClock,
     whiteTimeDeciseconds,
     blackTimeDeciseconds,
+    whiteIncrementSeconds,
+    blackIncrementSeconds,
     whiteLossOnTime,
     blackLossOnTime,
   } = useGame();
@@ -153,7 +155,9 @@ function Board() {
       const positionCommandToEngine = useClock
         ? `go wtime ${whiteTimeDeciseconds * 100} btime ${
             blackTimeDeciseconds * 100
-          }`
+          } ${
+            whiteIncrementSeconds > 0 ? `winc ${whiteIncrementSeconds}` : ""
+          } ${blackIncrementSeconds > 0 ? `binc ${blackIncrementSeconds}` : ""}`
         : "go movetime 1000";
       sendCommandToInstalledEngine(positionCommandToEngine);
     }
