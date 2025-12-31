@@ -17,6 +17,10 @@
         "title": "Elección de promoción.",
         "description": "Elige tu pieza de promoción."
       },
+      "timeOut": {
+        "whiteLoss": "Los negros ganaron por tiempo agotado.",
+        "blackLoss": "Los blancos ganaron por tiempo agotado."
+      },
       "positionEditor": {
         "ariaLabel": "Pestañas del editor de posición",
         "tabBoard": "Tablero",

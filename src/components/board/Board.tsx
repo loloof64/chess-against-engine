@@ -37,6 +37,8 @@ function Board() {
     computerHasWhite,
     whiteTimeDeciseconds,
     blackTimeDeciseconds,
+    whiteLossOnTime,
+    blackLossOnTime,
   } = useGame();
   const dispatch = useGameDispatch();
   const { t } = useTranslation();
@@ -58,6 +60,16 @@ function Board() {
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
   const [computerIsThinking, setComputerIsThinking] = useState(false);
+
+  useEffect(() => {
+    if (whiteLossOnTime) {
+      setMessageDialogCaption(t("dialogs.timeOut.whiteLoss"));
+      setIsMessageDialogOpen(true);
+    } else if (blackLossOnTime) {
+      setMessageDialogCaption(t("dialogs.timeOut.blackLoss"));
+      setIsMessageDialogOpen(true);
+    }
+  }, [whiteLossOnTime, blackLossOnTime]);
 
   useEffect(() => {
     const unsubscribe = addEngineOutputListener((output) => {

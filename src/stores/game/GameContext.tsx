@@ -40,6 +40,8 @@ interface Game {
   useClock: boolean;
   whiteTimeDeciseconds: number;
   blackTimeDeciseconds: number;
+  whiteLossOnTime: boolean;
+  blackLossOnTime: boolean;
 }
 
 export const EMPTY_POSITION = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
@@ -60,6 +62,8 @@ const initialGame: Game = {
   useClock: false,
   whiteTimeDeciseconds: 300,
   blackTimeDeciseconds: 300,
+  whiteLossOnTime: false,
+  blackLossOnTime: false,
 };
 
 const GameContext = createContext<Game>(initialGame);
@@ -127,6 +131,8 @@ function gameReducer(game: Game, action: GameAction): Game {
         useClock,
         whiteTimeDeciseconds,
         blackTimeDeciseconds,
+        whiteLossOnTime: false,
+        blackLossOnTime: false,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);
@@ -221,6 +227,7 @@ function gameReducer(game: Game, action: GameAction): Game {
           ...game,
           inProgress: false,
           whiteTimeDeciseconds: 0,
+          whiteLossOnTime: true,
         };
       } else {
         return {
@@ -236,6 +243,7 @@ function gameReducer(game: Game, action: GameAction): Game {
           ...game,
           inProgress: false,
           blackTimeDeciseconds: 0,
+          blackLossOnTime: true,
         };
       } else {
         return {

@@ -17,6 +17,10 @@
         "title": "Choix de la promotion.",
         "description": "Choisissez votre pièce de promotion."
       },
+      "timeOut": {
+        "whiteLoss": "Les Noirs ont gagné au temps.",
+        "blackLoss": "Les Blancs ont gagné au temps."
+      },
       "positionEditor": {
         "ariaLabel": "Onglets de l'éditeur de position",
         "tabBoard": "Échiquier",

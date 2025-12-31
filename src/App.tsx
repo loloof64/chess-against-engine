@@ -12,7 +12,7 @@ import { useGame } from "./stores/game/GameContext";
 
 function App() {
   const { engineProcess: androidEngineProcess } = useAndroidEngineProcess();
-  const {useClock} = useGame();
+  const { useClock } = useGame();
   const {
     startEngineProcess: startDesktopEngine,
     stopEngineProcess: stopDesktopEngine,

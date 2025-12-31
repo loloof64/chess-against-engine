@@ -17,6 +17,10 @@
         "title": "Promotion choice.",
         "description": "Choose your promotion piece."
       },
+      "timeOut": {
+        "whiteLoss": "Black has won by timeout.",
+        "blackLoss": "White has won by timeout."
+      },
       "positionEditor": {
         "ariaLabel": "Position editor tabs",
         "tabBoard": "Board",
