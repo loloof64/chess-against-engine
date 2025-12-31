@@ -3,6 +3,7 @@ import { createContext, useContext, useReducer } from "react";
 import generateKey from "../../utils/KeyGenerator";
 import { MoveHistoryNodeProps } from "../../components/move_history/MoveHistoryNode";
 import { Arrow } from "react-chessboard";
+import { convertTimeToDeciseconds } from "../../utils/Time";
 
 export enum GameActionType {
   startNewGame,
@@ -35,12 +36,8 @@ interface Game {
   historyIndex: number | undefined;
   computerHasWhite: boolean;
   useClock: boolean;
-  whiteTimeHours: number;
-  whiteTimeMinutes: number;
-  whiteTimeSeconds: number;
-  blackTimeHours: number;
-  blackTimeMinutes: number;
-  blackTimeSeconds: number;
+  whiteTimeDeciseconds: number;
+  blackTimeDeciseconds: number;
 }
 
 export const EMPTY_POSITION = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
@@ -59,12 +56,8 @@ const initialGame: Game = {
   historyIndex: undefined,
   computerHasWhite: true,
   useClock: false,
-  whiteTimeHours: 0,
-  whiteTimeMinutes: 5,
-  whiteTimeSeconds: 0,
-  blackTimeHours: 0,
-  blackTimeMinutes: 5,
-  blackTimeSeconds: 0,
+  whiteTimeDeciseconds: 300,
+  blackTimeDeciseconds: 300,
 };
 
 const GameContext = createContext<Game>(initialGame);
@@ -95,8 +88,28 @@ export default function GameProvider({ children }: any) {
 function gameReducer(game: Game, action: GameAction): Game {
   switch (action.type) {
     case GameActionType.startNewGame:
-      const { newPosition, computerHasWhite, useClock, whiteTimeHours, whiteTimeMinutes, whiteTimeSeconds, blackTimeHours, blackTimeMinutes, blackTimeSeconds } = action.value;
+      const {
+        newPosition,
+        computerHasWhite,
+        useClock,
+        whiteTimeHours,
+        whiteTimeMinutes,
+        whiteTimeSeconds,
+        blackTimeHours,
+        blackTimeMinutes,
+        blackTimeSeconds,
+      } = action.value;
       const newOrientation = computerHasWhite ? "black" : "white";
+      const whiteTimeDeciseconds = convertTimeToDeciseconds({
+        hours: whiteTimeHours,
+        minutes: whiteTimeMinutes,
+        seconds: whiteTimeSeconds,
+      });
+      const blackTimeDeciseconds = convertTimeToDeciseconds({
+        hours: blackTimeHours,
+        minutes: blackTimeMinutes,
+        seconds: blackTimeSeconds,
+      });
       return {
         boardKey: generateKey(),
         positionFen: newPosition,
@@ -109,12 +122,8 @@ function gameReducer(game: Game, action: GameAction): Game {
         historyIndex: undefined,
         computerHasWhite,
         useClock,
-        whiteTimeHours,
-        whiteTimeMinutes,
-        whiteTimeSeconds,
-        blackTimeHours,
-        blackTimeMinutes,
-        blackTimeSeconds,
+        whiteTimeDeciseconds,
+        blackTimeDeciseconds,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);
