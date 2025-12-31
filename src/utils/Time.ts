@@ -19,7 +19,7 @@ export function convertTimeToDeciseconds(time: Time): number {
 }
 
 export function convertDecisecondsToTime(deciseconds: number): Time {
-  let totalSeconds = deciseconds / 10;
+  let totalSeconds = Math.floor(deciseconds / 10);
   const hours = Math.floor(totalSeconds / 3600);
   totalSeconds = totalSeconds % 3600;
   const minutes = Math.floor(totalSeconds / 60);

@@ -23,14 +23,25 @@ import { Chess, Color } from "chess.js";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import NativeToolbarSpace from "../native_toolbar_space/NativeToolbarSpace";
 import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
+import useClockHook from "../../hooks/useClockHook";
 
 function Toolbar() {
   const { sendCommandToInstalledEngine } = useUniformEngineCommunication();
   const { positionFen, firstPosition } = useGame();
   const dispatch = useGameDispatch();
   const positionEditorDispatch = usePositionEditorDispatch();
-  const { currentPosition: editorCurrentPosition, editedState: { computerHasWhite, useClock, baseTimeHours, baseTimeMinutes, baseTimeSeconds } } =
-    usePositionEditor();
+  const {
+    currentPosition: editorCurrentPosition,
+    editedState: {
+      computerHasWhite,
+      useClock,
+      baseTimeHours,
+      baseTimeMinutes,
+      baseTimeSeconds,
+    },
+  } = usePositionEditor();
+  const { startClock, stopClock } = useClockHook();
+
   const [isConfirmNewGameDialogOpen, setIsConfirmNewGameDialogOpen] =
     useState(false);
   const [confirmNewGameDialogMessage, setConfirmNewGameDialogMessage] =
@@ -100,7 +111,8 @@ function Toolbar() {
     try {
       let currentPositionParts = editorCurrentPosition.split(" ");
       const currentTurn = currentPositionParts[1] as Color;
-      currentPositionParts[1] = currentTurn === "w" ? "b" : "w";
+      const isWhiteTurn = currentTurn === "w";
+      currentPositionParts[1] = isWhiteTurn ? "b" : "w";
       const turnChangedPosition = currentPositionParts.join(" ");
       // check if player not in turn is in check
       const turnChangedLogic = new Chess(turnChangedPosition);
@@ -108,7 +120,7 @@ function Toolbar() {
       setIsCustomPositionDialogOpen(false);
       positionEditorDispatch({
         type: PositionEditorActionType.saveCurrentState,
-      });      
+      });
       dispatch({
         type: GameActionType.startNewGame,
         value: {
@@ -123,6 +135,7 @@ function Toolbar() {
           blackTimeSeconds: baseTimeSeconds,
         },
       });
+      startClock(isWhiteTurn);
       /* The new game may start by an engine thinking,
       so we'll avoid shutdown this process.
       sendCommandToInstalledEngine("stop\n");
@@ -159,6 +172,7 @@ function Toolbar() {
   function stopGame() {
     const atLeastAGameStarted = positionFen !== EMPTY_POSITION;
     if (atLeastAGameStarted) {
+      stopClock();
       setConfirmStopGameDialogMessage(t("toolbar.confirmStopGame.message"));
       setIsConfirmStopGameDialogOpen(true);
     }

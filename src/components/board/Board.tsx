@@ -19,10 +19,11 @@ import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
 import BoardTouch from "../board_touch/BoardTouch";
-import {getSquare} from "../../utils/ChessUtils";
+import { getSquare } from "../../utils/ChessUtils";
 import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
 import WaitCpuMove from "../ wait_cpu_move/WaitCpuMove";
+import useClockHook from "../../hooks/useClockHook";
 
 function Board() {
   const {
@@ -41,6 +42,7 @@ function Board() {
     addOutputListener: addEngineOutputListener,
     sendCommandToInstalledEngine,
   } = useUniformEngineCommunication();
+  const { toggleClock, stopClock } = useClockHook();
 
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
@@ -93,6 +95,7 @@ function Board() {
               type: GameActionType.makeMove,
               value: move,
             });
+            toggleClock();
             addHistoryMove(
               move.san,
               isWhiteTurnBeforeMove,
@@ -266,6 +269,7 @@ function Board() {
       dispatch({
         type: GameActionType.stopGame,
       });
+      stopClock();
       sendCommandToInstalledEngine("stop\n");
       showGameOverNotification(fenAfterMove);
     }
@@ -286,6 +290,7 @@ function Board() {
       type: GameActionType.makeMove,
       value: moveToCommit,
     });
+    toggleClock();
     addHistoryMove(
       moveToCommitResult.san,
       isWhiteTurnBeforeMove,
@@ -385,6 +390,7 @@ function Board() {
             type: GameActionType.makeMove,
             value: move,
           });
+          toggleClock();
           addHistoryMove(
             move.san,
             isWhiteTurnBeforeMove,

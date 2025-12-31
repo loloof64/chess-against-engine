@@ -15,6 +15,8 @@ export enum GameActionType {
   reverseBoard,
   startDragAndDrop,
   cancelDragAndDrop,
+  tickWhiteClock,
+  tickBlackClock,
 }
 
 type BoardOrientation = "white" | "black" | undefined;
@@ -110,6 +112,7 @@ function gameReducer(game: Game, action: GameAction): Game {
         minutes: blackTimeMinutes,
         seconds: blackTimeSeconds,
       });
+
       return {
         boardKey: generateKey(),
         positionFen: newPosition,
@@ -210,6 +213,36 @@ function gameReducer(game: Game, action: GameAction): Game {
         dragAndDropPositionFen: undefined,
         boardKey: generateKey(),
       };
+    }
+    case GameActionType.tickWhiteClock: {
+      const newDeciseconds = game.whiteTimeDeciseconds - 1;
+      if (newDeciseconds <= 0) {
+        return {
+          ...game,
+          inProgress: false,
+          whiteTimeDeciseconds: 0,
+        };
+      } else {
+        return {
+          ...game,
+          whiteTimeDeciseconds: newDeciseconds,
+        };
+      }
+    }
+    case GameActionType.tickBlackClock: {
+      const newDeciseconds = game.blackTimeDeciseconds - 1;
+      if (newDeciseconds <= 0) {
+        return {
+          ...game,
+          inProgress: false,
+          blackTimeDeciseconds: 0,
+        };
+      } else {
+        return {
+          ...game,
+          blackTimeDeciseconds: newDeciseconds,
+        };
+      }
     }
     default:
       throw Error("Unknown action: " + action.type);
