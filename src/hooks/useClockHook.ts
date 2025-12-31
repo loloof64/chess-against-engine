@@ -40,20 +40,26 @@ export default function useClockHook() {
     clearInterval(handlers.black);
 
     if (handlers.isWhiteRunning) {
+      handlers.white = NO_INTERVAL_HANDLER;
+      currentDispatch({
+        type: GameActionType.incrementWhiteClock,
+      });
       handlers.black = setInterval(() => {
         currentDispatch({
           type: GameActionType.tickBlackClock,
         });
       }, 100);
-      handlers.white = NO_INTERVAL_HANDLER;
       handlers.isWhiteRunning = false;
     } else {
+      handlers.black = NO_INTERVAL_HANDLER;
+      currentDispatch({
+        type: GameActionType.incrementBlackClock,
+      });
       handlers.white = setInterval(() => {
         currentDispatch({
           type: GameActionType.tickWhiteClock,
         });
       }, 100);
-      handlers.black = NO_INTERVAL_HANDLER;
       handlers.isWhiteRunning = true;
     }
   }

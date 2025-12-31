@@ -17,6 +17,8 @@ export enum GameActionType {
   cancelDragAndDrop,
   tickWhiteClock,
   tickBlackClock,
+  incrementWhiteClock,
+  incrementBlackClock,
 }
 
 type BoardOrientation = "white" | "black" | undefined;
@@ -40,6 +42,8 @@ interface Game {
   useClock: boolean;
   whiteTimeDeciseconds: number;
   blackTimeDeciseconds: number;
+  whiteIncrementSeconds: number;
+  blackIncrementSeconds: number;
   whiteLossOnTime: boolean;
   blackLossOnTime: boolean;
 }
@@ -62,6 +66,8 @@ const initialGame: Game = {
   useClock: false,
   whiteTimeDeciseconds: 300,
   blackTimeDeciseconds: 300,
+  whiteIncrementSeconds: 0,
+  blackIncrementSeconds: 0,
   whiteLossOnTime: false,
   blackLossOnTime: false,
 };
@@ -101,9 +107,11 @@ function gameReducer(game: Game, action: GameAction): Game {
         whiteTimeHours,
         whiteTimeMinutes,
         whiteTimeSeconds,
+        whiteIncrementSeconds,
         blackTimeHours,
         blackTimeMinutes,
         blackTimeSeconds,
+        blackIncrementSeconds,
       } = action.value;
       const newOrientation = computerHasWhite ? "black" : "white";
       const whiteTimeDeciseconds = convertTimeToDeciseconds({
@@ -131,6 +139,8 @@ function gameReducer(game: Game, action: GameAction): Game {
         useClock,
         whiteTimeDeciseconds,
         blackTimeDeciseconds,
+        whiteIncrementSeconds,
+        blackIncrementSeconds,
         whiteLossOnTime: false,
         blackLossOnTime: false,
       };
@@ -251,6 +261,20 @@ function gameReducer(game: Game, action: GameAction): Game {
           blackTimeDeciseconds: newDeciseconds,
         };
       }
+    }
+    case GameActionType.incrementWhiteClock: {
+      return {
+        ...game,
+        whiteTimeDeciseconds:
+          game.whiteTimeDeciseconds + game.whiteIncrementSeconds * 10,
+      };
+    }
+    case GameActionType.incrementBlackClock: {
+      return {
+        ...game,
+        blackTimeDeciseconds:
+          game.blackTimeDeciseconds + game.blackIncrementSeconds * 10,
+      };
     }
     default:
       throw Error("Unknown action: " + action.type);

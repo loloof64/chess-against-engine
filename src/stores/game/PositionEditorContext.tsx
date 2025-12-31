@@ -15,6 +15,7 @@ export enum PositionEditorActionType {
   setBaseTimeHours,
   setBaseTimeMinutes,
   setBaseTimeSeconds,
+  setBaseIncrementSeconds,
 }
 
 interface MiscState {
@@ -23,6 +24,7 @@ interface MiscState {
   baseTimeHours: number;
   baseTimeMinutes: number;
   baseTimeSeconds: number;
+  baseIncrementSeconds: number;
 }
 
 interface PositionEditor {
@@ -51,6 +53,7 @@ const initialState: MiscState = {
   baseTimeHours: 0,
   baseTimeMinutes: 5,
   baseTimeSeconds: 0,
+  baseIncrementSeconds: 0,
 };
 
 const initialPositionEditor: PositionEditor = {
@@ -138,7 +141,7 @@ function positionEditorReducer(
     }
     case PositionEditorActionType.resetStateToSaved: {
       return {
-        ...positionEditor, 
+        ...positionEditor,
         editedState: positionEditor.updatedState,
       };
     }
@@ -190,6 +193,15 @@ function positionEditorReducer(
         editedState: {
           ...positionEditor.editedState,
           baseTimeSeconds: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setBaseIncrementSeconds: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          baseIncrementSeconds: action.value,
         },
       };
     }

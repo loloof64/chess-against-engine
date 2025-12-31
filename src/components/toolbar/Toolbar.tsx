@@ -38,6 +38,7 @@ function Toolbar() {
       baseTimeHours,
       baseTimeMinutes,
       baseTimeSeconds,
+      baseIncrementSeconds,
     },
   } = usePositionEditor();
   const { startClock, stopClock } = useClockHook();
@@ -130,6 +131,8 @@ function Toolbar() {
           whiteTimeHours: baseTimeHours,
           whiteTimeMinutes: baseTimeMinutes,
           whiteTimeSeconds: baseTimeSeconds,
+          whiteIncrementSeconds: baseIncrementSeconds,
+          blackIncrementSeconds: baseIncrementSeconds,
           blackTimeHours: baseTimeHours,
           blackTimeMinutes: baseTimeMinutes,
           blackTimeSeconds: baseTimeSeconds,
