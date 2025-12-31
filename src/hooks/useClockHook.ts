@@ -6,8 +6,8 @@ const NO_INTERVAL_HANDLER = -1;
 const handlers = {
   white: NO_INTERVAL_HANDLER,
   black: NO_INTERVAL_HANDLER,
+  isWhiteRunning: true,
 };
-let lastSide: "white" | "black" = "white";
 let currentDispatch: any = null;
 
 export default function useClockHook() {
@@ -17,7 +17,7 @@ export default function useClockHook() {
   function startClock(isWhiteTurn: boolean) {
     clearInterval(handlers.white);
     clearInterval(handlers.black);
-    lastSide = isWhiteTurn ? "white" : "black";
+    handlers.isWhiteRunning = isWhiteTurn;
     handlers.white = isWhiteTurn
       ? setInterval(() => {
           currentDispatch({
@@ -39,14 +39,14 @@ export default function useClockHook() {
     clearInterval(handlers.white);
     clearInterval(handlers.black);
 
-    if (lastSide === "white") {
+    if (handlers.isWhiteRunning) {
       handlers.black = setInterval(() => {
         currentDispatch({
           type: GameActionType.tickBlackClock,
         });
       }, 100);
       handlers.white = NO_INTERVAL_HANDLER;
-      lastSide = "black";
+      handlers.isWhiteRunning = false;
     } else {
       handlers.white = setInterval(() => {
         currentDispatch({
@@ -54,7 +54,7 @@ export default function useClockHook() {
         });
       }, 100);
       handlers.black = NO_INTERVAL_HANDLER;
-      lastSide = "white";
+      handlers.isWhiteRunning = true;
     }
   }
 
@@ -69,5 +69,6 @@ export default function useClockHook() {
     startClock,
     toggleClock,
     stopClock,
+    isWhiteRunning: handlers.isWhiteRunning,
   };
 }
