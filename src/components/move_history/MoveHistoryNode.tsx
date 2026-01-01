@@ -6,6 +6,8 @@ export interface MoveHistoryNodeProps {
   moveArrow?: Arrow;
   className: string;
   historyIndex: number;
+  whiteTimeDeciseconds: number;
+  blackTimeDeciseconds: number;
   clickCallback: (historyIndex: number) => void;
 }
 

@@ -46,6 +46,8 @@ interface Game {
   blackIncrementSeconds: number;
   whiteLossOnTime: boolean;
   blackLossOnTime: boolean;
+  startWhiteTimeDeciseconds: number;
+  startBlackTimeDeciseconds: number;
 }
 
 export const EMPTY_POSITION = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
@@ -70,6 +72,8 @@ const initialGame: Game = {
   blackIncrementSeconds: 0,
   whiteLossOnTime: false,
   blackLossOnTime: false,
+  startWhiteTimeDeciseconds: 300,
+  startBlackTimeDeciseconds: 300,
 };
 
 const GameContext = createContext<Game>(initialGame);
@@ -143,6 +147,8 @@ function gameReducer(game: Game, action: GameAction): Game {
         blackIncrementSeconds,
         whiteLossOnTime: false,
         blackLossOnTime: false,
+        startWhiteTimeDeciseconds: whiteTimeDeciseconds,
+        startBlackTimeDeciseconds: blackTimeDeciseconds,
       };
     case GameActionType.makeMove:
       const gameLogic = new Chess(game.positionFen);
@@ -181,12 +187,19 @@ function gameReducer(game: Game, action: GameAction): Game {
       let newFen: string;
       let moveArrow: Arrow | undefined;
 
+      let newWhiteTimeDeciseconds: number;
+      let newBlackTimeDeciseconds: number;
+
       if (index < 1) {
         newFen = game.firstPosition;
         moveArrow = undefined;
+        newWhiteTimeDeciseconds = game.startWhiteTimeDeciseconds;
+        newBlackTimeDeciseconds = game.startBlackTimeDeciseconds;
       } else {
         newFen = game.historyMoves[index].fen;
         moveArrow = game.historyMoves[index].moveArrow;
+        newWhiteTimeDeciseconds = game.historyMoves[index].whiteTimeDeciseconds;
+        newBlackTimeDeciseconds = game.historyMoves[index].blackTimeDeciseconds;
       }
 
       return {
@@ -196,6 +209,8 @@ function gameReducer(game: Game, action: GameAction): Game {
         dragAndDropPositionFen: undefined,
         lastMoveArrow: moveArrow,
         historyIndex: index,
+        whiteTimeDeciseconds: newWhiteTimeDeciseconds,
+        blackTimeDeciseconds: newBlackTimeDeciseconds,
       };
     case GameActionType.setHistoryIndex:
       if (game.inProgress) return game;

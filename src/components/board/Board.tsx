@@ -14,7 +14,7 @@ import {
   useGameDispatch,
 } from "../../stores/game/GameContext";
 import PromotionDialog from "../dialogs/PromotionDialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import MessageDialog from "../dialogs/MessageDialog";
 import { useTranslation } from "react-i18next";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
@@ -51,6 +51,19 @@ function Board() {
   } = useUniformEngineCommunication();
   const { toggleClock, stopClock } = useClockHook();
 
+  // Refs to track current time values
+  const whiteTimeRef = useRef(whiteTimeDeciseconds);
+  const blackTimeRef = useRef(blackTimeDeciseconds);
+
+  // Update refs whenever the times change
+  useEffect(() => {
+    whiteTimeRef.current = whiteTimeDeciseconds;
+  }, [whiteTimeDeciseconds]);
+
+  useEffect(() => {
+    blackTimeRef.current = blackTimeDeciseconds;
+  }, [blackTimeDeciseconds]);
+
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
   const [pendingPromotionMove, setPendingPromotionMove] = useState<
@@ -73,6 +86,32 @@ function Board() {
       setIsMessageDialogOpen(true);
     }
   }, [whiteLossOnTime, blackLossOnTime]);
+
+  const addHistoryMove = useCallback(
+    (
+      moveSan: string,
+      isWhiteMove: boolean,
+      fenAfterMove: string,
+      moveArrow: Arrow,
+      clickCallback: (historyIndex: number) => void
+    ) => {
+      const moveCaption = convertSanToFan(moveSan, isWhiteMove);
+      const newMove = {
+        fan: moveCaption,
+        fen: fenAfterMove,
+        moveArrow,
+        whiteTimeDeciseconds: whiteTimeRef.current,
+        blackTimeDeciseconds: blackTimeRef.current,
+        clickCallback,
+      };
+
+      dispatch({
+        type: GameActionType.appendHistoryMove,
+        value: newMove,
+      });
+    },
+    [] // Empty dependency array since we're using refs
+  );
 
   useEffect(() => {
     const unsubscribe = addEngineOutputListener((output) => {
@@ -143,7 +182,13 @@ function Board() {
     });
 
     return unsubscribe;
-  }, [addEngineOutputListener, computerIsThinking, positionFen, historyMoves]);
+  }, [
+    addEngineOutputListener,
+    computerIsThinking,
+    positionFen,
+    historyMoves,
+    addHistoryMove,
+  ]);
 
   useEffect(() => {
     const isComputerTurn = isWhiteTurn === computerHasWhite;
@@ -343,27 +388,6 @@ function Board() {
 
   function handleMessageDialogStatusChange(newState: boolean) {
     setIsMessageDialogOpen(newState);
-  }
-
-  function addHistoryMove(
-    moveSan: string,
-    isWhiteMove: boolean,
-    fenAfterMove: string,
-    moveArrow: Arrow,
-    clickCallback: (historyIndex: number) => void
-  ) {
-    const moveCaption = convertSanToFan(moveSan, isWhiteMove);
-    const newMove = {
-      fan: moveCaption,
-      fen: fenAfterMove,
-      moveArrow,
-      clickCallback,
-    };
-
-    dispatch({
-      type: GameActionType.appendHistoryMove,
-      value: newMove,
-    });
   }
 
   function handleCanDragPiece({ piece }: PieceHandlerArgs): boolean {
