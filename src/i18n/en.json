@@ -61,6 +61,11 @@
             "yes": "Yes",
             "no": "No"
           },
+          "useDiffTime": {
+            "label": "Different CPU times",
+            "yes": "Yes",
+            "no": "No"
+          },
           "baseTimeLabel": "Time",
           "hours": "h",
           "minutes": "m",

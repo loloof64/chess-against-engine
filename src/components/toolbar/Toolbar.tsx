@@ -39,6 +39,11 @@ function Toolbar() {
       baseTimeMinutes,
       baseTimeSeconds,
       baseIncrementSeconds,
+      useDifferentTimes,
+      cpuTimeHours,
+      cpuTimeMinutes,
+      cpuTimeSeconds,
+      cpuIncrementSeconds,
     },
   } = usePositionEditor();
   const { startClock, stopClock } = useClockHook();
@@ -122,20 +127,45 @@ function Toolbar() {
       positionEditorDispatch({
         type: PositionEditorActionType.saveCurrentState,
       });
+
+      let whiteTimeHours = baseTimeHours;
+      let whiteTimeMinutes = baseTimeMinutes;
+      let whiteTimeSeconds = baseTimeSeconds;
+      let whiteIncrementSeconds = baseIncrementSeconds;
+
+      let blackTimeHours = baseTimeHours;
+      let blackTimeMinutes = baseTimeMinutes;
+      let blackTimeSeconds = baseTimeSeconds;
+      let blackIncrementSeconds = baseIncrementSeconds;
+
+      if (useDifferentTimes) {
+        if (computerHasWhite) {
+          whiteTimeHours = cpuTimeHours;
+          whiteTimeMinutes = cpuTimeMinutes;
+          whiteTimeSeconds = cpuTimeSeconds;
+          whiteIncrementSeconds = cpuIncrementSeconds;
+        } else {
+          blackTimeHours = cpuTimeHours;
+          blackTimeMinutes = cpuTimeMinutes;
+          blackTimeSeconds = cpuTimeSeconds;
+          blackIncrementSeconds = cpuIncrementSeconds;
+        }
+      }
+
       dispatch({
         type: GameActionType.startNewGame,
         value: {
           newPosition: editorCurrentPosition,
           computerHasWhite,
           useClock,
-          whiteTimeHours: baseTimeHours,
-          whiteTimeMinutes: baseTimeMinutes,
-          whiteTimeSeconds: baseTimeSeconds,
-          whiteIncrementSeconds: baseIncrementSeconds,
-          blackIncrementSeconds: baseIncrementSeconds,
-          blackTimeHours: baseTimeHours,
-          blackTimeMinutes: baseTimeMinutes,
-          blackTimeSeconds: baseTimeSeconds,
+          whiteTimeHours,
+          whiteTimeMinutes,
+          whiteTimeSeconds,
+          whiteIncrementSeconds,
+          blackIncrementSeconds,
+          blackTimeHours,
+          blackTimeMinutes,
+          blackTimeSeconds,
         },
       });
       startClock(isWhiteTurn);

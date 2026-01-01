@@ -16,6 +16,11 @@ export enum PositionEditorActionType {
   setBaseTimeMinutes,
   setBaseTimeSeconds,
   setBaseIncrementSeconds,
+  setUseDifferentTimes,
+  setCPUTimeHours,
+  setCPUTimeMinutes,
+  setCPUTimeSeconds,
+  setCPUIncrementSeconds,
 }
 
 interface MiscState {
@@ -25,6 +30,11 @@ interface MiscState {
   baseTimeMinutes: number;
   baseTimeSeconds: number;
   baseIncrementSeconds: number;
+  useDifferentTimes: boolean;
+  cpuTimeHours: number;
+  cpuTimeMinutes: number;
+  cpuTimeSeconds: number;
+  cpuIncrementSeconds: number;
 }
 
 interface PositionEditor {
@@ -54,6 +64,11 @@ const initialState: MiscState = {
   baseTimeMinutes: 5,
   baseTimeSeconds: 0,
   baseIncrementSeconds: 0,
+  useDifferentTimes: false,
+  cpuTimeHours: 0,
+  cpuTimeMinutes: 5,
+  cpuTimeSeconds: 0,
+  cpuIncrementSeconds: 0,
 };
 
 const initialPositionEditor: PositionEditor = {
@@ -202,6 +217,51 @@ function positionEditorReducer(
         editedState: {
           ...positionEditor.editedState,
           baseIncrementSeconds: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setUseDifferentTimes: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          useDifferentTimes: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setCPUTimeHours: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          cpuTimeHours: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setCPUTimeMinutes: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          cpuTimeMinutes: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setCPUTimeSeconds: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          cpuTimeSeconds: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setCPUIncrementSeconds: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          cpuIncrementSeconds: action.value,
         },
       };
     }

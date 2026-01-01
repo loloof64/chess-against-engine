@@ -1,36 +1,44 @@
 .clockOptions {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .clockOptions .useClock {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    justify-content: flex-start;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.clockOptions .useDiffTime {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .clockOptions label {
-    font-size: smaller;
+  font-size: smaller;
 }
 
 .clockOptions .baseTime {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    justify-content: flex-start;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: center;
 }
 .clockOptions .baseTime .baseTimeField {
-    display: flex;
-    flex-direction: row;
-    gap: 2px;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
 }
 
 .clockOptions .baseTime .baseTimeField input[type="number"] {
-    width: 30px;
+  width: 30px;
 }
