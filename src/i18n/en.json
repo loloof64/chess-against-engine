@@ -23,9 +23,9 @@
       },
       "positionEditor": {
         "ariaLabel": "Position editor tabs",
-        "tabBoard": "Board",
+        "tabBoard": "General",
         "tabAdvanced": "Advanced",
-        "tabButtons": "Buttons",
+        "tabButtons": "Shortcuts",
         "computerSide": {
           "label": "Computer side",
           "white": "White",

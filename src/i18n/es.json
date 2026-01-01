@@ -23,9 +23,9 @@
       },
       "positionEditor": {
         "ariaLabel": "Pestañas del editor de posición",
-        "tabBoard": "Tablero",
+        "tabBoard": "Principal",
         "tabAdvanced": "Avanzado",
-        "tabButtons": "Botones",
+        "tabButtons": "Atajos",
         "computerSide": {
           "label": "Computadora",
           "white": "Blanco",
@@ -61,7 +61,7 @@
             "yes": "Sí",
             "no": "No"
           },
-            "useDiffTime": {
+          "useDiffTime": {
             "label": "Tiempos de CPU diferentes",
             "yes": "Sí",
             "no": "No"

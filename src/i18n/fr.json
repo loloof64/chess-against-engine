@@ -23,9 +23,9 @@
       },
       "positionEditor": {
         "ariaLabel": "Onglets de l'éditeur de position",
-        "tabBoard": "Échiquier",
+        "tabBoard": "Général",
         "tabAdvanced": "Avancé",
-        "tabButtons": "Boutons",
+        "tabButtons": "Raccourcis",
         "computerSide": {
           "label": "Côté ordinateur",
           "white": "Blanc",
