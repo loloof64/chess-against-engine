@@ -1,4 +1,9 @@
-import { GameActionType, useGameDispatch } from "../stores/game/GameContext";
+import {
+  GameActionType,
+  useGame,
+  useGameDispatch,
+} from "../stores/game/GameContext";
+import { useRef, useEffect } from "react";
 
 const NO_INTERVAL_HANDLER = -1;
 
@@ -9,17 +14,35 @@ const handlers = {
   isWhiteRunning: true,
 };
 let currentDispatch: any = null;
+let currentUseClock = true;
 
 export default function useClockHook() {
+  const { useClock } = useGame();
   const dispatch = useGameDispatch();
   currentDispatch = dispatch;
 
+  const useClockRef = useRef(useClock);
+
+  useEffect(() => {
+    useClockRef.current = useClock;
+    currentUseClock = useClock;
+    // Stop clocks when useClock becomes false
+    if (!useClock) {
+      clearInterval(handlers.white);
+      clearInterval(handlers.black);
+      handlers.white = NO_INTERVAL_HANDLER;
+      handlers.black = NO_INTERVAL_HANDLER;
+    }
+  }, [useClock]);
+
   function startClock(isWhiteTurn: boolean) {
+    if (!useClockRef.current) return;
     clearInterval(handlers.white);
     clearInterval(handlers.black);
     handlers.isWhiteRunning = isWhiteTurn;
     handlers.white = isWhiteTurn
       ? setInterval(() => {
+          if (!currentUseClock) return;
           currentDispatch({
             type: GameActionType.tickWhiteClock,
           });
@@ -28,6 +51,7 @@ export default function useClockHook() {
     handlers.black = isWhiteTurn
       ? NO_INTERVAL_HANDLER
       : setInterval(() => {
+          if (!currentUseClock) return;
           currentDispatch({
             type: GameActionType.tickBlackClock,
           });
@@ -35,6 +59,7 @@ export default function useClockHook() {
   }
 
   function toggleClock() {
+    if (!useClockRef.current) return;
     // Always clear both first
     clearInterval(handlers.white);
     clearInterval(handlers.black);
@@ -45,6 +70,7 @@ export default function useClockHook() {
         type: GameActionType.incrementWhiteClock,
       });
       handlers.black = setInterval(() => {
+        if (!currentUseClock) return;
         currentDispatch({
           type: GameActionType.tickBlackClock,
         });
@@ -56,6 +82,7 @@ export default function useClockHook() {
         type: GameActionType.incrementBlackClock,
       });
       handlers.white = setInterval(() => {
+        if (!currentUseClock) return;
         currentDispatch({
           type: GameActionType.tickWhiteClock,
         });
@@ -65,6 +92,7 @@ export default function useClockHook() {
   }
 
   function stopClock() {
+    // Always clear intervals regardless of useClock setting
     clearInterval(handlers.white);
     clearInterval(handlers.black);
     handlers.white = NO_INTERVAL_HANDLER;
