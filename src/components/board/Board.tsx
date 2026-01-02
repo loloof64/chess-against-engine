@@ -24,6 +24,10 @@ import getPlatformKind, { PlatformKind } from "../../utils/PlatformKind";
 import { useUniformEngineCommunication } from "../../hooks/engine/UniformEngineCommunication";
 import WaitCpuMove from "../ wait_cpu_move/WaitCpuMove";
 import useClockHook from "../../hooks/useClockHook";
+import {
+  PositionEditorActionType,
+  usePositionEditorDispatch,
+} from "../../stores/game/PositionEditorContext";
 
 function Board() {
   const {
@@ -42,8 +46,11 @@ function Board() {
     blackIncrementSeconds,
     whiteLossOnTime,
     blackLossOnTime,
+    useSkillLevel,
+    skillLevelCurrent,
   } = useGame();
   const dispatch = useGameDispatch();
+  const editorDispatch = usePositionEditorDispatch();
   const { t } = useTranslation();
   const {
     addOutputListener: addEngineOutputListener,
@@ -64,6 +71,18 @@ function Board() {
     blackTimeRef.current = blackTimeDeciseconds;
   }, [blackTimeDeciseconds]);
 
+  useEffect(() => {
+    if (useSkillLevel) {
+      sendCommandToInstalledEngine(
+        `setoption name Skill Level value ${skillLevelCurrent}}\n`
+      );
+      editorDispatch({
+        type: PositionEditorActionType.setComputerSkillLevel,
+        value: skillLevelCurrent,
+      });
+    }
+  }, [useSkillLevel, skillLevelCurrent]);
+
   const isWhiteTurn = positionFen.split(" ")[1] !== "b";
   const [isPromotionDialogOpen, setIsPromotionDialogOpen] = useState(false);
   const [pendingPromotionMove, setPendingPromotionMove] = useState<
@@ -76,6 +95,10 @@ function Board() {
   const [startFile, setStartFile] = useState<number | null>(null);
   const [startRank, setStartRank] = useState<number | null>(null);
   const [computerIsThinking, setComputerIsThinking] = useState(false);
+
+  useEffect(() => {
+    sendCommandToInstalledEngine("uci\n");
+  }, [sendCommandToInstalledEngine]);
 
   useEffect(() => {
     if (whiteLossOnTime) {
@@ -115,7 +138,9 @@ function Board() {
 
   useEffect(() => {
     const unsubscribe = addEngineOutputListener((output) => {
+      console.log(output);
       const isMoveResult = output.startsWith("bestmove");
+      const isOptionInfo = output.startsWith("option");
       if (computerIsThinking && isMoveResult) {
         const uciMove = output.split(" ")[1];
         const startSquare = uciMove.substring(0, 2);
@@ -177,6 +202,24 @@ function Board() {
           }
         } catch (e) {
           console.error(e);
+        }
+      } else if (isOptionInfo) {
+        const regex =
+          /option name Skill Level type spin default\s+(\d+).*?min\s+(\d+).*?max\s+(\d+)/;
+        const match = output.match(regex);
+        if (match) {
+          const [, defaultValue, minValue, maxValue] = match;
+          console.log(
+            `Skill Level => Default: ${defaultValue}, Min: ${minValue}, Max: ${maxValue}`
+          );
+          dispatch({
+            type: GameActionType.setUseSkillLevel,
+            value: {
+              ddefaultLevel: parseInt(defaultValue),
+              minLevel: parseInt(minValue),
+              maxLevel: parseInt(maxValue),
+            },
+          });
         }
       }
     });

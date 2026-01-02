@@ -2,6 +2,7 @@ import "./Toolbar.css";
 import {
   EMPTY_POSITION,
   GameActionType,
+  NO_SKILL_LEVEL,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
@@ -44,6 +45,7 @@ function Toolbar() {
       cpuTimeMinutes,
       cpuTimeSeconds,
       cpuIncrementSeconds,
+      computerSkillLevel,
     },
   } = usePositionEditor();
   const { startClock, stopClock } = useClockHook();
@@ -151,7 +153,12 @@ function Toolbar() {
           blackIncrementSeconds = cpuIncrementSeconds;
         }
       }
-
+      if (computerSkillLevel > NO_SKILL_LEVEL) {
+        dispatch({
+          type: GameActionType.setCurrentSkillLevel,
+          value: computerSkillLevel,
+        });
+      }
       dispatch({
         type: GameActionType.startNewGame,
         value: {

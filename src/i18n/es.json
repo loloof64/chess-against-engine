@@ -31,6 +31,9 @@
           "white": "Blanco",
           "black": "Negro"
         },
+        "computerLevel": {
+          "label": "Nivel de la computadora"
+        },
         "advanced": {
           "turn": {
             "label": "Turno",

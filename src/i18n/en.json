@@ -31,6 +31,9 @@
           "white": "White",
           "black": "Black"
         },
+        "computerLevel": {
+          "label": "Computer level"
+        },
         "advanced": {
           "turn": {
             "label": "Turn",

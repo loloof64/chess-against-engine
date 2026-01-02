@@ -1,6 +1,6 @@
 import { Chess, DEFAULT_POSITION } from "chess.js";
 import { createContext, useContext, useReducer } from "react";
-import { EMPTY_POSITION } from "./GameContext";
+import { EMPTY_POSITION, NO_SKILL_LEVEL } from "./GameContext";
 
 export enum PositionEditorActionType {
   resetToDefault,
@@ -21,6 +21,7 @@ export enum PositionEditorActionType {
   setCPUTimeMinutes,
   setCPUTimeSeconds,
   setCPUIncrementSeconds,
+  setComputerSkillLevel,
 }
 
 interface MiscState {
@@ -35,6 +36,7 @@ interface MiscState {
   cpuTimeMinutes: number;
   cpuTimeSeconds: number;
   cpuIncrementSeconds: number;
+  computerSkillLevel: number;
 }
 
 interface PositionEditor {
@@ -69,6 +71,7 @@ const initialState: MiscState = {
   cpuTimeMinutes: 5,
   cpuTimeSeconds: 0,
   cpuIncrementSeconds: 0,
+  computerSkillLevel: NO_SKILL_LEVEL,
 };
 
 const initialPositionEditor: PositionEditor = {
@@ -262,6 +265,15 @@ function positionEditorReducer(
         editedState: {
           ...positionEditor.editedState,
           cpuIncrementSeconds: action.value,
+        },
+      };
+    }
+    case PositionEditorActionType.setComputerSkillLevel: {
+      return {
+        ...positionEditor,
+        editedState: {
+          ...positionEditor.editedState,
+          computerSkillLevel: action.value,
         },
       };
     }

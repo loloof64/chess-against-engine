@@ -19,6 +19,8 @@ export enum GameActionType {
   tickBlackClock,
   incrementWhiteClock,
   incrementBlackClock,
+  setUseSkillLevel,
+  setCurrentSkillLevel,
 }
 
 type BoardOrientation = "white" | "black" | undefined;
@@ -48,11 +50,17 @@ interface Game {
   blackLossOnTime: boolean;
   startWhiteTimeDeciseconds: number;
   startBlackTimeDeciseconds: number;
+  useSkillLevel: boolean;
+  skillLevelDefault: number;
+  skillLevelMin: number;
+  skillLevelMax: number;
+  skillLevelCurrent: number;
 }
 
 export const EMPTY_POSITION = "4k3/8/8/8/8/8/8/4K3 w - - 0 1";
 export const DEFAULT_POSITION =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+export const NO_SKILL_LEVEL = -1;
 
 const initialGame: Game = {
   boardKey: generateKey(),
@@ -74,6 +82,11 @@ const initialGame: Game = {
   blackLossOnTime: false,
   startWhiteTimeDeciseconds: 300,
   startBlackTimeDeciseconds: 300,
+  useSkillLevel: false,
+  skillLevelDefault: NO_SKILL_LEVEL,
+  skillLevelCurrent: NO_SKILL_LEVEL,
+  skillLevelMin: NO_SKILL_LEVEL,
+  skillLevelMax: NO_SKILL_LEVEL,
 };
 
 const GameContext = createContext<Game>(initialGame);
@@ -130,6 +143,7 @@ function gameReducer(game: Game, action: GameAction): Game {
       });
 
       return {
+        ...game,
         boardKey: generateKey(),
         positionFen: newPosition,
         firstPosition: newPosition,
@@ -289,6 +303,28 @@ function gameReducer(game: Game, action: GameAction): Game {
         ...game,
         blackTimeDeciseconds:
           game.blackTimeDeciseconds + game.blackIncrementSeconds * 10,
+      };
+    }
+    case GameActionType.setUseSkillLevel: {
+      const { defaultLevel, minLevel, maxLevel } = action.value;
+      /* only change on first definition of options */
+      if (game.useSkillLevel) {
+        return game;
+      } else {
+        return {
+          ...game,
+          useSkillLevel: true,
+          skillLevelMin: minLevel,
+          skillLevelMax: maxLevel,
+          skillLevelDefault: defaultLevel,
+          skillLevelCurrent: defaultLevel,
+        };
+      }
+    }
+    case GameActionType.setCurrentSkillLevel: {
+      return {
+        ...game,
+        skillLevelCurrent: action.value,
       };
     }
     default:

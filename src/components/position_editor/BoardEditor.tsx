@@ -9,16 +9,18 @@ import {
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
-import ComputerSideSelector from "./ComputerSideSelector";
 import ClockOptions from "./ClockOptions";
+import ComputerOptions from "./ComputerOptions";
 import { hasWhiteTurn } from "../../utils/ChessUtils";
 
 function BoardEditor() {
   const [pieceType, setPieceType] = useState(PieceType.none);
   const [pieceColor, setPieceColor] = useState(PieceColor.white);
 
-  const { currentPosition, editedState :{  computerHasWhite } } =
-    usePositionEditor();
+  const {
+    currentPosition,
+    editedState: { computerHasWhite },
+  } = usePositionEditor();
   const dispatch = usePositionEditorDispatch();
 
   function convertColorFrom(pieceColor: PieceColor): Color {
@@ -90,7 +92,7 @@ function BoardEditor() {
             onPieceColorSelected={setPieceColor}
             onPieceTypeSelected={setPieceType}
           />
-          <ComputerSideSelector />
+          <ComputerOptions />
           <ClockOptions />
         </div>
       </div>
