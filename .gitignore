@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 *.apks
 *.apk
+# Tauri signing keys - NEVER commit these!
+src-tauri/tauri.key
+src-tauri/tauri.key.pub
