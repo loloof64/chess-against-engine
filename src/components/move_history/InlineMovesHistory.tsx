@@ -9,7 +9,13 @@ import MoveHistoryNode from "./MoveHistoryNode";
 import { useEffect, useRef } from "react";
 
 function InlineMovesHistory() {
-  const { historyIndex, firstPosition, historyMoves } = useGame();
+  const {
+    historyIndex,
+    firstPosition,
+    historyMoves,
+    startWhiteTimeDeciseconds,
+    startBlackTimeDeciseconds,
+  } = useGame();
   const dispatch = useGameDispatch();
   const historyRef = useRef<HTMLDivElement | null>(null);
 
@@ -89,6 +95,8 @@ function InlineMovesHistory() {
         className=""
         historyIndex={-1}
         clickCallback={handleStartPositionClicked}
+        whiteTimeDeciseconds={startWhiteTimeDeciseconds}
+        blackTimeDeciseconds={startBlackTimeDeciseconds}
       />
       {historyMoves.map((nodeDef, index) => (
         <Fragment key={index}>
@@ -100,6 +108,8 @@ function InlineMovesHistory() {
               historyIndex={index}
               clickCallback={nodeDef.clickCallback}
               className={index === historyIndex ? "move selected" : "move"}
+              whiteTimeDeciseconds={nodeDef.whiteTimeDeciseconds}
+              blackTimeDeciseconds={nodeDef.blackTimeDeciseconds}
             />
           }
         </Fragment>

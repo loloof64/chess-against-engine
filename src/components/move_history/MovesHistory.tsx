@@ -161,6 +161,8 @@ function MovesHistory() {
                 historyIndex={index}
                 clickCallback={nodeDef.clickCallback}
                 className={index === historyIndex ? "move selected" : "move"}
+                whiteTimeDeciseconds={nodeDef.whiteTimeDeciseconds}
+                blackTimeDeciseconds={nodeDef.blackTimeDeciseconds}
               />
             }
           </Fragment>
