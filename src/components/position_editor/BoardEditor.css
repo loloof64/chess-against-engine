@@ -1,19 +1,14 @@
 .posEditor {
   display: flex;
-  flex-direction: column;
-}
-
-.posEditor .container1 {
-  display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
 }
 
 .posEditor .board {
   display: block;
-  height: 50%;
+  width: 40%;
   aspect-ratio: 1/1;
 }
 
@@ -22,7 +17,17 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  width: 65%;
+  width: 100%;
   max-width: 500px;
-  margin-left: 10px;
+}
+
+@media (orientation: portrait) {
+  .posEditor {
+    flex-direction: row;
+  }
+
+  .posEditor .board {
+    width: 80%;
+    aspect-ratio: 1/1;
+  }
 }

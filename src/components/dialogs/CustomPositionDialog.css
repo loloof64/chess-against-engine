@@ -14,7 +14,6 @@ fieldset {
 .tabsRoot {
   display: flex;
   flex-direction: column;
-  margin: 10px 0;
 }
 
 div[role="tablist"] {
@@ -27,7 +26,7 @@ div[role="tablist"] {
 button[type="button"] {
   font-family: inherit;
   background-color: white;
-  padding: 0 20px;
+  padding: 0 10px;
   height: 30px;
   flex: 1;
   display: flex;
@@ -37,6 +36,7 @@ button[type="button"] {
   line-height: 1;
   color: var(--mauve-11);
   user-select: none;
+  font-size: smaller;
 }
 button[type="button"]:first-child {
   border-top-left-radius: 6px;

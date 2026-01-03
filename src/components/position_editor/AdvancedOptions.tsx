@@ -5,34 +5,11 @@ import {
   usePositionEditor,
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
-import { Chess, Color } from "chess.js";
+import { Chess } from "chess.js";
 
 function AdvancedOptions() {
   const { currentPosition } = usePositionEditor();
   const dispatch = usePositionEditorDispatch();
-
-  function handleChangeTurn(newColor: Color) {
-    try {
-      /*
-        If the king is currently in check, then swapping turn
-        would lead to an illegal position.
-      */
-      const matchingGameLogic = new Chess(currentPosition);
-      if (matchingGameLogic.inCheck()) return;
-
-      let parts = currentPosition.split(" ");
-      parts[1] = newColor;
-      const newPosition = parts.join(" ");
-
-      new Chess(newPosition); // check validity
-      dispatch({
-        type: PositionEditorActionType.changeCurrentPosition,
-        value: newPosition,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   function handleCastleChange(type: string, isToBeAdded: boolean) {
     let positionParts = currentPosition.split(" ");
@@ -140,10 +117,6 @@ function AdvancedOptions() {
     return ordered.length === 0 ? "-" : ordered;
   }
 
-  function getCurrentTurn(): Color {
-    return currentPosition.split(" ")[1] as Color;
-  }
-
   function getCurrentCastles(): Array<string> {
     return currentPosition.split(" ")[2].split("");
   }
@@ -163,35 +136,6 @@ function AdvancedOptions() {
 
   return (
     <div className="advancedOptions">
-      <div className="field">
-        <label>{t("dialogs.positionEditor.advanced.turn.label")}</label>
-        <div className="radioOption">
-          <input
-            type="radio"
-            name="turn"
-            value="whiteTurn"
-            id="whiteTurn"
-            onChange={() => handleChangeTurn("w")}
-            checked={getCurrentTurn() === "w"}
-          />
-          <label htmlFor="whiteTurn">
-            {t("dialogs.positionEditor.advanced.turn.white")}
-          </label>
-        </div>
-        <div className="radioOption">
-          <input
-            type="radio"
-            name="turn"
-            value="blackTurn"
-            id="blackTurn"
-            onChange={() => handleChangeTurn("b")}
-            checked={getCurrentTurn() === "b"}
-          />
-          <label htmlFor="blackTurn">
-            {t("dialogs.positionEditor.advanced.turn.black")}
-          </label>
-        </div>
-      </div>
       <div className="field">
         <label>{t("dialogs.positionEditor.advanced.castles.label")}</label>
         <div className="checkboxOption">

@@ -11,6 +11,7 @@ import {
 } from "../../stores/game/PositionEditorContext";
 import { Chess } from "chess.js";
 import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
+import GeneralOptions from "../position_editor/GeneralOptions";
 
 interface CustomPositionDialogParams {
   isOpen: boolean;
@@ -80,6 +81,9 @@ function CustomPositionDialog({
                 <Tabs.Trigger value="board">
                   {t("dialogs.positionEditor.tabBoard")}
                 </Tabs.Trigger>
+                <Tabs.Trigger value="general">
+                  {t("dialogs.positionEditor.tabGeneral")}
+                </Tabs.Trigger>
                 <Tabs.Trigger value="advanced">
                   {t("dialogs.positionEditor.tabAdvanced")}
                 </Tabs.Trigger>
@@ -89,6 +93,9 @@ function CustomPositionDialog({
               </Tabs.List>
               <Tabs.Content value="board" className="tabContent">
                 <BoardEditor />
+              </Tabs.Content>
+              <Tabs.Content value="general" className="tabContent">
+                <GeneralOptions />
               </Tabs.Content>
               <Tabs.Content value="advanced" className="tabContent">
                 <AdvancedOptions />

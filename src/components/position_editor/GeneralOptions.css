@@ -1,0 +1,22 @@
+.generalOptions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 65%;
+  max-width: 500px;
+  margin-left: 10px;
+}
+
+.generalOptions .field {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: fit-content;
+  height: fit-content;
+}
+
+.generalOptions .field label {
+  font-size: smaller;
+}

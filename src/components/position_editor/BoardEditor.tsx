@@ -1,7 +1,6 @@
 import { Chessboard } from "react-chessboard";
 import "./BoardEditor.css";
 import ValueSelector, { PieceColor, PieceType } from "./ValueSelector";
-import { useState } from "react";
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
 import {
   PositionEditorActionType,
@@ -9,19 +8,18 @@ import {
   usePositionEditorDispatch,
 } from "../../stores/game/PositionEditorContext";
 import BoardCoordinates from "../board_coordinates/BoardCoordinates";
-import ClockOptions from "./ClockOptions";
-import ComputerOptions from "./ComputerOptions";
 import { hasWhiteTurn } from "../../utils/ChessUtils";
+import { useState } from "react";
 
 function BoardEditor() {
-  const [pieceType, setPieceType] = useState(PieceType.none);
-  const [pieceColor, setPieceColor] = useState(PieceColor.white);
-
   const {
     currentPosition,
     editedState: { computerHasWhite },
   } = usePositionEditor();
   const dispatch = usePositionEditorDispatch();
+
+  const [pieceType, setPieceType] = useState(PieceType.none);
+  const [pieceColor, setPieceColor] = useState(PieceColor.white);
 
   function convertColorFrom(pieceColor: PieceColor): Color {
     return pieceColor == PieceColor.white ? "w" : "b";
@@ -64,27 +62,25 @@ function BoardEditor() {
 
   return (
     <div className="posEditor">
-      <div className="container1">
-        <div className="board">
-          <BoardCoordinates
-            hoveredFile={null}
-            hoveredRank={null}
-            startFile={null}
-            startRank={null}
-            isWhiteTurn={hasWhiteTurn(currentPosition)}
-            boardOrientation={computerHasWhite ? "black" : "white"}
-          >
-            <Chessboard
-              options={{
-                boardOrientation: computerHasWhite ? "black" : "white",
-                position: currentPosition,
-                allowDragging: false,
-                showNotation: false,
-                onSquareClick: ({ square }) => setPieceAt(square),
-              }}
-            />
-          </BoardCoordinates>
-        </div>
+      <div className="board">
+        <BoardCoordinates
+          hoveredFile={null}
+          hoveredRank={null}
+          startFile={null}
+          startRank={null}
+          isWhiteTurn={hasWhiteTurn(currentPosition)}
+          boardOrientation={computerHasWhite ? "black" : "white"}
+        >
+          <Chessboard
+            options={{
+              boardOrientation: computerHasWhite ? "black" : "white",
+              position: currentPosition,
+              allowDragging: false,
+              showNotation: false,
+              onSquareClick: ({ square }) => setPieceAt(square),
+            }}
+          />
+        </BoardCoordinates>
         <div className="options">
           <ValueSelector
             selectedPieceType={pieceType}
@@ -92,8 +88,6 @@ function BoardEditor() {
             onPieceColorSelected={setPieceColor}
             onPieceTypeSelected={setPieceType}
           />
-          <ComputerOptions />
-          <ClockOptions />
         </div>
       </div>
     </div>

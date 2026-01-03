@@ -23,7 +23,8 @@
       },
       "positionEditor": {
         "ariaLabel": "Position editor tabs",
-        "tabBoard": "General",
+        "tabBoard": "Board",
+        "tabGeneral": "General",
         "tabAdvanced": "Advanced",
         "tabButtons": "Shortcuts",
         "computerSide": {

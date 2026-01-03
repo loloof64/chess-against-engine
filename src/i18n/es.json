@@ -23,7 +23,8 @@
       },
       "positionEditor": {
         "ariaLabel": "Pestañas del editor de posición",
-        "tabBoard": "Principal",
+        "tabGeneral": "Principal",
+        "tabBoard": "Tablero",
         "tabAdvanced": "Avanzado",
         "tabButtons": "Atajos",
         "computerSide": {
