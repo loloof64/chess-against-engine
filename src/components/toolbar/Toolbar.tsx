@@ -77,6 +77,9 @@ function Toolbar() {
       type: PositionEditorActionType.setLoadedPosition,
       value: firstPosition,
     });
+    positionEditorDispatch({
+      type: PositionEditorActionType.resetStateToSaved,
+    });
     setIsCustomPositionDialogOpen(true);
   }
 
