@@ -161,6 +161,7 @@ function positionEditorReducer(
       return {
         ...positionEditor,
         editedState: positionEditor.updatedState,
+        currentPosition: positionEditor.loadedPosition,
       };
     }
     case PositionEditorActionType.saveCurrentState: {
