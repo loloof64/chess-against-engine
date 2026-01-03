@@ -50,5 +50,4 @@ jobs:
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
-          tauriScript: ./node_modules/.bin/tauri --no-bundle
+          args: "${{ matrix.args }} --no-bundle"
