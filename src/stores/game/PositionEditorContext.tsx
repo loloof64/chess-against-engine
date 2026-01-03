@@ -270,12 +270,22 @@ function positionEditorReducer(
       };
     }
     case PositionEditorActionType.setComputerSkillLevel: {
+      let updatedState = positionEditor.updatedState;
+      const wasNotSetBefore = updatedState.computerSkillLevel <= NO_SKILL_LEVEL;
+      /*
+      Now that there is a skill level
+      we want to avoid setting value to NO_SKILL_LEVEL
+      */
+      if (wasNotSetBefore) {
+        updatedState.computerSkillLevel = action.value;
+      }
       return {
         ...positionEditor,
         editedState: {
           ...positionEditor.editedState,
           computerSkillLevel: action.value,
         },
+        updatedState,
       };
     }
     default:
