@@ -35,8 +35,9 @@ export default function useClockHook() {
     }
   }, [useClock]);
 
-  function startClock(isWhiteTurn: boolean) {
-    if (!useClockRef.current) return;
+  function startClock(isWhiteTurn: boolean, forceUseClock?: boolean) {
+    const shouldUseClock = forceUseClock ?? useClockRef.current;
+    if (!shouldUseClock) return;
     clearInterval(handlers.white);
     clearInterval(handlers.black);
     handlers.isWhiteRunning = isWhiteTurn;

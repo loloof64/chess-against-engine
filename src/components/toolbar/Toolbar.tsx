@@ -178,7 +178,7 @@ function Toolbar() {
           blackTimeSeconds,
         },
       });
-      startClock(isWhiteTurn);
+      startClock(isWhiteTurn, useClock);
       /* The new game may start by an engine thinking,
       so we'll avoid shutdown this process.
       sendCommandToInstalledEngine("stop\n");
