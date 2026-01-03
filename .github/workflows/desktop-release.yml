@@ -51,3 +51,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+          tauriScript: ./node_modules/.bin/tauri --no-bundle
