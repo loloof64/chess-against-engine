@@ -215,10 +215,14 @@ function Board() {
           dispatch({
             type: GameActionType.setUseSkillLevel,
             value: {
-              ddefaultLevel: parseInt(defaultValue),
+              defaultLevel: parseInt(defaultValue),
               minLevel: parseInt(minValue),
               maxLevel: parseInt(maxValue),
             },
+          });
+          editorDispatch({
+            type: PositionEditorActionType.setComputerSkillLevel,
+            value: parseInt(defaultValue),
           });
         }
       }

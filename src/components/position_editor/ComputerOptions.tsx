@@ -8,11 +8,10 @@ import {
 import { useGame } from "../../stores/game/GameContext";
 
 function ComputerOptions() {
-  const { useSkillLevel, skillLevelCurrent, skillLevelMin, skillLevelMax } =
-    useGame();
+  const { useSkillLevel, skillLevelMin, skillLevelMax } = useGame();
   const dispatch = usePositionEditorDispatch();
   const {
-    editedState: { computerHasWhite },
+    editedState: { computerHasWhite, computerSkillLevel },
   } = usePositionEditor();
 
   function handleChangeComputerTempSide(hasWhiteSide: boolean) {
@@ -62,16 +61,18 @@ function ComputerOptions() {
       </div>
       {useSkillLevel && (
         <div className="computerSkillLevel">
-          <label htmlFor="computerLevel">
-            {t("dialogs.positionEditor.computerLevel.label")}
-          </label>
-          {skillLevelCurrent}
+          <div className="skillLabel">
+            <label htmlFor="computerLevel">
+              {t("dialogs.positionEditor.computerLevel.label")}
+            </label>
+            <label>{computerSkillLevel}</label>
+          </div>
           <input
             type="range"
             name="computerLevel"
             min={skillLevelMin}
             max={skillLevelMax}
-            value={skillLevelCurrent}
+            value={computerSkillLevel}
             step="1"
             onChange={handleSkillLevelChange}
           />

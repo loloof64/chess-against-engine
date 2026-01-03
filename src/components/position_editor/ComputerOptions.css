@@ -27,6 +27,14 @@
   height: fit-content;
 }
 
+.computerSkillLevel .skillLabel {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+}
+
 @media (orientation: portrait) {
   .computerSideSelector {
     flex-direction: column;
