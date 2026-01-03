@@ -10,6 +10,7 @@ import convertSanToFan from "../../core/sanConversion";
 import { Chess, Move, Piece } from "chess.js";
 import {
   GameActionType,
+  NO_SKILL_LEVEL,
   useGame,
   useGameDispatch,
 } from "../../stores/game/GameContext";
@@ -76,10 +77,6 @@ function Board() {
       sendCommandToInstalledEngine(
         `setoption name Skill Level value ${skillLevelCurrent}}\n`
       );
-      editorDispatch({
-        type: PositionEditorActionType.setComputerSkillLevel,
-        value: skillLevelCurrent,
-      });
     }
   }, [useSkillLevel, skillLevelCurrent]);
 
@@ -204,6 +201,9 @@ function Board() {
           console.error(e);
         }
       } else if (isOptionInfo) {
+        const wasAlreadySet = skillLevelCurrent > NO_SKILL_LEVEL;
+        if (wasAlreadySet) return;
+
         const regex =
           /option name Skill Level type spin default\s+(\d+).*?min\s+(\d+).*?max\s+(\d+)/;
         const match = output.match(regex);
