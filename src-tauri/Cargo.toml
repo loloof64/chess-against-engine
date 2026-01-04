@@ -1,6 +1,6 @@
 [package]
 name = "chess-against-engine"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
@@ -28,3 +28,6 @@ tauri-plugin-log = "2"
 jni = { version = "0.21", features = ["invocation"] }
 ndk-context = "0.1"
 lazy_static = "1.4"
+
+[package.metadata.deb]
+depends = "libwebkit2gtk-4.1, libappindicator3-1, libssl3, libgtk-3-0"
