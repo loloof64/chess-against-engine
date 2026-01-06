@@ -1,4 +1,9 @@
 {
   "identifier": "com.loloof64.chess-against-engine",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "devUrl": null,
+    "frontendDist": "../dist"
+  },
   "bundle": {}
 }

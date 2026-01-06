@@ -21,3 +21,4 @@ key.properties
 *.jks
 symbols.zip
 /symbols
+app/src/res
