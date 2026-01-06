@@ -93,11 +93,7 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 20px;
-}
-
-.answerButtons button {
-  margin: 0 8px;
+  padding-right: 8px;
 }
 
 @keyframes overlayShow {
