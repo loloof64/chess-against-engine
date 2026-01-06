@@ -8,3 +8,4 @@
 
 *.jks
 key.properties
+gen/android/app/src/main/assets/

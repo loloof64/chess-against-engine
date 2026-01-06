@@ -20,7 +20,19 @@ The same goes for the AppImage format, but you can even do better this time :
    1. locate line starting with `Exec=`
    2. append environement variable : `Exec=env WEBKIT_DISABLE_DMABUF_RENDERER=1 /path/to/executable`, where `/path/to/executable` is the path of the executable, and should be left as is.
 
-## Creating an android release
+## Developers
+
+### Android Dev mode
+
+Prefer running
+
+```
+npm run android:dev
+```
+
+as it will ensure fronted assets will be included.
+
+### Creating an android release
 
 1. Add keystore file in the folder `src-tauri/gen/android`
 2. Add **key.properties** in the folder `src-tauri/gen/android/app`, with the following content
@@ -32,7 +44,7 @@ keyAlias=chess_key
 keyPassword=your_key_password
 ```
 
-3. Run command from root : `npx tauri android build --aab true`
+3. Run command from root : `npm run android:build`
 4. If necessary and if on Linux, generate debug symbols with script `src-tauri/gen/android/extract_symbols.sh` and upload it to the Google Play Store with your appbundle.
 
 ## Credits

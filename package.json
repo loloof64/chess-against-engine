@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "android:dev": "npm run build && cp -r dist/* src-tauri/gen/android/app/src/main/assets/ && npx tauri android dev",
+    "android:build": "npm run build && cp -r dist/* src-tauri/gen/android/app/src/main/assets/ && npx tauri android build --aab true",
     "preview": "vite preview",
     "tauri": "tauri"
   },
