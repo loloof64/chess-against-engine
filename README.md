@@ -33,6 +33,7 @@ keyPassword=your_key_password
 ```
 
 3. Run command from root : `npx tauri android build --aab true`
+4. If necessary and if on Linux, generate debug symbols with script `src-tauri/gen/android/extract_symbols.sh` and upload it to the Google Play Store with your appbundle.
 
 ## Credits
 

@@ -19,3 +19,5 @@ key.properties
 /tauri.settings.gradle
 
 *.jks
+symbols.zip
+/symbols
