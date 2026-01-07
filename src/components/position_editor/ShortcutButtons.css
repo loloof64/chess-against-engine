@@ -1,6 +1,8 @@
 .editorShortcutButtons {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
+  height: 70vh;
+  max-height: 490px;
 }

@@ -8,7 +8,7 @@
 
 .posEditor .board {
   display: block;
-  width: 40%;
+  width: 60vmin;
   aspect-ratio: 1/1;
 }
 
@@ -24,10 +24,5 @@
 @media (orientation: portrait) {
   .posEditor {
     flex-direction: row;
-  }
-
-  .posEditor .board {
-    width: 80%;
-    aspect-ratio: 1/1;
   }
 }

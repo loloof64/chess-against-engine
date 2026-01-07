@@ -1,11 +1,12 @@
 .generalOptions {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  width: 65%;
   max-width: 500px;
   margin-left: 10px;
+  height: 70vh;
+  max-height: 490px;
 }
 
 .generalOptions .field {

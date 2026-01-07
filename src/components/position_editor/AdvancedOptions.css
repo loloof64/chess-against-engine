@@ -1,8 +1,10 @@
 .advancedOptions {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: flex-start;
+  height: 70vh;
+  max-height: 490px;
 }
 
 .field {
