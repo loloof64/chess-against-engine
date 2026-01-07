@@ -43,20 +43,24 @@ public class ChessEngineResolver {
 	private static final String ENGINE_PROVIDER_LICENSE_MARKER = "intent.chess.provider.ACTIVATION";
 	private static final String TAG = ChessEngineResolver.class.getSimpleName();
 	private Context context;
-	private String target;
+	private String[] supportedAbis;
 	/** map of package -> activity for license checks */
 	private Map<String, String> licenseCheckActivities = new HashMap<>();
 
 	public ChessEngineResolver(Context context) {
 		super();
 		this.context = context;
-		this.target = Build.CPU_ABI; // use Build.SUPPORTED_ABIS[0] from API level 21 onwards
-		sanitizeArmV6Target();
+		// Use Build.SUPPORTED_ABIS to get all supported ABIs (available from API 21+)
+		this.supportedAbis = Build.SUPPORTED_ABIS;
+		sanitizeArmV6Targets();
+		Log.d(TAG, "Supported ABIs: " + String.join(", ", supportedAbis));
 	}
 
-	private void sanitizeArmV6Target() {
-		if (this.target.startsWith("armeabi-v6")) {
-			this.target = "armeabi";
+	private void sanitizeArmV6Targets() {
+		for (int i = 0; i < supportedAbis.length; i++) {
+			if (supportedAbis[i].startsWith("armeabi-v6")) {
+				supportedAbis[i] = "armeabi";
+			}
 		}
 	}
 
@@ -169,29 +173,36 @@ public class ChessEngineResolver {
 			String title = parser.getAttributeValue(null, "name");
 			String targetSpecification = parser.getAttributeValue(null,
 					"target");
-			Log.d(TAG, "Engine: title=" + title + ", fileName=" + fileName + ", target=" + targetSpecification + ", current target=" + target);
+			Log.d(TAG, "Engine: title=" + title + ", fileName=" + fileName + ", target=" + targetSpecification + ", supported ABIs=" + String.join(", ", supportedAbis));
 			String[] targets = targetSpecification.split("\\|");
+			// Check if any of the engine targets matches any of the device's supported ABIs
+			boolean engineAdded = false;
 			for (String cpuTarget : targets) {
-				if (target.equals(cpuTarget)) {
-					Log.d(TAG, "Target matches! Adding engine");
-					int versionCode = 0;
-					try {
-						versionCode = context.getPackageManager()
-								.getPackageInfo(packageName, 0).versionCode;
-					} catch (NameNotFoundException e) {
-						Log.e(TAG, e.getMessage());
+				if (engineAdded) break;
+				for (String supportedAbi : supportedAbis) {
+					if (supportedAbi.equals(cpuTarget)) {
+						Log.d(TAG, "Target matches! ABI " + supportedAbi + " matches engine target " + cpuTarget + ". Adding engine");
+						int versionCode = 0;
+						try {
+							versionCode = context.getPackageManager()
+									.getPackageInfo(packageName, 0).versionCode;
+						} catch (NameNotFoundException e) {
+							Log.e(TAG, e.getMessage());
+						}
+						try {
+							ApplicationInfo app = context.getPackageManager().getApplicationInfo(packageName, 0);
+							String enginePath = new File(app.nativeLibraryDir, fileName).getAbsolutePath();
+							result.add(new ChessEngine(title, fileName, enginePath, authority,
+									packageName, versionCode, licenseCheckActivities
+									.get(packageName)));
+							engineAdded = true;
+						} catch (NameNotFoundException e) {
+							Log.e(TAG, e.getLocalizedMessage(), e);
+						}
+						break;
+					} else {
+						Log.d(TAG, "Target mismatch: engine target " + cpuTarget + " != device ABI " + supportedAbi);
 					}
-					try {
-						ApplicationInfo app = context.getPackageManager().getApplicationInfo(packageName, 0);
-						String enginePath = new File(app.nativeLibraryDir, fileName).getAbsolutePath();
-						result.add(new ChessEngine(title, fileName, enginePath, authority,
-								packageName, versionCode, licenseCheckActivities
-								.get(packageName)));
-					} catch (NameNotFoundException e) {
-						Log.e(TAG, e.getLocalizedMessage(), e);
-					}
-				} else {
-					Log.d(TAG, "Target mismatch: expected " + cpuTarget + " got " + target);
 				}
 			}
 		}
@@ -226,13 +237,13 @@ public class ChessEngineResolver {
 
 	/**
 	 * Don't use this in production - this method is only for testing. Set the
-	 * cpu target.
+	 * cpu targets.
 	 *
-	 * @param target
-	 *            the cpu target to set
+	 * @param targets
+	 *            the cpu targets to set
 	 */
-	public void setTarget(String target) {
-		this.target = target;
-		sanitizeArmV6Target();
+	public void setTargets(String[] targets) {
+		this.supportedAbis = targets;
+		sanitizeArmV6Targets();
 	}
 }
