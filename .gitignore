@@ -31,3 +31,4 @@ src-tauri/tauri.key.pub
 *.jks
 key.properties
 symbols.zip
+*~

@@ -65,6 +65,8 @@ Some icons have been downloaded from [SVGRepo](https://www.svgrepo.com) :
 - back.svg : https://www.svgrepo.com/svg/535155/arrow-left
 - next.svg : https://www.svgrepo.com/svg/535153/arrow-right
 
+Android Icons generated with [https://www.adaptive-icons.com/](Adaptive Icons .com)
+
 ### Vectors
 
 Using some vectors from [WikiMedia Commons](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces)
