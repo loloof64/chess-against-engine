@@ -12,11 +12,6 @@
   height: 68vmin;
 }
 
-.game.portrait .board {
-  width: 95vmin;
-  height: 95vmin;
-}
-
 /* On android in landscape, we must leave space for buttons bar on the left 
    and space for notch on the right
 */
@@ -37,5 +32,10 @@
     align-items: center;
     width: 100%;
     height: 100%;
+  }
+
+  .game .board {
+    width: 95vmin;
+    height: 95vmin;
   }
 }
