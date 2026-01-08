@@ -1,9 +1,11 @@
+# 0.1.4
+
 # 0.1.3
 
 - Better dark mode handling
 - Improved new game editor a bit
 
-# 0.1.3
+# 0.1.2
 
 Improve icon
 

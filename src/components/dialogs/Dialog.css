@@ -154,3 +154,10 @@
     height: 100%;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .answerButtons button {
+    background-color: var(--violet-10);
+    color: var(--white-12);
+  }
+}
