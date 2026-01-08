@@ -35,7 +35,7 @@ button[type="button"] {
   line-height: 1;
   color: var(--mauve-11);
   user-select: none;
-  font-size: smaller;
+  font-size: x-small;
 }
 button[type="button"]:first-child {
   border-top-left-radius: 6px;
