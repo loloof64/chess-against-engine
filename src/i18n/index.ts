@@ -16,6 +16,9 @@ i18n
     resources,
     fallbackLng: "en",
     detection: { order: ["path", "navigator"] },
+    interpolation: {
+      escapeValue: false,
+    },
   });
 
 export default i18n;
