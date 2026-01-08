@@ -1,4 +1,5 @@
 import "./Dialog.css";
+import "./PromotionDialog.css";
 import { Dialog, VisuallyHidden } from "radix-ui";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
