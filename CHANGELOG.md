@@ -1,5 +1,9 @@
 # 0.1.4
 
+- Improved dark mode support
+- Cancelling promotion move also modified moves history (not inline one)
+- Several ui troubles
+
 # 0.1.3
 
 - Better dark mode handling
