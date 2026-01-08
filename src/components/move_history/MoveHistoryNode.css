@@ -17,3 +17,13 @@
 .history button.move.selected {
   background-color: aquamarine;
 }
+
+@media (prefers-color-scheme: dark) {
+  .history button.move {
+    color: whitesmoke;
+  }
+
+  .history button.move.selected {
+    color: blue;
+  }
+}
