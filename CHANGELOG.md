@@ -2,7 +2,7 @@
 
 - Improved dark mode support
 - Cancelling promotion move also modified moves history (not inline one)
-- Several ui troubles
+- Fix several ui troubles
 
 # 0.1.3
 
