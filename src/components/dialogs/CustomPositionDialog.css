@@ -71,3 +71,9 @@ button.action {
     color: var(--white-12);
   }
 }
+
+@media (orientation: portrait) {
+  .tabsRoot div[data-state="active"] {
+    height: 100%;
+  }
+}

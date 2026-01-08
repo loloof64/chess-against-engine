@@ -22,7 +22,22 @@
 }
 
 @media (orientation: portrait) {
+  .customPositionDialogRoot {
+    height: 100%;
+  }
+
+  .tabsRoot {
+    height: 90%;
+  }
+
   .posEditor {
-    flex-direction: row;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .posEditor .board {
+    width: 88vmin;
+    align-items: center;
   }
 }

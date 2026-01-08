@@ -148,3 +148,9 @@
     color: var(--white-10);
   }
 }
+
+@media (orientation: portrait) {
+  .DialogContent {
+    height: 100%;
+  }
+}
