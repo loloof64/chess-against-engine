@@ -292,23 +292,24 @@ function Board() {
         const moveNumber = parseInt(positionFen.split(" ")[5]);
         const weShouldAddHistoryMoveNumber =
           isWhiteTurnBeforeMove || historyMoves.length === 0;
-        if (weShouldAddHistoryMoveNumber) {
-          addHistoryMove(
-            `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
-            isWhiteTurnBeforeMove,
-            "",
-            {
-              startSquare: move.from,
-              endSquare: move.to,
-              color: "green",
-            },
-            () => {}
-          );
-        }
+
         if (isPromotionMove) {
           setPendingPromotionMove(move);
           setIsPromotionDialogOpen(true);
         } else {
+          if (weShouldAddHistoryMoveNumber) {
+            addHistoryMove(
+              `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+              isWhiteTurnBeforeMove,
+              "",
+              {
+                startSquare: move.from,
+                endSquare: move.to,
+                color: "green",
+              },
+              () => {}
+            );
+          }
           dispatch({
             type: GameActionType.makeMove,
             value: move,
@@ -393,13 +394,29 @@ function Board() {
   function commitPromotion(piece: string) {
     setIsPromotionDialogOpen(false);
     const turn = positionFen.split(" ")[1];
+    const moveNumber = parseInt(positionFen.split(" ")[5]);
     const isWhiteTurnBeforeMove = turn == "w";
     const chessLogic = new Chess(positionFen);
+    const weShouldAddHistoryMoveNumber =
+      isWhiteTurnBeforeMove || historyMoves.length === 0;
     const moveToCommit = {
       from: pendingPromotionMove?.from ?? "a1",
       to: pendingPromotionMove?.to ?? "a1",
       promotion: piece,
     };
+    if (weShouldAddHistoryMoveNumber) {
+      addHistoryMove(
+        `${moveNumber}.${isWhiteTurnBeforeMove ? "" : ".."}`,
+        isWhiteTurnBeforeMove,
+        "",
+        {
+          startSquare: moveToCommit.from,
+          endSquare: moveToCommit.to,
+          color: "green",
+        },
+        () => {}
+      );
+    }
     const moveToCommitResult = chessLogic.move(moveToCommit);
     dispatch({
       type: GameActionType.makeMove,
