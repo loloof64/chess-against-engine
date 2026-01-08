@@ -64,3 +64,10 @@ button.action {
   width: 100px;
   text-align: center;
 }
+
+@media (prefers-color-scheme: dark) {
+  button.action {
+    background-color: var(--violet-10);
+    color: var(--white-12);
+  }
+}

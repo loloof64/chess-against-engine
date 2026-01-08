@@ -129,3 +129,22 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .DialogContent {
+    background-color: var(--green-8);
+  }
+
+  .DialogTitle {
+    color: var(--blue-3);
+  }
+
+  .DialogDescription {
+    color: var(--blue-3);
+  }
+
+  .IconButton {
+    background-color: var(--magenta-8);
+    color: var(--white-10);
+  }
+}
